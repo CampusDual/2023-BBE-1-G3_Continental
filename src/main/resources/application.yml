@@ -14,7 +14,7 @@ spring:
         format_sql: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
 server:
-  port: 65432
+  port: 30030
 logging:
   level:
     org:

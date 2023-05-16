@@ -2,6 +2,7 @@ package com.hotel.Continental.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "hotels")
@@ -10,8 +11,10 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
+    @NotNull
     private String name;
     @Column
+    @NotNull
     private String address;
 
     public int getId() {
@@ -39,5 +42,13 @@ public class Hotel {
     public Hotel setAddress(String address) {
         this.address = address;
         return this;
+    }
+
+    public Hotel() {
+    }
+
+    public Hotel(String name, String address) {
+        this.name = name;
+        this.address = address;
     }
 }

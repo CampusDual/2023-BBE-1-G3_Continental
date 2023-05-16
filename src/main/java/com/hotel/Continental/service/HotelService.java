@@ -1,4 +1,4 @@
-package com.hotel.Continental.services;
+package com.hotel.Continental.service;
 
 import com.hotel.Continental.api.IHotelService;
 import com.hotel.Continental.model.Hotel;

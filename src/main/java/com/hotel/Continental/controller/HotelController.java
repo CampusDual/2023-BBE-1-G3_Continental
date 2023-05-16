@@ -1,7 +1,7 @@
 package com.hotel.Continental.controller;
 
 import com.hotel.Continental.model.dto.HotelDTO;
-import com.hotel.Continental.services.HotelService;
+import com.hotel.Continental.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

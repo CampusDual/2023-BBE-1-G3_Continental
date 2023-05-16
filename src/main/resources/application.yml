@@ -9,11 +9,10 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    #properties:
-     # hibernate:
-      #  format_sql: false
-       # dialect: org.hibernate.dialect.postgresql.PostgreSQLDialect
-
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: 65432
 logging:

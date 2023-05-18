@@ -1,10 +1,12 @@
 package com.hotel.Continental.model.dto;
 
+import com.hotel.Continental.model.Hotel;
+
 public class HabitacionDto {
 
     private int idHabitacion;
-    private int idHotel;
-    private int numHabitacion;
+    private Hotel idHotel;
+    private Integer numHabitacion;
 
     public int getIdHabitacion() {
         return idHabitacion;
@@ -14,11 +16,11 @@ public class HabitacionDto {
         this.idHabitacion = idHabitacion;
     }
 
-    public int getIdHotel() {
+    public Hotel getIdHotel() {
         return idHotel;
     }
 
-    public void setIdHotel(int idHotel) {
+    public void setIdHotel(Hotel idHotel) {
         this.idHotel = idHotel;
     }
 
@@ -26,7 +28,7 @@ public class HabitacionDto {
         return numHabitacion;
     }
 
-    public void setNumHabitacion(int numHabitacion) {
+    public void setNumHabitacion(Integer numHabitacion) {
         this.numHabitacion = numHabitacion;
     }
 }

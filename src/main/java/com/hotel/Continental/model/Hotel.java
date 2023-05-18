@@ -3,6 +3,7 @@ package com.hotel.Continental.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "hotels")
@@ -14,14 +15,15 @@ public class Hotel {
     private String name;
     @Column
     private String address;
+    @OneToMany(mappedBy = "hotel")
+    private List<Habitacion> habitaciones;
 
     public int getId() {
         return id;
     }
 
-    public Hotel setId(int id) {
+    public Hotel(int id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {

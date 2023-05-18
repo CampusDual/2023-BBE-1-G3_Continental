@@ -18,7 +18,7 @@ public class HabitacionService implements IHabitacionService {
     @Override
     public int insertHabitacion(HabitacionDto habitacionDto) {
         Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
-       habitacionDao.saveAndFlush(habitacion);
+        habitacionDao.saveAndFlush(habitacion);
         return habitacion.getIdHabitacion();
     }
 }

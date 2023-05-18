@@ -8,8 +8,9 @@ public class Habitacion {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int idHabitacion;
-    @Column
-    private int idHotel;
+    @ManyToOne
+    @JoinColumn(name = "idHotel")
+    private Hotel hotel;
     @Column
     private int numHabitacion;
     public int getIdHabitacion() {
@@ -18,11 +19,11 @@ public class Habitacion {
     public void setIdHabitacion(int idHabitacion) {
         this.idHabitacion = idHabitacion;
     }
-    public int getIdHotel() {
-        return idHotel;
+    public Hotel getIdHotel() {
+        return hotel;
     }
-    public void setIdHotel(int idHotel) {
-        this.idHotel = idHotel;
+    public void setIdHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
     public int getNumHabitacion() {
         return numHabitacion;

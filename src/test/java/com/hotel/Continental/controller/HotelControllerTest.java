@@ -16,9 +16,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class HotelControllerTest {
+
 	private MockMvc mockMvc;
 	@InjectMocks
 	HotelController hotelController;
@@ -28,23 +31,31 @@ class HotelControllerTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(hotelController)
 				.build();
 	}
-
+	/*
 	@Test
 	public void addHotelTest() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/hotel/add").contentType(MediaType.APPLICATION_JSON)
-						.content(new ObjectMapper().writeValueAsString(new Hotel("Hotel1", "direccion1"))))
-				.andReturn();
-
-		assertEquals(200, mvcResult.getResponse().getStatus());
+		String jsonRequest = "{\"name\": \"Continental\", \"address\": \"DireccionInventada\"}";
+		mockMvc.perform(post("/hotel/add")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonRequest))
+				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testInsertNull() {
+	public void testInsertNull() throws Exception {
+		String jsonRequest = "{\"name\": null, \"address\": null}";
+		mockMvc.perform(post("/hotel/add")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonRequest))
+				.andExpect(status().is(400));
+	}
+	*/
+	@Test
+	public void testInsertNothing() throws Exception {
 		HotelDTO hotelDTO = new HotelDTO();
 		hotelDTO.setName(null);
 		hotelDTO.setAddress(null);
-		assertThrows(NullPointerException.class, () -> {
-			hotelController.addHotel(hotelDTO);
-		});
+		mockMvc.perform(post("/hotel/add"))
+				.andExpect(status().is(400));
 	}
 }

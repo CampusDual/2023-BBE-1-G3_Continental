@@ -5,6 +5,7 @@ import com.hotel.Continental.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -13,7 +14,7 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @GetMapping("/get")
+    @PostMapping("/get")
     public HotelDTO getHotel(@RequestBody HotelDTO hotelDTO) {
         return hotelService.queryHotel(hotelDTO);
     }

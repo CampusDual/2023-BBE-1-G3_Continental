@@ -11,10 +11,8 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    @NotNull
     private String name;
     @Column
-    @NotNull
     private String address;
 
     public int getId() {

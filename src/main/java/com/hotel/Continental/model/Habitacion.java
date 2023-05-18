@@ -1,7 +1,6 @@
-package com.hotel.Continental.Model;
+package com.hotel.Continental.model;
 
-
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name="Habitacion")

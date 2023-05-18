@@ -1,4 +1,4 @@
-package com.hotel.Continental.Model.Dto;
+package com.hotel.Continental.model.dto;
 
 public class HabitacionDto {
 

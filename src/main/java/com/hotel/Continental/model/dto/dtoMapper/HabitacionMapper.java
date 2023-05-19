@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface HabitacionMapper {
     HabitacionMapper INSTANCE = Mappers.getMapper(HabitacionMapper.class);
-    @Mapping(source = "idHotel", target = "Hotel",qualifiedByName = "hotelToIdHotel")
+    @Mapping(source = "hotel", target = "idHotel",qualifiedByName = "hotelToIdHotel")
     HabitacionDto toDto(Habitacion habitacion);
-    @Mapping(source = "Hotel", target = "idHotel",qualifiedByName = "idHotelToHotel")
+    @Mapping(source = "idHotel", target = "hotel",qualifiedByName = "idHotelToHotel")
     Habitacion toEntity(HabitacionDto habitacionDto);
     List<HabitacionDto> toDtoList(List<Habitacion> habitaciones);
     List<Habitacion> toEntityList(List<HabitacionDto> habitacionDtos);

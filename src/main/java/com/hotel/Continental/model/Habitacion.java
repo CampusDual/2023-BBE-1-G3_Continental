@@ -19,10 +19,10 @@ public class Habitacion {
     public void setIdHabitacion(int idHabitacion) {
         this.idHabitacion = idHabitacion;
     }
-    public Hotel getIdHotel() {
+    public Hotel getHotel() {
         return hotel;
     }
-    public void setIdHotel(Hotel hotel) {
+    public void setHotel(Hotel hotel) {
         this.hotel = hotel;
     }
     public int getNumHabitacion() {

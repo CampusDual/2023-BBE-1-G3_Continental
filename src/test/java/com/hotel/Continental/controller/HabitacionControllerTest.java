@@ -34,7 +34,7 @@ public class HabitacionControllerTest {
     @Test
     public void testInsertHabitación() throws Exception {
         HabitacionDto habitacionDto = new HabitacionDto();
-        habitacionDto.setIdHotel(new Hotel(19));
+        habitacionDto.setIdHotel(19);
         habitacionDto.setNumHabitacion(103);
         mockMvc.perform(post("/habitacion/add")
                 .contentType(MediaType.APPLICATION_JSON)

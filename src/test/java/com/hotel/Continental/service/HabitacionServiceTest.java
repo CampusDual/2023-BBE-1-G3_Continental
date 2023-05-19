@@ -32,7 +32,7 @@ public class HabitacionServiceTest {
     @Test
     public void testInsertHotel() {
         HabitacionDto habitacionDto = new HabitacionDto();
-        habitacionDto.setIdHotel(new Hotel(19));
+        habitacionDto.setIdHotel(19);
         habitacionDto.setNumHabitacion(103);
 
         Habitacion habitacion = new Habitacion();

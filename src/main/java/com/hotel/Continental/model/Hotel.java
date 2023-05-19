@@ -14,8 +14,6 @@ public class Hotel {
     private String nombre;
     @Column
     private String direccion;
-    @OneToMany(mappedBy = "hotel")
-    private List<Habitacion> habitaciones;
 
     public int getId() {
         return id;
@@ -43,21 +41,11 @@ public class Hotel {
         return this;
     }
 
-    public List<Habitacion> getHabitaciones() {
-        return habitaciones;
-    }
-
-    public Hotel setHabitaciones(List<Habitacion> habitaciones) {
-        this.habitaciones = habitaciones;
-        return this;
-    }
-
     public Hotel() {
     }
 
-    public Hotel(String nombre, String direccion, List<Habitacion> habitaciones) {
+    public Hotel(String nombre, String direccion) {
         this.nombre = nombre;
         this.direccion = direccion;
-        this.habitaciones = habitaciones;
     }
 }

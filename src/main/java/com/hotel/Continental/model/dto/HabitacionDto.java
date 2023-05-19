@@ -5,7 +5,7 @@ import com.hotel.Continental.model.Hotel;
 public class HabitacionDto {
 
     private int idHabitacion;
-    private Hotel idHotel;
+    private Integer idHotel;
     private Integer numHabitacion;
 
     public int getIdHabitacion() {
@@ -16,11 +16,11 @@ public class HabitacionDto {
         this.idHabitacion = idHabitacion;
     }
 
-    public Hotel getIdHotel() {
+    public Integer getIdHotel() {
         return idHotel;
     }
 
-    public void setIdHotel(Hotel idHotel) {
+    public void setIdHotel(Integer idHotel) {
         this.idHotel = idHotel;
     }
 

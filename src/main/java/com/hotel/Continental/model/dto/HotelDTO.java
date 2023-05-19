@@ -1,23 +1,23 @@
 package com.hotel.Continental.model.dto;
 
 public class HotelDTO {
-    private String name;
-    private String address;
-    public String getName() {
-        return name;
+    private String nombre;
+    private String direccion;
+    public String getNombre() {
+        return nombre;
     }
 
-    public HotelDTO setName(String name) {
-        this.name = name;
+    public HotelDTO setNombre(String nombre) {
+        this.nombre = nombre;
         return this;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public HotelDTO setAddress(String address) {
-        this.address = address;
+    public HotelDTO setDireccion(String direccion) {
+        this.direccion = direccion;
         return this;
     }
 }

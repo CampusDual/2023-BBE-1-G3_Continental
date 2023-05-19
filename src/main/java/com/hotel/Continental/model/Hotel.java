@@ -2,51 +2,50 @@ package com.hotel.Continental.model;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
-@Table(name = "hotels")
+@Table(name = "hoteles")
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private String name;
+    private String nombre;
     @Column
-    private String address;
+    private String direccion;
 
     public int getId() {
         return id;
     }
 
-    public Hotel setId(int id) {
+    public Hotel(int id) {
         this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Hotel setNombre(String name) {
+        this.nombre = name;
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public Hotel setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public Hotel setAddress(String address) {
-        this.address = address;
+    public Hotel setDireccion(String address) {
+        this.direccion = address;
         return this;
     }
 
     public Hotel() {
     }
 
-    public Hotel(String name, String address) {
-        this.name = name;
-        this.address = address;
+    public Hotel(String nombre, String direccion) {
+        this.nombre = nombre;
+        this.direccion = direccion;
     }
 }

@@ -11,6 +11,6 @@ public interface HotelMapper {
     HotelMapper INSTANCE = Mappers.getMapper(HotelMapper.class);
     HotelDTO toDTO(Hotel hotel);
     Hotel toEntity(HotelDTO hotelDto);
-    List<HotelDTO> toDtoList(List<Hotel> hotels);
+    List<HotelDTO> toDtoList(List<Hotel> hoteles);
     List <Hotel> toEntityList(List<HotelDTO> hotelDtos);
 }

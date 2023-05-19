@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,15 +21,15 @@ public class HotelController {
     }
 
     @GetMapping(value = "/getAll")
-    public List<HotelDTO> getAllHotels() {
+    public List<HotelDTO> getAllHoteles() {
         return ihotelService.queryAll();
     }
 
     @PostMapping(value = "/add")
     public int addHotel(@RequestBody HotelDTO hotelDTO) {
-        if (hotelDTO.getName() == null || hotelDTO.getName().isEmpty()) {
+        if (hotelDTO.getNombre() == null || hotelDTO.getNombre().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
-        }else if (hotelDTO.getAddress() == null || hotelDTO.getAddress().isEmpty()) {
+        }else if (hotelDTO.getDireccion() == null || hotelDTO.getDireccion().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address is required");
         }
         return ihotelService.insertHotel(hotelDTO);

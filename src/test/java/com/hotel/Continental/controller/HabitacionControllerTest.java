@@ -55,9 +55,6 @@ public class HabitacionControllerTest {
 
     @Test
     public void testInsertNothing() throws Exception {
-        HabitacionDto habitacionDto = new HabitacionDto();
-        habitacionDto.setIdHotel(null);
-        habitacionDto.setNumHabitacion(null);
         mockMvc.perform(post("/habitacion/add"))
                 .andExpect(status().is(400));
     }

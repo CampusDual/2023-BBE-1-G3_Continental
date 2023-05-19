@@ -3,7 +3,7 @@ package com.hotel.Continental.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="Habitacion")
+@Table(name="habitaciones")
 public class Habitacion {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

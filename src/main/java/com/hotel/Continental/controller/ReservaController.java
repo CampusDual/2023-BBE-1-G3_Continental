@@ -27,15 +27,23 @@ public class ReservaController {
 
     @PostMapping(value = "/add")
     public int addReserva(@RequestBody ReservaDto reservaDto) {
-        if (reservaDto.getIdHotel() == null) {
+        if (reservaDto.getIdHabitacion() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IdHabitacion is required");
         } else if (reservaDto.getFechaInicio() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaInicio is required");
         } else if (reservaDto.getFechaFin() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaFin is required");
         }
-
-
         return reservaService.insertReserva(reservaDto);
+    }
+    @PostMapping(value = "/getHabitacionesLibres")
+    public List<HabitacionDto> getHabitacionesLibres(@RequestBody ReservaDto reservaDto) {
+        if (reservaDto.getFechaInicio() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaInicio is required");
+        } else if (reservaDto.getFechaFin() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaFin is required");
+        }
+        List<HabitacionDto> habitacionesLibres = reservaService.getHabitacionesLibres(reservaDto.getFechaInicio(), reservaDto.getFechaFin());
+        return habitacionesLibres;
     }
 }

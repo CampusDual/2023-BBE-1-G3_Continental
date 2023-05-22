@@ -13,3 +13,11 @@ CREATE TABLE Habitaciones (
   FOREIGN KEY (idHotel) REFERENCES Hoteles(id)
 );
 
+-- Creación de la tabla Reservas
+CREATE TABLE Reservas (
+  idReserva SERIAL PRIMARY KEY,
+  idHabitacion INT NOT NULL,
+  fechaInicio DATE NOT NULL,
+  fechaFin DATE NOT NULL,
+  FOREIGN KEY (idHabitacion) REFERENCES Habitaciones(idHabitacion)
+);

@@ -17,7 +17,7 @@ public interface ReservaMapper {
     ReservaMapper INSTANCE = Mappers.getMapper(ReservaMapper.class);
     @Mapping(source = "habitacion", target = "idHabitacion", qualifiedByName = "habitacionToIdHabitacion")
     ReservaDto toDto(Reserva reserva);
-    @Mapping(source = "idHabitacion", target = "habitacion",qualifiedByName = "idHabitacionToHabitacion")
+    @Mapping(source = "idHabitacion", target = "habitacion",qualifiedByName = "IdHabitacionToHabitacion")
     Reserva toEntity(ReservaDto reservaDto);
     List<ReservaDto> toDtoList(List<Reserva> reservas);
     List<Reserva> toEntityList(List<ReservaDto> reservasdtos);
@@ -28,5 +28,13 @@ public interface ReservaMapper {
     @Named("hotelToIdHotel")
     default int habitacionToidHabitacion(Habitacion habitacion){
         return habitacion.getIdHabitacion();
+    }
+    @Named("IdHabitacionToHabitacion")
+    default Habitacion idHotelToHabitacion(int idHotel){
+        return new Habitacion(idHotel);
+    }
+    @Named("habitacionToIdHabitacion")
+    default int habitacionToidHotel(Habitacion habitacion){
+        return habitacion.getHotel().getId();
     }
 }

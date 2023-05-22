@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,25 +30,17 @@ public class ReservaService implements IReservaService {
         return reserva.getIdReserva();
     }
 
-    //Hay que comparar la fecha de la lista de todas las reservas a la de la reserva nueva
-    // Y optimizarlo
     @Override
     public List<ReservaDto> queryReservas(List<HabitacionDto> habitaciones, ReservaDto reservaDto) {
-        List<Habitacion> habitacionesHotel = HabitacionMapper.INSTANCE.toEntityList(habitaciones);
-        List<ReservaDto> reservasDto = ReservaMapper.INSTANCE.toDtoList(reservaDao.findAll());
-
-        for (Habitacion h : habitacionesHotel) {
-            for (ReservaDto r : reservasDto) {
-
-                if (h.getIdHabitacion() == r.getIdHabitacion()) {
-                    if (reservaDto.getFechaInicio() > r.getFechaInicio()) {
-
-                    }
-                }
-
-            }
-        }
-
         return null;
     }
+
+    @Override
+    public List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin) {
+        List<Habitacion> habitacionesLibres = reservaDao.findHabitacionesLibres(fechaInicio, fechaFin);
+        List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);
+        return habitacionesDTOLibres;
+    }
+
+
 }

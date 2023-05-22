@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.hotel.Continental.model.dao.HabitacionDao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,5 +36,12 @@ public class HabitacionService implements IHabitacionService {
     @Override
     public List<HabitacionDto> findAll() {
         return HabitacionMapper.INSTANCE.toDtoList(habitacionDao.findAll());
+    }
+
+    @Override
+    public List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin) {
+        List<Habitacion> habitacionesLibres = habitacionDao.findHabitacionesLibres(fechaInicio, fechaFin);
+        List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);
+        return habitacionesDTOLibres;
     }
 }

@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface IReservaService {
     int insertReserva(ReservaDto reservaDto);
-    List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin);
+
 
 }

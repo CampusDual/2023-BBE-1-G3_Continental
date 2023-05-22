@@ -2,7 +2,6 @@ package com.hotel.Continental.controller;
 
 import com.hotel.Continental.api.IHabitacionService;
 import com.hotel.Continental.api.IHotelService;
-import com.hotel.Continental.model.Habitacion;
 import com.hotel.Continental.model.Hotel;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.HotelDTO;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Date;
@@ -40,20 +38,25 @@ public class HabitacionControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(habitacionController)
                 .build();
     }
-
     @Test
     public void testInsertHabitación() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setIdHotel(19);
+        habitacionDto.setNumHabitacion(103);
         mockMvc.perform(post("/habitacion/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idHotel\":19,\"numHabitacion\":103}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"idHotel\":19,\"numHabitacion\":103}"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testInsertNull() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setIdHotel(null);
+        habitacionDto.setNumHabitacion(null);
         mockMvc.perform(post("/habitacion/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idHotel\":null,\"numHabitacion\":null}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"idHotel\":null,\"numHabitacion\":null}"))
                 .andExpect(status().is(400));
     }
 
@@ -62,7 +65,6 @@ public class HabitacionControllerTest {
         mockMvc.perform(post("/habitacion/add"))
                 .andExpect(status().is(400));
     }
-
     @Test
     public void testGetHabitacionesLibres() throws Exception {
         //HabitacionDto habitacionDto = new HabitacionDto();
@@ -91,4 +93,3 @@ public class HabitacionControllerTest {
     }
 
 }
-

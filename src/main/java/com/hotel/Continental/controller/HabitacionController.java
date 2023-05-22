@@ -1,6 +1,5 @@
 package com.hotel.Continental.controller;
 
-import com.hotel.Continental.api.IReservaService;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.api.IHabitacionService;
 import com.hotel.Continental.model.dto.ReservaDto;
@@ -18,8 +17,6 @@ import java.util.List;
 @RequestMapping("/habitacion")
 public class HabitacionController {
 
-    @Autowired
-    private IReservaService reservaService;
     @Autowired
     private IHabitacionService habitacionService;
 

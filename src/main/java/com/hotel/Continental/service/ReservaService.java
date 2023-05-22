@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service("ReservaService")
@@ -51,6 +52,8 @@ public class ReservaService implements IReservaService {
                 }
             }
         }
-        return null;
+        Reserva reserva = ReservaMapper.INSTANCE.toEntity(reservaDto);
+        reservaDao.saveAndFlush(reserva);
+        return reserva.getIdReserva();
     }
 }

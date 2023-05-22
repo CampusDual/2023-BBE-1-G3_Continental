@@ -7,6 +7,7 @@ public class ReservaDto {
     private Integer idHotel;
     private Date fechaInicio;
     private Date fechaFin;
+    private String dniCliente;
 
     public Integer getIdHotel() {
         return idHotel;
@@ -37,5 +38,19 @@ public class ReservaDto {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public ReservaDto setIdHabitacion(Integer idHabitacion) {
+        this.idHabitacion = idHabitacion;
+        return this;
+    }
+
+    public String getDniCliente() {
+        return dniCliente;
+    }
+
+    public ReservaDto setDniCliente(String dniCliente) {
+        this.dniCliente = dniCliente;
+        return this;
     }
 }

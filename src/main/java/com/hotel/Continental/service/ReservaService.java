@@ -3,6 +3,7 @@ package com.hotel.Continental.service;
 import com.hotel.Continental.api.IReservaService;
 import com.hotel.Continental.model.Habitacion;
 import com.hotel.Continental.model.Reserva;
+import com.hotel.Continental.model.dao.HabitacionDao;
 import com.hotel.Continental.model.dao.ReservaDao;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.ReservaDto;
@@ -14,13 +15,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("ReservaService")
 @Lazy
 public class ReservaService implements IReservaService {
     @Autowired
     private ReservaDao reservaDao;
+    @Autowired
+    private HabitacionDao habitacionDao;
 
     @Override
     public int insertReserva(ReservaDto reservaDto) {
@@ -36,6 +38,5 @@ public class ReservaService implements IReservaService {
         List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);
         return habitacionesDTOLibres;
     }
-
 
 }

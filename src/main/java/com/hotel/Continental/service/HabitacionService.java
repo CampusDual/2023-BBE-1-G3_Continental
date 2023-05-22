@@ -3,11 +3,11 @@ package com.hotel.Continental.service;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.dtoMapper.HabitacionMapper;
 import com.hotel.Continental.model.Habitacion;
-import com.hotel.Continental.model.dao.HabitacionDao;
 import com.hotel.Continental.api.IHabitacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import com.hotel.Continental.model.dao.HabitacionDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,14 +26,14 @@ public class HabitacionService implements IHabitacionService {
     }
 
     @Override
-    public List<Habitacion> queryHotel(int idHotel) {
-        List<HabitacionDto> lista = queryAll().stream().filter(h -> h.getIdHotel() == idHotel).collect(Collectors.toList());
+    public List<Habitacion> queryHotelHabitacion(int idHotel) {
+        List<HabitacionDto> lista = findAll().stream().filter(h -> h.getIdHotel() == idHotel).collect(Collectors.toList());
         List<Habitacion> listaHabitacion = HabitacionMapper.INSTANCE.toEntityList(lista);
         return listaHabitacion;
     }
 
     @Override
-    public List<HabitacionDto> queryAll() {
+    public List<HabitacionDto> findAll() {
         return HabitacionMapper.INSTANCE.toDtoList(habitacionDao.findAll());
     }
 }

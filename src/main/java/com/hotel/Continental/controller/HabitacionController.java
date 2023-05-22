@@ -26,7 +26,6 @@ public class HabitacionController {
         }
         return habitacionService.insertHabitacion(habitacionDto);
     }
-
 }
 
 

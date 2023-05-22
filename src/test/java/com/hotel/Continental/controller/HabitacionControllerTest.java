@@ -65,6 +65,7 @@ public class HabitacionControllerTest {
 
     @Test
     public void testGetHabitacionesLibres() throws Exception {
+        //HabitacionDto habitacionDto = new HabitacionDto();
         ReservaDto reservaDto = new ReservaDto();
         reservaDto.setFechaInicio(Date.valueOf("2021-06-01"));
         reservaDto.setFechaFin(Date.valueOf("2021-06-02"));

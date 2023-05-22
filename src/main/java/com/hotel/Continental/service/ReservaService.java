@@ -56,4 +56,12 @@ public class ReservaService implements IReservaService {
         reservaDao.saveAndFlush(reserva);
         return reserva.getIdReserva();
     }
+
+
+    @Override
+    public List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin) {
+        List<Habitacion> habitacionesLibres = reservaDao.findHabitacionesLibres(fechaInicio, fechaFin);
+        List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);
+        return habitacionesDTOLibres;
+    }
 }

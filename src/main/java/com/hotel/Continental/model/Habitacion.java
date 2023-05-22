@@ -13,6 +13,14 @@ public class Habitacion {
     private Hotel hotel;
     @Column
     private int numHabitacion;
+
+    public Habitacion(int idHabitacion) {
+        this.idHabitacion = idHabitacion;
+    }
+
+    public Habitacion() {
+    }
+
     public int getIdHabitacion() {
         return idHabitacion;
     }

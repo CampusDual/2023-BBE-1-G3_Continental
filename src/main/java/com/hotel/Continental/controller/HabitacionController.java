@@ -18,7 +18,7 @@ public class HabitacionController {
     private IHabitacionService habitacionService;
 
     @PostMapping(value = "/add")
-    public int addHotel(@RequestBody HabitacionDto habitacionDto) {
+    public int addHabitacion(@RequestBody HabitacionDto habitacionDto) {
         if (habitacionDto.getIdHotel() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IdHotel is required");
         } else if (habitacionDto.getNumHabitacion() == 0) {

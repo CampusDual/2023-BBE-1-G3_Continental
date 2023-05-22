@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service("HabitacionService")
 @Lazy
 public class HabitacionService implements IHabitacionService {
@@ -20,5 +23,17 @@ public class HabitacionService implements IHabitacionService {
         Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
         habitacionDao.saveAndFlush(habitacion);
         return habitacion.getIdHabitacion();
+    }
+
+    @Override
+    public List<Habitacion> queryHotel(int idHotel) {
+        List<HabitacionDto> lista = queryAll().stream().filter(h -> h.getIdHotel() == idHotel).collect(Collectors.toList());
+        List<Habitacion> listaHabitacion = HabitacionMapper.INSTANCE.toEntityList(lista);
+        return listaHabitacion;
+    }
+
+    @Override
+    public List<HabitacionDto> queryAll() {
+        return HabitacionMapper.INSTANCE.toDtoList(habitacionDao.findAll());
     }
 }

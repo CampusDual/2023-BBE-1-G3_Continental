@@ -26,14 +26,9 @@ public class ReservaService implements IReservaService {
     public int insertReserva(ReservaDto reservaDto) {
         Reserva reserva = ReservaMapper.INSTANCE.toEntity(reservaDto);
         reservaDao.saveAndFlush(reserva);
-
         return reserva.getIdReserva();
     }
 
-    @Override
-    public List<ReservaDto> queryReservas(List<HabitacionDto> habitaciones, ReservaDto reservaDto) {
-        return null;
-    }
 
     @Override
     public List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin) {

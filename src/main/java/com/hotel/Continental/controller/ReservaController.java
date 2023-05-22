@@ -34,8 +34,6 @@ public class ReservaController {
         } else if (reservaDto.getFechaFin() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaFin is required");
         }
-
-
         return reservaService.insertReserva(reservaDto);
     }
 }

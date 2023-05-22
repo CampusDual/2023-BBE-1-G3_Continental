@@ -4,15 +4,15 @@ import java.sql.Date;
 
 public class ReservaDto {
     private int idReserva;
-    private Integer idHabitacion;
+    private Integer idHotel;
     private Date fechaInicio;
     private Date fechaFin;
 
-    public Integer getIdHabitacion() {
-        return idHabitacion;
+    public Integer getIdHotel() {
+        return idHotel;
     }
-    public void setIdHabitacion(int idHotel) {
-        this.idHabitacion = idHotel;
+    public void setIdHotel(Integer idHotel) {
+        this.idHotel= idHotel;
     }
 
     public int getIdReserva() {

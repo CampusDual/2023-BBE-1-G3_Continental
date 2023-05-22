@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface IHabitacionService {
     int insertHabitacion(HabitacionDto habitacionDto);
-    public List<Habitacion> queryHotel(int idHotel);
-    public List<HabitacionDto> queryAll();
+    public List<Habitacion> queryHotelHabitacion(int idHotel);
+    public List<HabitacionDto> findAll();
 
 
 

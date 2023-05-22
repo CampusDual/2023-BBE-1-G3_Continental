@@ -1,9 +1,6 @@
 package com.hotel.Continental.model.dto;
 
-import com.hotel.Continental.model.Hotel;
-
 public class HabitacionDto {
-
     private int idHabitacion;
     private Integer idHotel;
     private Integer numHabitacion;

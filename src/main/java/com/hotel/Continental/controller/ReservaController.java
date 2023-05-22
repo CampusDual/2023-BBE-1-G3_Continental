@@ -33,6 +33,8 @@ public class ReservaController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaInicio is required");
         } else if (reservaDto.getFechaFin() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FechaFin is required");
+        }else if (reservaDto.getDniCliente()==null||reservaDto.getDniCliente().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "DniCliente is required");
         }
         return reservaService.insertReserva(reservaDto);
     }

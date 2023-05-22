@@ -16,6 +16,8 @@ public class Reserva {
     private Date fechaInicio;
     @Column
     private Date fechaFin;
+    @Column
+    private String dniCliente;
 
     public int getIdReserva() {
         return idReserva;
@@ -47,5 +49,14 @@ public class Reserva {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public String getDniCliente() {
+        return dniCliente;
+    }
+
+    public Reserva setDniCliente(String dniCliente) {
+        this.dniCliente = dniCliente;
+        return this;
     }
 }

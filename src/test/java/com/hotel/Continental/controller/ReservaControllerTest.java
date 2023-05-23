@@ -16,8 +16,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,5 +75,18 @@ class ReservaControllerTest {
     public void testAddReservaNothing() throws Exception {
         mockMvc.perform(post("/reserva/add"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDeleteReserva() throws Exception {
+        ReservaDto reservaDto = new ReservaDto();
+        reservaDto.setFechaInicio(Date.valueOf("2021-06-01"));
+        reservaDto.setFechaFin(Date.valueOf("2021-06-02"));
+        reservaDto.setIdReserva(2);
+
+        when(reservaService.deleteReserva(reservaDto)).thenReturn(reservaDto.getIdReserva());
+
+        int result = reservaService.deleteReserva(reservaDto);
+        assertEquals(2, result);
     }
 }

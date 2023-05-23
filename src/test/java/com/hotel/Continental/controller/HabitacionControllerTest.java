@@ -89,7 +89,5 @@ public class HabitacionControllerTest {
 
         String resultContent = result.getResponse().getContentAsString();
         assertEquals(habitacionDtoList.size(), 1);
-
     }
-
 }

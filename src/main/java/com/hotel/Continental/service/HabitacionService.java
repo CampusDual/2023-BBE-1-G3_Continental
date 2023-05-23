@@ -1,5 +1,7 @@
 package com.hotel.Continental.service;
 
+import com.hotel.Continental.model.Reserva;
+import com.hotel.Continental.model.dao.ReservaDao;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.dtoMapper.HabitacionMapper;
 import com.hotel.Continental.model.Habitacion;
@@ -19,6 +21,9 @@ public class HabitacionService implements IHabitacionService {
    @Autowired
    private HabitacionDao habitacionDao;
 
+   @Autowired
+   private ReservaDao reservaDao;
+
     @Override
     public int insertHabitacion(HabitacionDto habitacionDto) {
         Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
@@ -36,6 +41,13 @@ public class HabitacionService implements IHabitacionService {
     @Override
     public int deleteHabitacion(HabitacionDto habitacionDto) {
         Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
+
+        List<Reserva> reservas = reservaDao.findAll();
+        for(Reserva reserva : reservas) {
+            if (reserva.getHabitacion().getIdHabitacion() == habitacion.getIdHabitacion())
+                reservaDao.delete(reserva);
+        }
+
         habitacionDao.delete(habitacion);
         return habitacion.getIdHabitacion();
     }

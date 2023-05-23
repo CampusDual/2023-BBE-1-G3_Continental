@@ -9,6 +9,4 @@ import java.util.List;
 
 public interface IReservaService {
     int insertReserva(ReservaDto reservaDto);
-
-
 }

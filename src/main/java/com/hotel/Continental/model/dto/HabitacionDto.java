@@ -21,7 +21,7 @@ public class HabitacionDto {
         this.idHotel = idHotel;
     }
 
-    public int getNumHabitacion() {
+    public Integer getNumHabitacion() {
         return numHabitacion;
     }
 

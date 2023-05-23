@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface IReservaService {
+    int deleteReserva(ReservaDto reservaDto);
+
     int insertReserva(ReservaDto reservaDto);
 
 

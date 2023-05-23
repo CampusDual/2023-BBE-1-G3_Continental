@@ -7,14 +7,13 @@ import com.hotel.Continental.model.dao.HabitacionDao;
 import com.hotel.Continental.model.dao.ReservaDao;
 import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.ReservaDto;
-import com.hotel.Continental.model.dto.dtoMapper.HabitacionMapper;
 import com.hotel.Continental.model.dto.dtoMapper.ReservaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
+import java.util.stream.Stream;
 
 @Service("ReservaService")
 @Lazy
@@ -27,7 +26,11 @@ public class ReservaService implements IReservaService {
     @Override
     public int insertReserva(ReservaDto reservaDto) {
         Reserva reserva = ReservaMapper.INSTANCE.toEntity(reservaDto);
-        reservaDao.saveAndFlush(reserva);
-        return reserva.getIdReserva();
+        Stream<Habitacion> habitacionesLibres = habitacionDao.findHabitacionesLibres(reserva.getFechaInicio(), reserva.getFechaFin()).stream();
+        if (habitacionesLibres.anyMatch(h -> h.getIdHabitacion() == reservaDto.getIdHabitacion())) {
+            reservaDao.saveAndFlush(reserva);
+            return reserva.getIdReserva();
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La habitacion está reservada");
     }
 }

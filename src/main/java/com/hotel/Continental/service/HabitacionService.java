@@ -27,18 +27,6 @@ public class HabitacionService implements IHabitacionService {
     }
 
     @Override
-    public List<Habitacion> queryHotelHabitacion(int idHotel) {
-        List<HabitacionDto> lista = findAll().stream().filter(h -> h.getIdHotel() == idHotel).collect(Collectors.toList());
-        List<Habitacion> listaHabitacion = HabitacionMapper.INSTANCE.toEntityList(lista);
-        return listaHabitacion;
-    }
-
-    @Override
-    public List<HabitacionDto> findAll() {
-        return HabitacionMapper.INSTANCE.toDtoList(habitacionDao.findAll());
-    }
-
-    @Override
     public List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin) {
         List<Habitacion> habitacionesLibres = habitacionDao.findHabitacionesLibres(fechaInicio, fechaFin);
         List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);

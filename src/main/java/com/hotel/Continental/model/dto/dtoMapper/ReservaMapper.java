@@ -21,14 +21,6 @@ public interface ReservaMapper {
     Reserva toEntity(ReservaDto reservaDto);
     List<ReservaDto> toDtoList(List<Reserva> reservas);
     List<Reserva> toEntityList(List<ReservaDto> reservasdtos);
-    @Named("idHabitacionToHabitacion")
-    default Habitacion idHabitacionToHabitacion(int idHabitacion){
-        return new Habitacion(idHabitacion);
-    }
-    @Named("hotelToIdHotel")
-    default int habitacionToidHabitacion(Habitacion habitacion){
-        return habitacion.getIdHabitacion();
-    }
     @Named("IdHabitacionToHabitacion")
     default Habitacion idHotelToHabitacion(int idHotel){
         return new Habitacion(idHotel);

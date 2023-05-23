@@ -22,8 +22,6 @@ import java.util.List;
 public class ReservaController {
     @Autowired
     private IReservaService reservaService;
-    @Autowired
-    private IHabitacionService habitacionService;
 
     @PostMapping(value = "/add")
     public int addReserva(@RequestBody ReservaDto reservaDto) {

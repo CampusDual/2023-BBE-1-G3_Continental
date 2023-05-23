@@ -10,6 +10,7 @@ import java.util.List;
 public interface IHabitacionService {
     int insertHabitacion(HabitacionDto habitacionDto);
     List<HabitacionDto> getHabitacionesLibres(Date fechaInicio, Date fechaFin);
+    int deleteHabitacion(HabitacionDto habitacionDto);
 
 
 

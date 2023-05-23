@@ -32,4 +32,11 @@ public class HabitacionService implements IHabitacionService {
         List<HabitacionDto> habitacionesDTOLibres = HabitacionMapper.INSTANCE.toDtoList(habitacionesLibres);
         return habitacionesDTOLibres;
     }
+
+    @Override
+    public int deleteHabitacion(HabitacionDto habitacionDto) {
+        Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
+        habitacionDao.delete(habitacion);
+        return habitacion.getIdHabitacion();
+    }
 }

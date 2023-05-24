@@ -5,10 +5,7 @@ import com.hotel.Continental.api.IHabitacionService;
 import com.hotel.Continental.model.dto.ReservaDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -39,6 +36,25 @@ public class HabitacionController {
         }
         List<HabitacionDto> habitacionesLibres = habitacionService.getHabitacionesLibres(reservaDto.getFechaInicio(), reservaDto.getFechaFin());
         return habitacionesLibres;
+    }
+
+    @DeleteMapping(value = "/delete")
+    public int deleteHabitacion(@RequestBody HabitacionDto habitacionDto){
+        if (habitacionDto.getIdHabitacion() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IdHabitacion is required");
+        }
+        if(getHabitacionById(habitacionDto.getIdHabitacion()) == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitacion not found");
+        }
+        return habitacionService.deleteHabitacion(habitacionDto);
+    }
+    @GetMapping(value = "/getHabitacionById/{idHabitacion}")
+    public HabitacionDto getHabitacionById(@PathVariable int idHabitacion) {
+        HabitacionDto habitacionDto = habitacionService.getHabitacionById(idHabitacion);
+        if (habitacionDto == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitacion not found");
+        }
+        return habitacionService.getHabitacionById(idHabitacion);
     }
 }
 

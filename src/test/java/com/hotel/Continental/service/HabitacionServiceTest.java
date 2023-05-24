@@ -36,7 +36,7 @@ public class HabitacionServiceTest {
         habitacionDto.setNumHabitacion(103);
 
         Habitacion habitacion = new Habitacion();
-        habitacion.setHotel(new Hotel(19));
+        habitacion.setHotel(new Hotel(1,"Hotel Continental","Calle 123"));
         habitacion.setNumHabitacion(103);
 
         when(habitacionDao.saveAndFlush(any(Habitacion.class))).thenReturn(habitacion);

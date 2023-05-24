@@ -11,6 +11,4 @@ public interface IReservaService {
     int deleteReserva(ReservaDto reservaDto);
 
     int insertReserva(ReservaDto reservaDto);
-
-
 }

@@ -17,9 +17,10 @@ import java.sql.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -122,5 +123,47 @@ public class HabitacionControllerTest {
         mockMvc.perform(get("/habitacion/getHabitacionById"))
                 .andExpect(status().isNotFound());
     }
-
+    @Test
+    public void testEliminarHabitacion() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setIdHabitacion(0);
+        habitacionDto.setIdHotel(19);
+        habitacionDto.setNumHabitacion(103);
+        when(ihabitacionService.getHabitacionById(anyInt())).thenReturn(habitacionDto);
+        when(ihabitacionService.deleteHabitacion(any(HabitacionDto.class))).thenReturn(1);
+        MvcResult mvcResult=mockMvc.perform(delete("/habitacion/delete")
+                        .content("{\"idHabitacion\":1}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andReturn();
+        assertEquals("1", mvcResult.getResponse().getContentAsString());
+    }
+    @Test
+    public void testEliminarHabitacionNoExiste() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setIdHabitacion(0);
+        habitacionDto.setIdHotel(19);
+        habitacionDto.setNumHabitacion(103);
+        when(ihabitacionService.getHabitacionById(anyInt())).thenReturn(null);
+        when(ihabitacionService.deleteHabitacion(any(HabitacionDto.class))).thenReturn(1);
+        MvcResult mvcResult=mockMvc.perform(delete("/habitacion/delete")
+                        .content("{\"idHabitacion\":1}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+    @Test
+    public void testEliminarHabitacionNothing() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setIdHabitacion(0);
+        habitacionDto.setIdHotel(19);
+        habitacionDto.setNumHabitacion(103);
+        when(ihabitacionService.getHabitacionById(anyInt())).thenReturn(null);
+        when(ihabitacionService.deleteHabitacion(any(HabitacionDto.class))).thenReturn(1);
+        MvcResult mvcResult=mockMvc.perform(delete("/habitacion/delete")
+                        .content("")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
 }

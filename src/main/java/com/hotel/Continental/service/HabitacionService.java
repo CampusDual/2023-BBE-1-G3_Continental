@@ -41,13 +41,6 @@ public class HabitacionService implements IHabitacionService {
     @Override
     public int deleteHabitacion(HabitacionDto habitacionDto) {
         Habitacion habitacion = HabitacionMapper.INSTANCE.toEntity(habitacionDto);
-
-        List<Reserva> reservas = reservaDao.findAll();
-        for(Reserva reserva : reservas) {
-            if (reserva.getHabitacion().getIdHabitacion() == habitacion.getIdHabitacion()) {
-                reservaDao.delete(reserva);
-            }
-        }
         habitacionDao.delete(habitacion);
         return habitacion.getIdHabitacion();
     }

@@ -9,23 +9,26 @@ public class HabitacionDto {
         return idHabitacion;
     }
 
-    public void setIdHabitacion(Integer idHabitacion) {
+    public HabitacionDto setIdHabitacion(Integer idHabitacion) {
         this.idHabitacion = idHabitacion;
+        return this;
     }
 
     public Integer getIdHotel() {
         return idHotel;
     }
 
-    public void setIdHotel(Integer idHotel) {
+    public HabitacionDto setIdHotel(Integer idHotel) {
         this.idHotel = idHotel;
+        return this;
     }
 
     public Integer getNumHabitacion() {
         return numHabitacion;
     }
 
-    public void setNumHabitacion(Integer numHabitacion) {
+    public HabitacionDto setNumHabitacion(Integer numHabitacion) {
         this.numHabitacion = numHabitacion;
+        return this;
     }
 }

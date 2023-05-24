@@ -5,7 +5,6 @@ import com.hotel.Continental.model.Habitacion;
 import com.hotel.Continental.model.Reserva;
 import com.hotel.Continental.model.dao.HabitacionDao;
 import com.hotel.Continental.model.dao.ReservaDao;
-import com.hotel.Continental.model.dto.HabitacionDto;
 import com.hotel.Continental.model.dto.ReservaDto;
 import com.hotel.Continental.model.dto.dtoMapper.HabitacionMapper;
 import com.hotel.Continental.model.dto.dtoMapper.ReservaMapper;
@@ -25,6 +24,13 @@ public class ReservaService implements IReservaService {
     private ReservaDao reservaDao;
     @Autowired
     private HabitacionDao habitacionDao;
+
+    @Override
+    public int deleteReserva(ReservaDto reservaDto) {
+        Reserva reserva = ReservaMapper.INSTANCE.toEntity(reservaDto);
+        reservaDao.delete(reserva);
+        return reserva.getIdReserva();
+    }
 
     @Override
     public int insertReserva(ReservaDto reservaDto) {

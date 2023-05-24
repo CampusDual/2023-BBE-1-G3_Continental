@@ -9,10 +9,7 @@ import com.hotel.Continental.model.dto.dtoMapper.HabitacionMapper;
 import com.hotel.Continental.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -37,4 +34,8 @@ public class ReservaController {
         return reservaService.insertReserva(reservaDto);
     }
 
+    @DeleteMapping(value = "/delete")
+    public int deleteProduct(@RequestBody ReservaDto reservaDto) {
+        return reservaService.deleteReserva(reservaDto);
+    }
 }

@@ -5,30 +5,40 @@ public class HabitacionDto {
     private Integer idHotel;
     private Integer numHabitacion;
 
+    public HabitacionDto() {
+    }
+
+    public HabitacionDto(Integer idHabitacion) {
+        this.idHabitacion = idHabitacion;
+    }
+
+    public HabitacionDto(Integer idHabitacion, Integer idHotel, Integer numHabitacion) {
+        this.idHabitacion = idHabitacion;
+        this.idHotel = idHotel;
+        this.numHabitacion = numHabitacion;
+    }
+
     public Integer getIdHabitacion() {
         return idHabitacion;
     }
 
-    public HabitacionDto setIdHabitacion(Integer idHabitacion) {
+    public void setIdHabitacion(Integer idHabitacion) {
         this.idHabitacion = idHabitacion;
-        return this;
     }
 
     public Integer getIdHotel() {
         return idHotel;
     }
 
-    public HabitacionDto setIdHotel(Integer idHotel) {
+    public void setIdHotel(Integer idHotel) {
         this.idHotel = idHotel;
-        return this;
     }
 
     public Integer getNumHabitacion() {
         return numHabitacion;
     }
 
-    public HabitacionDto setNumHabitacion(Integer numHabitacion) {
+    public void setNumHabitacion(Integer numHabitacion) {
         this.numHabitacion = numHabitacion;
-        return this;
     }
 }

@@ -9,48 +9,54 @@ public class ReservaDto {
     private Date fechaFin;
     private String dniCliente;
 
+    public ReservaDto() {
+    }
+
+    public ReservaDto(int idReserva, Integer idHabitacion, Date fechaInicio, Date fechaFin, String dniCliente) {
+        this.idReserva = idReserva;
+        this.idHabitacion = idHabitacion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.dniCliente = dniCliente;
+    }
+
     public int getIdReserva() {
         return idReserva;
     }
 
-    public ReservaDto setIdReserva(int idReserva) {
+    public void setIdReserva(int idReserva) {
         this.idReserva = idReserva;
-        return this;
     }
 
     public Integer getIdHabitacion() {
         return idHabitacion;
     }
 
-    public ReservaDto setIdHabitacion(Integer idHabitacion) {
+    public void setIdHabitacion(Integer idHabitacion) {
         this.idHabitacion = idHabitacion;
-        return this;
     }
 
     public Date getFechaInicio() {
         return fechaInicio;
     }
 
-    public ReservaDto setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
-        return this;
     }
 
     public Date getFechaFin() {
         return fechaFin;
     }
 
-    public ReservaDto setFechaFin(Date fechaFin) {
+    public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
-        return this;
     }
 
     public String getDniCliente() {
         return dniCliente;
     }
 
-    public ReservaDto setDniCliente(String dniCliente) {
+    public void setDniCliente(String dniCliente) {
         this.dniCliente = dniCliente;
-        return this;
     }
 }

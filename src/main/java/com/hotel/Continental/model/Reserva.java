@@ -19,6 +19,17 @@ public class Reserva {
     @Column
     private String dniCliente;
 
+    public Reserva() {
+    }
+
+    public Reserva(int idReserva, Habitacion habitacion, Date fechaInicio, Date fechaFin, String dniCliente) {
+        this.idReserva = idReserva;
+        this.habitacion = habitacion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.dniCliente = dniCliente;
+    }
+
     public int getIdReserva() {
         return idReserva;
     }
@@ -55,8 +66,7 @@ public class Reserva {
         return dniCliente;
     }
 
-    public Reserva setDniCliente(String dniCliente) {
+    public void setDniCliente(String dniCliente) {
         this.dniCliente = dniCliente;
-        return this;
     }
 }

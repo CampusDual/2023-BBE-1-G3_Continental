@@ -14,37 +14,34 @@ public class Habitacion {
     @Column
     private int numHabitacion;
 
-    public Habitacion(int idHabitacion) {
-        this.idHabitacion = idHabitacion;
+    public Habitacion() {
     }
 
-    public Habitacion() {
+    public Habitacion(int idHabitacion) {
+        this.idHabitacion = idHabitacion;
     }
 
     public int getIdHabitacion() {
         return idHabitacion;
     }
 
-    public Habitacion setIdHabitacion(int idHabitacion) {
+    public void setIdHabitacion(int idHabitacion) {
         this.idHabitacion = idHabitacion;
-        return this;
     }
 
     public Hotel getHotel() {
         return hotel;
     }
 
-    public Habitacion setHotel(Hotel hotel) {
+    public void setHotel(Hotel hotel) {
         this.hotel = hotel;
-        return this;
     }
 
     public int getNumHabitacion() {
         return numHabitacion;
     }
 
-    public Habitacion setNumHabitacion(int numHabitacion) {
+    public void setNumHabitacion(int numHabitacion) {
         this.numHabitacion = numHabitacion;
-        return this;
     }
 }

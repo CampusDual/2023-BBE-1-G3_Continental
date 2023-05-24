@@ -15,11 +15,24 @@ public class Hotel {
     @Column
     private String direccion;
 
+    public Hotel() {
+    }
+
+    public Hotel(int id) {
+        this.id = id;
+    }
+
+    public Hotel(int id, String nombre, String direccion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.direccion = direccion;
+    }
+
     public int getId() {
         return id;
     }
 
-    public Hotel(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -27,25 +40,15 @@ public class Hotel {
         return nombre;
     }
 
-    public Hotel setNombre(String name) {
-        this.nombre = name;
-        return this;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public Hotel setDireccion(String address) {
-        this.direccion = address;
-        return this;
-    }
-
-    public Hotel() {
-    }
-
-    public Hotel(String nombre, String direccion) {
-        this.nombre = nombre;
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 }

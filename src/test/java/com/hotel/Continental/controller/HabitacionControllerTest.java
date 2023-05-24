@@ -91,7 +91,10 @@ public class HabitacionControllerTest {
 
     @Test
     public void testGetHabitacionIDExiste() throws Exception {
-        HabitacionDto habitacionDto = new HabitacionDto().setNumHabitacion(103).setIdHabitacion(1).setIdHotel(19);
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setNumHabitacion(103);
+        habitacionDto.setIdHabitacion(1);
+        habitacionDto.setIdHotel(19);
         when(ihabitacionService.getHabitacionById(1)).thenReturn(habitacionDto);
         HabitacionDto habitacionDto1 = ihabitacionService.getHabitacionById(1);
         MvcResult result = mockMvc.perform(get("/habitacion/getHabitacionById/1"))

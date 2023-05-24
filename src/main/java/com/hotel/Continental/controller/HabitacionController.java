@@ -40,6 +40,12 @@ public class HabitacionController {
 
     @DeleteMapping(value = "/delete")
     public int deleteHabitacion(@RequestBody HabitacionDto habitacionDto){
+        if (habitacionDto.getIdHabitacion() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IdHabitacion is required");
+        }
+        if(getHabitacionById(habitacionDto.getIdHabitacion()) == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitacion not found");
+        }
         return habitacionService.deleteHabitacion(habitacionDto);
     }
     @GetMapping(value = "/getHabitacionById/{idHabitacion}")

@@ -48,7 +48,6 @@ public class HabitacionService implements IHabitacionService {
                 reservaDao.delete(reserva);
             }
         }
-
         habitacionDao.delete(habitacion);
         return habitacion.getIdHabitacion();
     }

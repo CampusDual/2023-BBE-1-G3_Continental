@@ -5,6 +5,19 @@ public class HabitacionDto {
     private Integer idHotel;
     private Integer numHabitacion;
 
+    public HabitacionDto() {
+    }
+
+    public HabitacionDto(Integer idHabitacion) {
+        this.idHabitacion = idHabitacion;
+    }
+
+    public HabitacionDto(Integer idHabitacion, Integer idHotel, Integer numHabitacion) {
+        this.idHabitacion = idHabitacion;
+        this.idHotel = idHotel;
+        this.numHabitacion = numHabitacion;
+    }
+
     public Integer getIdHabitacion() {
         return idHabitacion;
     }

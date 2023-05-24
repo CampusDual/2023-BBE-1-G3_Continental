@@ -1,10 +1,7 @@
 package com.hotel.Continental.controller;
 
 import com.hotel.Continental.api.IHabitacionService;
-import com.hotel.Continental.api.IHotelService;
-import com.hotel.Continental.model.Hotel;
 import com.hotel.Continental.model.dto.HabitacionDto;
-import com.hotel.Continental.model.dto.HotelDTO;
 import com.hotel.Continental.model.dto.ReservaDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,9 +63,9 @@ public class HabitacionControllerTest {
         mockMvc.perform(post("/habitacion/add"))
                 .andExpect(status().is(400));
     }
+
     @Test
     public void testGetHabitacionesLibres() throws Exception {
-        //HabitacionDto habitacionDto = new HabitacionDto();
         ReservaDto reservaDto = new ReservaDto();
         reservaDto.setFechaInicio(Date.valueOf("2021-06-01"));
         reservaDto.setFechaFin(Date.valueOf("2021-06-02"));
@@ -89,7 +87,40 @@ public class HabitacionControllerTest {
 
         String resultContent = result.getResponse().getContentAsString();
         assertEquals(habitacionDtoList.size(), 1);
+    }
 
+    @Test
+    public void testGetHabitacionIDExiste() throws Exception {
+        HabitacionDto habitacionDto = new HabitacionDto();
+        habitacionDto.setNumHabitacion(103);
+        habitacionDto.setIdHabitacion(1);
+        habitacionDto.setIdHotel(19);
+        when(ihabitacionService.getHabitacionById(1)).thenReturn(habitacionDto);
+        HabitacionDto habitacionDto1 = ihabitacionService.getHabitacionById(1);
+        MvcResult result = mockMvc.perform(get("/habitacion/getHabitacionById/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String resultContent = result.getResponse().getContentAsString();
+        assertEquals(habitacionDto.getIdHotel(), habitacionDto1.getIdHotel());
+        assertEquals(habitacionDto.getNumHabitacion(), habitacionDto1.getNumHabitacion());
+        assertEquals(habitacionDto.getIdHabitacion(), habitacionDto1.getIdHabitacion());
+        assertEquals(resultContent, "{\"idHabitacion\":1,\"idHotel\":19,\"numHabitacion\":103}");
+    }
+
+    @Test
+    public void testGetHabitacionIDNoExiste() throws Exception {
+        when(ihabitacionService.getHabitacionById(1)).thenReturn(null);
+        HabitacionDto habitacionDto1 = ihabitacionService.getHabitacionById(2);
+        MvcResult result = mockMvc.perform(get("/habitacion/getHabitacionById/2"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        assertEquals(null, habitacionDto1);
+    }
+
+    @Test
+    public void testGetHabitacionNothing() throws Exception {
+        mockMvc.perform(get("/habitacion/getHabitacionById"))
+                .andExpect(status().isNotFound());
     }
 
 }

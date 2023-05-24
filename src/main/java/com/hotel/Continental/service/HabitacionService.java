@@ -44,11 +44,18 @@ public class HabitacionService implements IHabitacionService {
 
         List<Reserva> reservas = reservaDao.findAll();
         for(Reserva reserva : reservas) {
-            if (reserva.getHabitacion().getIdHabitacion() == habitacion.getIdHabitacion())
+            if (reserva.getHabitacion().getIdHabitacion() == habitacion.getIdHabitacion()) {
                 reservaDao.delete(reserva);
+            }
         }
-
         habitacionDao.delete(habitacion);
         return habitacion.getIdHabitacion();
+    }
+
+    @Override
+    public HabitacionDto getHabitacionById(int idHabitacion) {
+        Habitacion habitacion = habitacionDao.findById(idHabitacion).orElse(null);
+        HabitacionDto habitacionDto = HabitacionMapper.INSTANCE.toDto(habitacion);
+        return habitacionDto;
     }
 }

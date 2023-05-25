@@ -21,13 +21,13 @@ ontimize:
             - DELETE
    jdbc:
       name-convention: upper
-      sqlhandler: hsqldb
+      sqlhandler: postgresql
       sql-condition-processor:
          uppper-string: true
          upper-like: true
    security:
       mode: default
-      ignore-paths: /app/**
+      ignore-paths: /*/**
       role-information-service:
          role-repository: UserRoleDao
          role-name-column: ROLENAME
@@ -54,7 +54,7 @@ ontimize:
          role-login-column: USER_
          role-name-column: ROLENAME
 server:
-   port: 33333
+   port: 30030
    tomcat:
       uri-encoding: UTF-8
    compression:
@@ -62,10 +62,10 @@ server:
       mime-types: application/json, application/xml
 spring:
    datasource:
-      driver-class-name: org.hsqldb.jdbcDriver
-      jdbc-url: jdbc:hsqldb:hsql://localhost:9013/templateDB
-      username: SA
-      password:
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: jdbc:postgresql://45.84.210.174:65432/2023-BBE-1-G3
+      username: Backend_2023_G3
+      password: 1qaz2wsx
       initial-size: 10
       test-on-borrow: true
    main:

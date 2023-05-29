@@ -9,7 +9,20 @@
         <Column>idhabitacion</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>IDHABITACION</Column>
+        <Column>idhabitacion</Column>
     </UpdateKeys>
     <GeneratedKey>idhabitacion</GeneratedKey>
+    <Queries>
+        <Query id="booksBetweenDates">
+            <Sentence>
+                <![CDATA[
+          SELECT
+            #COLUMNS#
+          FROM
+             ${mainschema}.reservas
+          #WHERE#
+        ]]>
+            </Sentence>
+        </Query>
+    </Queries>
 </JdbcEntitySetup>

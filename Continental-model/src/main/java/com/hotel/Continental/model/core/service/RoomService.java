@@ -36,7 +36,7 @@ public class RoomService implements IRoomService {
 
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         Map<Object, Object> attrMap = new HashMap<>();
-        attrMap.put("hotel_down_date", new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        attrMap.put("roomdowndate", new Timestamp(Calendar.getInstance().getTimeInMillis()));
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
     }
 }

@@ -16,4 +16,5 @@ public class BookDao extends OntimizeJdbcDaoSupport {
     public static final String STARTDATE = "fechainicio";
     public static final String ENDDATE = "fechafin";
     public static final String CLIENT = "idClient";
+    public static final String QUERY_BOOKED_ROOMS = "current_books";
 }

@@ -15,6 +15,6 @@ public class RoomDao extends OntimizeJdbcDaoSupport {
     public static final String IDHOTEL = "idhotel";
     public static final String ROOMNUMBER = "numhabitacion";
     public static final String ROOMDOWNDATE = "roomdowndate";
-    public static final String QUERY_FREE_ROOMS = "booksBetweenDates";
+
 }
 

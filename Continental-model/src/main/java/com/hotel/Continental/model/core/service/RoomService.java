@@ -14,7 +14,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.sql.Date;
 
 @Lazy
 @Service("RoomService")
@@ -46,14 +49,30 @@ public class RoomService implements IRoomService {
         List<String> columnsRooms = new ArrayList<>();
         columnsRooms.add(RoomDao.IDHABITACION);
 
-        Calendar cal = Calendar.getInstance();
-      //  cal.set(year, 0, 1);
-        Date startDate = cal.getTime();
-       // cal.set(year + 1, 0, 1);
+        String startDateString = keyMap.get("FECHAINICIO").toString();
+        String endDateString = keyMap.get("FECHAFIN").toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
+        java.util.Date startdate = null;
+        java.util.Date endDate = null;
 
-        //RoomsId son los id de las free rooms
-        EntityResult roomsId = this.daoHelper.query(this.roomDao, keyMap, columnsRooms, RoomDao.QUERY_FREE_ROOMS);
+        try {
+            startdate = formatter.parse(startDateString);
+            endDate = formatter.parse(endDateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Date sqlStartDate = new Date(startdate.getTime());
+        Date sqlEndDate = new Date(endDate.getTime());
+
+        //Filter es un mapa para organizar el where de habitaciones ocupadas
+        Map<String, Date> filter = new HashMap<>();
+        filter.put("FECHAINICIO", sqlStartDate);
+        filter.put("FECHAFIN", sqlEndDate);
+
+        //RoomsId son los id de las rooms ocupadas
+        EntityResult roomsId = this.daoHelper.query(this.roomDao, filter, columnsRooms, RoomDao.QUERY_FREE_ROOMS);
         List<Integer> ids = (List<Integer>) roomsId.get(RoomDao.IDHABITACION);
 
         //idRoomsToExclude son los valores a usar en el NOT IN

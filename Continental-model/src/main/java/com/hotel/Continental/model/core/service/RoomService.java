@@ -41,17 +41,27 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList)
-            throws OntimizeJEERuntimeException {
+    public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
+        //ColumnsRooms es una lista de columnas
         List<String> columnsRooms = new ArrayList<>();
         columnsRooms.add(RoomDao.IDHABITACION);
+
+        Calendar cal = Calendar.getInstance();
+      //  cal.set(year, 0, 1);
+        Date startDate = cal.getTime();
+       // cal.set(year + 1, 0, 1);
+
+
+        //RoomsId son los id de las free rooms
         EntityResult roomsId = this.daoHelper.query(this.roomDao, keyMap, columnsRooms, RoomDao.QUERY_FREE_ROOMS);
         List<Integer> ids = (List<Integer>) roomsId.get(RoomDao.IDHABITACION);
+
+        //idRoomsToExclude son los valores a usar en el NOT IN
         Map<String, Object> idRoomsToExclude = new HashMap<>();
-        BasicExpression bexp1 = new BasicExpression(new SQLStatementBuilder.BasicField(RoomDao.IDHABITACION), SQLStatementBuilder.BasicOperator.NOT_IN_OP, idRoomsToExclude);
+        BasicExpression bexp1 = new BasicExpression(new SQLStatementBuilder.BasicField(RoomDao.IDHABITACION), SQLStatementBuilder.BasicOperator.NOT_IN_OP, ids);
         idRoomsToExclude.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp1);
         EntityResult rooms = this.roomQuery(idRoomsToExclude, attrList);
-        return roomsId;
+        return rooms;
     }
 
 }

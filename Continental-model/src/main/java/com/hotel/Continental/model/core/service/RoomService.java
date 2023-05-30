@@ -46,44 +46,7 @@ public class RoomService implements IRoomService {
 
     @Override
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
-//        //ColumnsRooms es una lista de columnas
-//        List<String> columnsRooms = new ArrayList<>();
-//        columnsRooms.add(RoomDao.IDHABITACION);
-//
-//        String startDateString = keyMap.get("FECHAINICIO").toString();
-//        String endDateString = keyMap.get("FECHAFIN").toString();
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//
-//        java.util.Date startdate = null;
-//        java.util.Date endDate = null;
-//
-//        try {
-//            startdate = formatter.parse(startDateString);
-//            endDate = formatter.parse(endDateString);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Date sqlStartDate = new Date(startdate.getTime());
-//        Date sqlEndDate = new Date(endDate.getTime());
-////        //Necesito que la fecha de inicio no este entre la fecha fin y la fecha inicio de la reserva
-////        BasicExpression subquery = new BasicExpression(new SQLStatementBuilder.BasicField(BookDao.STARTDATE), SQLStatementBuilder.BasicOperator.NOT_IN_OP, Arrays.asList(sqlStartDate, sqlEndDate));
-////        //Necesito que la fecha de fin no este entre la fecha fin y la fecha inicio de la reserva
-////        BasicExpression subquery2 = new BasicExpression(new SQLStatementBuilder.BasicField(BookDao.ENDDATE), SQLStatementBuilder.BasicOperator.NOT_IN_OP, Arrays.asList(sqlStartDate, sqlEndDate));
-////        //Ahora junto las dos condiciones con un AND
-////        BasicExpression bexp = new BasicExpression(subquery, SQLStatementBuilder.BasicOperator.AND_OP, subquery2);
-////        Map<String, Object> filter = new HashMap<>();
-////        filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
-//
-//        //RoomsId son los id de las rooms ocupadas
-//        EntityResult roomsId = this.daoHelper.query(this.roomDao, filter, columnsRooms, RoomDao.QUERY_FREE_ROOMS);
-//        List<Integer> ids = (List<Integer>) roomsId.get(RoomDao.IDHABITACION);
-//        //idRoomsToExclude son los valores a usar en el NOT IN
-//        Map<String, Object> idRoomsToExclude = new HashMap<>();
-//        BasicExpression bexp1 = new BasicExpression(new SQLStatementBuilder.BasicField(RoomDao.IDHABITACION), SQLStatementBuilder.BasicOperator.IN_OP, ids);
-//        idRoomsToExclude.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp1);
-//        EntityResult rooms = this.roomQuery(idRoomsToExclude, attrList);
-//        return rooms;
+
 
         String initialDateString = keyMap.remove("INITIALDATE").toString();
         String finalDateString = keyMap.remove("FINALDATE").toString();
@@ -102,15 +65,15 @@ public class RoomService implements IRoomService {
         BasicExpression bexp2=new BasicExpression(endDateField, BasicOperator.MORE_EQUAL_OP, finalDate);//and r.fechaFin >= ? 2)
         BasicExpression bexp3 = new BasicExpression(startDateField, BasicOperator.MORE_EQUAL_OP, initialDate);
         BasicExpression bexp4 = new BasicExpression(startDateField, BasicOperator.LESS_EQUAL_OP, finalDate);
-        BasicExpression bexp3_4=new BasicExpression(bexp3, BasicOperator.AND_OP, bexp4);//or r.fechaInicio between ? 1 and ? 2
+        BasicExpression bexp3and4=new BasicExpression(bexp3, BasicOperator.AND_OP, bexp4);//or r.fechaInicio between ? 1 and ? 2
 
         BasicExpression bexp5 = new BasicExpression(endDateField, BasicOperator.MORE_EQUAL_OP, initialDate);
         BasicExpression bexp6 = new BasicExpression(endDateField, BasicOperator.LESS_EQUAL_OP, initialDate);
-        BasicExpression bexp5_6=new BasicExpression(bexp5, BasicOperator.AND_OP, bexp6);//or r.fechaFin between ? 1 and ? 2)")
+        BasicExpression bexp5and6=new BasicExpression(bexp5, BasicOperator.AND_OP, bexp6);//or r.fechaFin between ? 1 and ? 2)")
 
-        BasicExpression bexp1_2=new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);
-        BasicExpression bexp3_4_5_6=new BasicExpression(bexp3_4, BasicOperator.OR_OP, bexp5_6);
-        BasicExpression bexp=new BasicExpression(bexp1_2, BasicOperator.OR_OP, bexp3_4_5_6);
+        BasicExpression bexp1and2=new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);
+        BasicExpression bexp3to6=new BasicExpression(bexp3and4, BasicOperator.OR_OP, bexp5and6);
+        BasicExpression bexp=new BasicExpression(bexp1and2, BasicOperator.OR_OP, bexp3to6);
 
         Map<String, Object> filter = new HashMap<>();
         filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
@@ -121,8 +84,7 @@ public class RoomService implements IRoomService {
         Map<String,Object> filter2= new HashMap<>();
         BasicExpression bexpByIDS =new BasicExpression(new BasicField(RoomDao.IDHABITACION),BasicOperator.NOT_IN_OP,bookedRooms.get(BookDao.ROOMID));
         filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexpByIDS);
-        EntityResult avaliableRooms=this.daoHelper.query(this.roomDao, keyMap, attrList);
-        return  avaliableRooms;
+        return this.daoHelper.query(this.roomDao, filter2, attrList);
     }
 
 }

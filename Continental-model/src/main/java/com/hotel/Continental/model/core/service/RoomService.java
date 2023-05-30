@@ -114,9 +114,15 @@ public class RoomService implements IRoomService {
 
         Map<String, Object> filter = new HashMap<>();
         filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
-        EntityResult bookedRooms=this.daoHelper.query(this.bookDao, filter, attrList, BookDao.QUERY_BOOKED_ROOMS);
+        List<String> attrIdsBookedRooms=new ArrayList<>();
+        attrIdsBookedRooms.add(BookDao.ROOMID);
+        EntityResult bookedRooms=this.daoHelper.query(this.bookDao, filter, attrIdsBookedRooms, BookDao.QUERY_BOOKED_ROOMS);
 
-        return  bookedRooms;
+        Map<String,Object> filter2= new HashMap<>();
+        BasicExpression bexpByIDS =new BasicExpression(new BasicField(RoomDao.IDHABITACION),BasicOperator.NOT_IN_OP,bookedRooms.get(BookDao.ROOMID));
+        filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexpByIDS);
+        EntityResult avaliableRooms=this.daoHelper.query(this.roomDao, keyMap, attrList);
+        return  avaliableRooms;
     }
 
 }

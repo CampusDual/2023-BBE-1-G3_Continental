@@ -78,6 +78,13 @@ public class RoomService implements IRoomService {
         BasicExpression bexp3to6 = new BasicExpression(bexp3and4, BasicOperator.OR_OP, bexp5and6);
         BasicExpression bexp = new BasicExpression(bexp1and2, BasicOperator.OR_OP, bexp3to6);
 
+        if(keyMap.containsKey(BookDao.ROOMID)){//Si se incluye el id de una habitación en la peticion
+            //Si se incluye el id de una habitación, se obtiene si está reservada para esas fechas
+            //añade al filtro el id de la habitación
+            BasicExpression bexp7 = new BasicExpression(new BasicField(BookDao.ROOMID), BasicOperator.EQUAL_OP, keyMap.get(BookDao.ROOMID));
+            bexp = new BasicExpression(bexp, BasicOperator.AND_OP, bexp7);
+        }
+
         Map<String, Object> filter = new HashMap<>();
         filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
         List<String> attrIdsBookedRooms = new ArrayList<>();

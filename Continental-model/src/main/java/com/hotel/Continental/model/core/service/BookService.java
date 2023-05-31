@@ -53,6 +53,9 @@ public class BookService implements IBookService {
         Map<String, Object> roomAttrMap = new HashMap<>();
         roomAttrMap.put("initialdate", initialDateString);
         roomAttrMap.put("finaldate", finalDateString);
+        if(attrMap.get(BookDao.ROOMID) != null){
+            roomAttrMap.put(BookDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
+        }
         EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
         //Si hay habitaciones libres se busca si esa habitacion esta libre en esas fechas
         //Si esta libre se inserta

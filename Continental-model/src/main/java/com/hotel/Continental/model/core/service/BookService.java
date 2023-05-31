@@ -26,7 +26,7 @@ public class BookService implements IBookService {
     private DefaultOntimizeDaoHelper daoHelper;
 
     @Override
-    public EntityResult bookQuery(Map<?,?> keyMap, List<?> attrList) {
+    public EntityResult bookQuery(Map<?, ?> keyMap, List<?> attrList) {
         return this.daoHelper.query(this.bookDao, keyMap, attrList);
     }
 
@@ -47,28 +47,31 @@ public class BookService implements IBookService {
         //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
         //Si esta libre se inserta
         //Si no esta libre se devuelve un error
-        List<String> roomKeyMap=new ArrayList<>();
+        List<String> roomKeyMap = new ArrayList<>();
         roomKeyMap.add(RoomDao.IDHABITACION);
 
-        Map<String,Object> roomAttrMap=new HashMap<>();
-        roomAttrMap.put(RoomDao.IDHABITACION,attrMap.get(BookDao.ROOMID));
-        roomAttrMap.put("initialdate",initialDateString);
-        roomAttrMap.put("finaldate",finalDateString);
+        Map<String, Object> roomAttrMap = new HashMap<>();
+        roomAttrMap.put("initialdate", initialDateString);
+        roomAttrMap.put("finaldate", finalDateString);
+        EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
+        //Si hay habitaciones libres se busca si esa habitacion esta libre en esas fechas
+        //Si esta libre se inserta
+        //Si no esta libre se devuelve un error
+        if (habitacionesLibres.calculateRecordNumber() > 0) {
+           //Buscamos si la habitacion esta libre en esas fechas
+            Map<String, Object> room = habitacionesLibres.getRecordValues(0);
+            attrMap.put(BookDao.ROOMID, room.get(RoomDao.IDHABITACION));
+            return this.daoHelper.insert(this.bookDao, attrMap);
+        }
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+        er.setMessage("La habitacion no esta libre en esas fechas");
+        return er;
 
-        EntityResult habitacionesLibres=roomService.freeRoomsQuery(roomAttrMap,roomKeyMap);
-        if(habitacionesLibres.calculateRecordNumber()>=0){
-            return this.daoHelper.insert(bookDao, attrMap);
-        }
-        else{
-            EntityResult er =new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("La habitacion no esta libre en esas fechas");
-            return er;
-        }
     }
 
     public EntityResult bookDelete(Map<?, ?> keyMap) {
-        return this.daoHelper.delete(this.bookDao,keyMap);
+        return this.daoHelper.delete(this.bookDao, keyMap);
     }
 
     @Override

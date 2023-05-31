@@ -83,13 +83,11 @@ public class RoomService implements IRoomService {
         List<String> attrIdsBookedRooms = new ArrayList<>();
         attrIdsBookedRooms.add(BookDao.ROOMID);
         EntityResult bookedRooms = this.daoHelper.query(this.bookDao, filter, attrIdsBookedRooms, BookDao.QUERY_BOOKED_ROOMS);
+        //Si no hay habitaciones reservadas para esas fechas, se obtienen todas las habitaciones
         if (bookedRooms.get(BookDao.ROOMID) == null) {
-            EntityResult freeRooms = new EntityResultMapImpl();
-            freeRooms.put("data", new ArrayList<>());
-            freeRooms.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            return freeRooms;
+            return this.daoHelper.query(this.roomDao, keyMap, attrList);
         }
-        //Si hay habitaciones reservadas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
+        //Si hay habitaciones reservadas para esas fechas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
         Map<String, Object> filter2 = new HashMap<>();
         BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookDao.ROOMID));
         filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);

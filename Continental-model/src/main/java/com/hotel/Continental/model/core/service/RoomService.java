@@ -40,16 +40,16 @@ public class RoomService implements IRoomService {
 
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         Map<Object, Object> attrMap = new HashMap<>();
-        attrMap.put("roomdowndate", new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        attrMap.put(RoomDao.ROOMDOWNDATE, new Timestamp(System.currentTimeMillis()));
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
     }
-
+    public  EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
+        return this.daoHelper.update(this.roomDao, attrMap, keyMap);
+    }
     @Override
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
-
-
-        String initialDateString = keyMap.remove("INITIALDATE").toString();
-        String finalDateString = keyMap.remove("FINALDATE").toString();
+        String initialDateString = keyMap.remove("initialdate").toString();
+        String finalDateString = keyMap.remove("finaldate").toString();
         Date initialDate = null;
         Date finalDate = null;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

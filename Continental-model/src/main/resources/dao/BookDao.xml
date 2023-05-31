@@ -6,10 +6,10 @@
         catalog="" schema="${mainschema}" table="reservas"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>IDRESERVA</Column>
+        <Column>idreserva</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>IDRESERVA</Column>
+        <Column>idreserva</Column>
     </UpdateKeys>
     <GeneratedKey>idreserva</GeneratedKey>
     <Queries>

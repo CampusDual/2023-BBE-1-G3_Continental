@@ -11,4 +11,5 @@ public interface IRoomService {
     public EntityResult roomInsert(Map<?, ?> attrMap);
     public EntityResult roomDelete(Map<?, ?> keyMap);
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException;
+    public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap);
 }

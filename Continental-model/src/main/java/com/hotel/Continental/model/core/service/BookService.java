@@ -2,7 +2,9 @@ package com.hotel.Continental.model.core.service;
 
 import com.hotel.Continental.api.core.service.IBookService;
 import com.hotel.Continental.model.core.dao.BookDao;
+import com.hotel.Continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
+import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -18,7 +20,8 @@ import java.util.*;
 public class BookService implements IBookService {
     @Autowired
     private BookDao bookDao;
-
+    @Autowired
+    private RoomService roomService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
@@ -41,7 +44,27 @@ public class BookService implements IBookService {
         }
         attrMap.put(BookDao.STARTDATE, initialDate);
         attrMap.put(BookDao.ENDDATE, finalDate);
-        return this.daoHelper.insert(bookDao, attrMap);
+        //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
+        //Si esta libre se inserta
+        //Si no esta libre se devuelve un error
+        List<String> roomKeyMap=new ArrayList<>();
+        roomKeyMap.add(RoomDao.IDHABITACION);
+
+        Map<String,Object> roomAttrMap=new HashMap<>();
+        roomAttrMap.put(RoomDao.IDHABITACION,attrMap.get(BookDao.ROOMID));
+        roomAttrMap.put("initialdate",initialDateString);
+        roomAttrMap.put("finaldate",finalDateString);
+
+        EntityResult habitacionesLibres=roomService.freeRoomsQuery(roomAttrMap,roomKeyMap);
+        if(habitacionesLibres.calculateRecordNumber()>=0){
+            return this.daoHelper.insert(bookDao, attrMap);
+        }
+        else{
+            EntityResult er =new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("La habitacion no esta libre en esas fechas");
+            return er;
+        }
     }
 
     public EntityResult bookDelete(Map<?, ?> keyMap) {

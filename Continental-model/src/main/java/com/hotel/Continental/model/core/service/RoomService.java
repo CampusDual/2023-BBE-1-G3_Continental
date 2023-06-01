@@ -33,6 +33,14 @@ public class RoomService implements IRoomService {
     private DefaultOntimizeDaoHelper daoHelper;
 
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
+        EntityResult room= this.daoHelper.query(this.roomDao, keyMap, attrList);
+        if(room.calculateRecordNumber() == 0){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("La habitación no existe");
+            return er;
+        }
         return this.daoHelper.query(roomDao, keyMap, attrList);
     }
 
@@ -41,12 +49,32 @@ public class RoomService implements IRoomService {
     }
 
     public EntityResult roomDelete(Map<?, ?> keyMap) {
+        //si la habitacion no existe lanzar un error
+        EntityResult room = roomQuery(keyMap, new ArrayList<>());
+        if (room.getCode()==EntityResult.OPERATION_WRONG){
+            return room;
+        }
+        //Si la habitacion existe y esta dada de baja lanzar un error
+        if (room.getRecordValues(0).get(RoomDao.ROOMDOWNDATE) != null) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("La habitación ya está dada de baja");
+            return er;
+        }
         Map<Object, Object> attrMap = new HashMap<>();
         attrMap.put(RoomDao.ROOMDOWNDATE, new Timestamp(System.currentTimeMillis()));
-        return this.daoHelper.update(this.roomDao, attrMap, keyMap);
+        EntityResult er = this.daoHelper.update(this.roomDao, attrMap, keyMap);
+        er.setMessage("La habitación ha sido dada de baja con fecha "+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        return er;
     }
 
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
+        //si la habitacion no existe lanzar un error
+        EntityResult room = roomQuery(keyMap, new ArrayList<>());
+        if (room.getCode()==EntityResult.OPERATION_WRONG){
+            return room;
+        }
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
     }
 
@@ -96,6 +124,7 @@ public class RoomService implements IRoomService {
 
         //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
         if (keyMap.get(RoomDao.IDHOTEL) != null) {
+
             BasicExpression bexpByHotel = new BasicExpression(new BasicField(RoomDao.IDHOTEL), BasicOperator.EQUAL_OP, keyMap.get(RoomDao.IDHOTEL));
             BasicExpression bexpByIDSandHotel = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByHotel);
             //Se usa como filtro los ids+hotel

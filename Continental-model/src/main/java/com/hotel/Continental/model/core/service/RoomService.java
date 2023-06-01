@@ -91,14 +91,18 @@ public class RoomService implements IRoomService {
         }
         //Si hay habitaciones reservadas para esas fechas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
         Map<String, Object> filter2 = new HashMap<>();
+        //Se filtran por las habitaciones reservadas
         BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookDao.ROOMID));
-        filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
 
         //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
-        if(keyMap.get(RoomDao.IDHOTEL) != null){
+        if (keyMap.get(RoomDao.IDHOTEL) != null) {
             BasicExpression bexpByHotel = new BasicExpression(new BasicField(RoomDao.IDHOTEL), BasicOperator.EQUAL_OP, keyMap.get(RoomDao.IDHOTEL));
             BasicExpression bexpByIDSandHotel = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByHotel);
+            //Se usa como filtro los ids+hotel
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDSandHotel);
+        }else{
+            //Se usa como filtro los ids
+            filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
         }
         return this.daoHelper.query(this.roomDao, filter2, attrList);
 

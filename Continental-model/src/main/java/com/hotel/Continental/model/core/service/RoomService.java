@@ -2,6 +2,7 @@ package com.hotel.Continental.model.core.service;
 
 import com.hotel.Continental.api.core.service.IRoomService;
 import com.hotel.Continental.model.core.dao.BookDao;
+import com.hotel.Continental.model.core.dao.HotelDao;
 import com.hotel.Continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -76,19 +77,13 @@ public class RoomService implements IRoomService {
 
         BasicExpression bexp1and2 = new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);
         BasicExpression bexp3to6 = new BasicExpression(bexp3and4, BasicOperator.OR_OP, bexp5and6);
-        BasicExpression bexp = new BasicExpression(bexp1and2, BasicOperator.OR_OP, bexp3to6);
-
-        if(keyMap.containsKey(BookDao.ROOMID)){//Si se incluye el id de una habitación en la peticion
-            //Si se incluye el id de una habitación, se obtiene si está reservada para esas fechas
-            //añade al filtro el id de la habitación
-            BasicExpression bexp7 = new BasicExpression(new BasicField(BookDao.ROOMID), BasicOperator.EQUAL_OP, keyMap.get(BookDao.ROOMID));
-            bexp = new BasicExpression(bexp, BasicOperator.AND_OP, bexp7);
-        }
+        BasicExpression bexp = new BasicExpression(bexp1and2, BasicOperator.OR_OP, bexp3to6);//(r.fechaInicio <= ? 1 and r.fechaFin >= ? 2) or r.fechaInicio between ? 1 and ? 2 or r.fechaFin between ? 1 and ? 2
 
         Map<String, Object> filter = new HashMap<>();
         filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
         List<String> attrIdsBookedRooms = new ArrayList<>();
         attrIdsBookedRooms.add(BookDao.ROOMID);
+
         EntityResult bookedRooms = this.daoHelper.query(this.bookDao, filter, attrIdsBookedRooms, BookDao.QUERY_BOOKED_ROOMS);
         //Si no hay habitaciones reservadas para esas fechas, se obtienen todas las habitaciones
         if (bookedRooms.get(BookDao.ROOMID) == null) {
@@ -98,6 +93,13 @@ public class RoomService implements IRoomService {
         Map<String, Object> filter2 = new HashMap<>();
         BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookDao.ROOMID));
         filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
+
+        //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
+        if(keyMap.get(RoomDao.IDHOTEL) != null){
+            BasicExpression bexpByHotel = new BasicExpression(new BasicField(RoomDao.IDHOTEL), BasicOperator.EQUAL_OP, keyMap.get(RoomDao.IDHOTEL));
+            BasicExpression bexpByIDSandHotel = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByHotel);
+            filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDSandHotel);
+        }
         return this.daoHelper.query(this.roomDao, filter2, attrList);
 
     }

@@ -32,6 +32,12 @@ public class RoomService implements IRoomService {
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
+    /**
+     * Metodo que devuelve un EntityResult con los datos de la habitacion
+     * @param keyMap Mapa de claves que identifican la habitacion
+     * @param attrList Lista de atributos que se quieren obtener
+     * @return EntityResult con los datos de la habitacion o un mensaje de error
+     */
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room= this.daoHelper.query(this.roomDao, keyMap, attrList);
         if(room.calculateRecordNumber() == 0){
@@ -44,13 +50,25 @@ public class RoomService implements IRoomService {
         return this.daoHelper.query(roomDao, keyMap, attrList);
     }
 
+    /**
+     * Método inserta una habitacion en la base de datos y devuelve un EntityResult con los datos de la habitacion
+     * @param attrMap Mapa de atributos de la habitacion
+     * @return EntityResult con los datos de la habitacion o un mensaje de error
+     */
     public EntityResult roomInsert(Map<?, ?> attrMap) {
-        return this.daoHelper.insert(roomDao, attrMap);
+        EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
+        room.setMessage("La habitación ha sido dada de alta con fecha "+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        return room;
     }
 
+    /**
+     * Método que da de baja una habitacion y devuelve un EntityResult con los datos de la habitacion
+     * @param keyMap Mapa de claves que identifican la habitacion
+     * @return EntityResult con los datos de la habitacion o un mensaje de error
+     */
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //si la habitacion no existe lanzar un error
-        EntityResult room = roomQuery(keyMap, new ArrayList<>());
+        EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION,RoomDao.ROOMDOWNDATE));
         if (room.getCode()==EntityResult.OPERATION_WRONG){
             return room;
         }
@@ -69,6 +87,12 @@ public class RoomService implements IRoomService {
         return er;
     }
 
+    /**
+     * Método que actualiza los datos de una habitacion y devuelve un EntityResult con los datos de la habitacion
+     * @param attrMap Mapa de atributos de la habitacion
+     * @param keyMap Mapa de claves que identifican la habitacion
+     * @return EntityResult con los datos de la habitacion o un mensaje de error
+     */
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, new ArrayList<>());

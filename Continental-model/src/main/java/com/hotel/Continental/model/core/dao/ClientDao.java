@@ -1,6 +1,7 @@
 package com.hotel.Continental.model.core.dao;
 
 import com.ontimize.jee.server.dao.common.ConfigurationFile;
+import com.ontimize.jee.server.dao.jdbc.OntimizeJdbcDaoSupport;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @ConfigurationFile(
         configurationFile = "dao/ClientDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
-public class ClientDao {
+public class ClientDao extends OntimizeJdbcDaoSupport {
     public static final String CLIENTID = "idclient";
     public static final String DOCUMENT = "document";
     public static final String NAME = "name";
-    public static final String COUNTRY = "country";
+    public static final String COUNTRYCODE = "countrycode";
 }

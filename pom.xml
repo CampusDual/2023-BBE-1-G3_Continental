@@ -1,92 +1,390 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.7</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.hotel</groupId>
-	<artifactId>Continental</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Continental</name>
-	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>11</java.version>
-		<database.url>jdbc:postgresql://45.84.210.174:65432/2023-BBE-1-G3</database.url>
-		<mapstruct.version>1.5.3.Final</mapstruct.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>11</source>
-					<target>11</target>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+        	
+  
+  
+  
+  <modelVersion>4.0.0</modelVersion>
+        	
+  
+  
+  
+  <parent>
+                		
+    
+    
+    
+    <groupId>com.ontimize.boot</groupId>
+                		
+    
+    
+    
+    <artifactId>ontimize-boot-parent</artifactId>
+                		
+    
+    
+    
+    <version>3.1.0</version>
+                	
+  
+  
+  
+  </parent>
+        	
+  
+  
+  
+  <groupId>com.hotel</groupId>
+        	
+  
+  
+  
+  <artifactId>Continental</artifactId>
+        	
+  
+  
+  
+  <version>1.0.0</version>
+        	
+  
+  
+  
+  <packaging>pom</packaging>
+        	
+  
+  
+  
+  <properties>
+                		
+    
+    
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                		
+    
+    
+    
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+                		
+    
+    
+    
+    <java.version>11</java.version>
+                		
+    
+    
+    
+    <hsqldatabase.path>src/main/db</hsqldatabase.path>
+                		
+    
+    
+    
+    <database.url>jdbc:hsqldb:hsql://localhost:9013/templateDB</database.url>
+                		
+    
+    
+    
+    <hsqldb.version>2.3.4</hsqldb.version>
+                		
+    
+    
+    
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+                	
+  
+  
+  
+  </properties>
+        	
+  
+  
+  
+  <dependencyManagement>
+                		
+    
+    
+    
+    <dependencies>
+      <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.6.0</version>
+      </dependency>
+
+
+
+
+
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>org.springframework.boot</groupId>
+                                				
+        
+        
+        
+        <artifactId>spring-boot-starter-web</artifactId>
+                                			
+      
+      
+      
+      </dependency>
+                        			
+      
+      
+      
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>com.hotel</groupId>
+                                				
+        
+        
+        
+        <artifactId>Continental-api</artifactId>
+                                				
+        
+        
+        
+        <version>1.0.0</version>
+                                			
+      
+      
+      
+      </dependency>
+                        			
+      
+      
+      
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>com.hotel</groupId>
+                                				
+        
+        
+        
+        <artifactId>Continental-boot</artifactId>
+                                				
+        
+        
+        
+        <version>1.0.0</version>
+                                			
+      
+      
+      
+      </dependency>
+                        			
+      
+      
+      
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>com.hotel</groupId>
+                                				
+        
+        
+        
+        <artifactId>Continental-model</artifactId>
+                                				
+        
+        
+        
+        <version>1.0.0</version>
+                                			
+      
+      
+      
+      </dependency>
+                        			
+			
+      
+      
+      
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>com.hotel</groupId>
+                                				
+        
+        
+        
+        <artifactId>Continental-ws</artifactId>
+                                				
+        
+        
+        
+        <version>1.0.0</version>
+                                			
+      
+      
+      
+      </dependency>
+                        			
+      
+      
+      
+      <dependency>
+                                				
+        
+        
+        
+        <groupId>org.hsqldb</groupId>
+                                				
+        
+        
+        
+        <artifactId>hsqldb</artifactId>
+                                				
+        
+        
+        
+        <version>${hsqldb.version}</version>
+                                			
+      
+      
+      
+      </dependency>
+                        		
+    
+    
+    
+    </dependencies>
+                	
+  
+  
+  
+  </dependencyManagement>
+        
+  
+  
+  
+  <modules>
+                  
+    
+    
+    
+    <module>Continental-api</module>
+                  
+    
+    
+    
+    <module>Continental-model</module>
+              
+    
+    
+    <module>Continental-ws</module>
+          
+    
+    <module>Continental-boot</module>
+      
+  </modules>
+
+  <profiles>
+
+
+
+
+
+    <profile>
+
+
+
+
+
+    <id>default</id>
+
+
+
+
+
+    <activation>
+
+
+
+
+
+    <activeByDefault>true</activeByDefault>
+
+
+
+
+
+    </activation>
+
+
+
+
+
+   <repositories>
+
+
+
+
+
+   <repository>
+
+
+
+
+
+     <id>imatia-artifactory</id>
+
+
+
+
+
+     <url>https://artifactory.imatia.com/public-artifactory/libs-release</url>
+
+
+
+
+
+     <releases></releases>
+
+
+
+
+
+    <snapshots></snapshots>
+
+
+
+
+
+     </repository>
+
+
+
+
+
+    </repositories>
+
+
+
+
+
+     </profile>
+
+
+
+
+
+   </profiles>
+      
+
 
 </project>

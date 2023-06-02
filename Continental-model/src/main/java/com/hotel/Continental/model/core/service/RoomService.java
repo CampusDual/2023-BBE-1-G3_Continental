@@ -93,8 +93,10 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
+        List<String> columns = new ArrayList<>();
+        columns.add("idhabitacion");
         //si la habitacion no existe lanzar un error
-        EntityResult room = roomQuery(keyMap, new ArrayList<>());
+        EntityResult room = roomQuery(keyMap, columns);
         if (room.getCode()==EntityResult.OPERATION_WRONG){
             return room;
         }

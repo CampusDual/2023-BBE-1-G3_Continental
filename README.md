@@ -1,4 +1,11 @@
 
+## Grupo 3: Continental
+
+- Artai Rodríguez García
+- Carla Gallardo Dacruz
+- Tomás Paz Pena
+- Javier Casas López
+
 # Ontimize Boot
 
 - Enter the parent directory and run an install:
@@ -17,3 +24,4 @@
 		mvn spring-boot:run
 	
 Use the following URL to access the [https://localhost:33333/](https://localhost:33333/) application 
+

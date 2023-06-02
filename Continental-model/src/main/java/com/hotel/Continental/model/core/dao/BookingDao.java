@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @ConfigurationFile(
         configurationFile = "dao/BookDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
-public class BookDao extends OntimizeJdbcDaoSupport {
+public class BookingDao extends OntimizeJdbcDaoSupport {
     public static final String BOOKID = "idreserva";
     public static final String ROOMID = "idhabitacion";
     public static final String STARTDATE = "fechainicio";

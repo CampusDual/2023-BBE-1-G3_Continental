@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<start-class>com.hotel.Continental.ServerApplication</start-class>
+		<start-class>com.hotel.Continental.ContinentalApplication</start-class>
 		<spring-boot.repackage.skip>false</spring-boot.repackage.skip>
 	</properties>
 

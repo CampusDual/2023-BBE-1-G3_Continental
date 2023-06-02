@@ -1,8 +1,6 @@
 package com.hotel.Continental.model.core.service;
 
 import com.hotel.Continental.api.core.service.IHotelService;
-import com.hotel.Continental.api.core.service.IUserService;
-import com.hotel.Continental.model.core.dao.BookDao;
 import com.hotel.Continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -12,9 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Lazy

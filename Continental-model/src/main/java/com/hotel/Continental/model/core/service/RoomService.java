@@ -1,8 +1,7 @@
 package com.hotel.Continental.model.core.service;
 
 import com.hotel.Continental.api.core.service.IRoomService;
-import com.hotel.Continental.model.core.dao.BookDao;
-import com.hotel.Continental.model.core.dao.HotelDao;
+import com.hotel.Continental.model.core.dao.BookingDao;
 import com.hotel.Continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -28,7 +27,7 @@ public class RoomService implements IRoomService {
     @Autowired
     private RoomDao roomDao;
     @Autowired
-    private BookDao bookDao;
+    private BookingDao bookingDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
@@ -115,8 +114,8 @@ public class RoomService implements IRoomService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        BasicField startDateField = new BasicField(BookDao.STARTDATE);
-        BasicField endDateField = new BasicField(BookDao.ENDDATE);
+        BasicField startDateField = new BasicField(BookingDao.STARTDATE);
+        BasicField endDateField = new BasicField(BookingDao.ENDDATE);
         BasicExpression bexp1 = new BasicExpression(startDateField, BasicOperator.LESS_EQUAL_OP, initialDate);//(r.fechaInicio <= ? 1
         BasicExpression bexp2 = new BasicExpression(endDateField, BasicOperator.MORE_EQUAL_OP, finalDate);//and r.fechaFin >= ? 2)
         BasicExpression bexp3 = new BasicExpression(startDateField, BasicOperator.MORE_EQUAL_OP, initialDate);
@@ -134,17 +133,17 @@ public class RoomService implements IRoomService {
         Map<String, Object> filter = new HashMap<>();
         filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
         List<String> attrIdsBookedRooms = new ArrayList<>();
-        attrIdsBookedRooms.add(BookDao.ROOMID);
+        attrIdsBookedRooms.add(BookingDao.ROOMID);
 
-        EntityResult bookedRooms = this.daoHelper.query(this.bookDao, filter, attrIdsBookedRooms, BookDao.QUERY_BOOKED_ROOMS);
+        EntityResult bookedRooms = this.daoHelper.query(this.bookingDao, filter, attrIdsBookedRooms, BookingDao.QUERY_BOOKED_ROOMS);
         //Si no hay habitaciones reservadas para esas fechas, se obtienen todas las habitaciones
-        if (bookedRooms.get(BookDao.ROOMID) == null) {
+        if (bookedRooms.get(BookingDao.ROOMID) == null) {
             return this.daoHelper.query(this.roomDao, keyMap, attrList);
         }
         //Si hay habitaciones reservadas para esas fechas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
         Map<String, Object> filter2 = new HashMap<>();
         //Se filtran por las habitaciones reservadas
-        BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookDao.ROOMID));
+        BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookingDao.ROOMID));
 
         //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
         if (keyMap.get(RoomDao.IDHOTEL) != null) {

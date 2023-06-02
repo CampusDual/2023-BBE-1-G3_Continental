@@ -5,7 +5,7 @@ import com.ontimize.jee.common.dto.EntityResult;
 import java.util.List;
 import java.util.Map;
 
-public interface IBookService {
+public interface IBookingService {
     public EntityResult bookQuery(Map<?,?> keyMap, List<?> attrList);
     public EntityResult bookInsert(Map<String, Object> attrMap);
     public EntityResult bookDelete(Map<?,?> keyMap);

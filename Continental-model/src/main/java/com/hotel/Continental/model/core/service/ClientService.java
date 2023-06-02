@@ -26,6 +26,20 @@ public class ClientService implements IClientService {
     private DefaultOntimizeDaoHelper daoHelper;
 
     /**
+     * Metodo que devuelve los clientes
+     * @param keyMap  Mapa con los campos de la clave
+     * @param attrList Lista de atributos que se quieren devolver
+     * @return EntityResult con los clientes o un mensaje de error
+     */
+    @Override
+    public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setMessage("Not implemented yet");
+        er.setCode(EntityResult.OPERATION_WRONG);
+        return er;
+    }
+
+    /**
      * Metodo que devuelve todos los clientes
      * @param attrMap Mapa con los campos de la clave
      * @return EntityResult con los clientes o un mensaje de error
@@ -40,6 +54,38 @@ public class ClientService implements IClientService {
         EntityResult er= this.daoHelper.insert(this.clientDao, attrMap);
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.setMessage("Cliente insertado correctamente");
+        return er;
+    }
+
+    /**
+     * Metodo que borra un cliente de la base de datos
+     * @param keyMap Mapa con los campos de la clave
+     * @return EntityResult con los clientes o un mensaje de error
+     */
+    @Override
+    public EntityResult clientDelete(Map<String, Object> keyMap){
+        EntityResult er = new EntityResultMapImpl();
+        er.setMessage("Not implemented yet");
+        er.setCode(EntityResult.OPERATION_WRONG);
+        return er;
+    }
+
+    /**
+     * Metodo que actualiza un cliente de la base de datos
+     * @param attrMap Mapa con los campos de la clave
+     * @param keyMap Mapa con los campos de la clave
+     * @return EntityResult con el id de los clientes o un mensaje de error
+     */
+    @Override
+    public EntityResult clienteUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
+        //El check insert hace las comprobaciones oportunas
+        EntityResult check = checkInsert(attrMap);
+        if(check.getCode() == EntityResult.OPERATION_WRONG){
+            return check;
+        }
+        EntityResult er= this.daoHelper.update(this.clientDao, attrMap, keyMap);
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.setMessage("Cliente actualizado correctamente");
         return er;
     }
 
@@ -79,6 +125,13 @@ public class ClientService implements IClientService {
             er.setMessage("El documento no es valido");
             return er;
         }
+        //Si el documento ya exite en la base de datos esta mal
+        if(existsDocument((String)attrMap.get(ClientDao.DOCUMENT))){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("El documento ya existe en la base de datos");
+            return er;
+        }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         return er;
@@ -115,5 +168,22 @@ public class ClientService implements IClientService {
     private boolean checkCountryCode(String countryCode){
         String[] isoCountryCodes = Locale.getISOCountries();
         return Arrays.stream(isoCountryCodes).anyMatch(countryCode::equals);
+    }
+
+    /**
+     * Metodo que comprueba si el documento ya existe en la base de datos
+     * @param document Documento
+     * @return true si existe, false si no existe
+     */
+    private boolean existsDocument(String document){
+        Map<String, Object> keyMap = new HashMap<>();
+        keyMap.put(ClientDao.DOCUMENT, document);
+        List<Object> attrList = new ArrayList<>();
+        attrList.add(ClientDao.DOCUMENT);
+        EntityResult er=this.daoHelper.query(this.clientDao,keyMap, attrList);
+        if(er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0){
+            return true;
+        }
+        return false;
     }
 }

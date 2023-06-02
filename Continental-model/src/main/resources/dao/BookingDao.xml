@@ -13,7 +13,7 @@
     </UpdateKeys>
     <GeneratedKey>idreserva</GeneratedKey>
     <Queries>
-        <Query id="current_books">
+        <Query id="current_bookings">
             <Sentence>
                 <![CDATA[
           SELECT

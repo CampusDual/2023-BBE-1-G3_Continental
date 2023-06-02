@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Lazy
-@Service("BookService")
+@Service("BookingService")
 public class BookingService implements IBookingService {
     @Autowired
     private BookingDao bookingDao;
@@ -30,8 +30,7 @@ public class BookingService implements IBookingService {
      * @param attrList Lista de atributos que se quieren devolver
      * @return EntityResult con las reservas o un mensaje de error
      */
-    @Override
-    public EntityResult bookQuery(Map<?, ?> keyMap, List<?> attrList) {
+    public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
         if (result.calculateRecordNumber() == 0) {
             EntityResult er;
@@ -43,7 +42,7 @@ public class BookingService implements IBookingService {
         return result;
     }
 
-    public EntityResult bookInsert(Map<String, Object> attrMap) {
+    public EntityResult bookingInsert(Map<String, Object> attrMap) {
         String initialDateString = attrMap.remove(BookingDao.STARTDATE).toString();
         String finalDateString = attrMap.remove(BookingDao.ENDDATE).toString();
         Date initialDate = getDateFromString(initialDateString);
@@ -95,7 +94,7 @@ public class BookingService implements IBookingService {
      * @param keyMap Mapa con los campos de la clave
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
-    public EntityResult bookDelete(Map<?, ?> keyMap) {
+    public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Primero comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, null);
         if (book.getCode() == EntityResult.OPERATION_WRONG) {
@@ -110,8 +109,7 @@ public class BookingService implements IBookingService {
      * @param keyMap Mapa con los campos de la clave
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
-    @Override
-    public EntityResult bookUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
+    public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Primero comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, null);
         if (book.getCode() == EntityResult.OPERATION_WRONG) {

@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingRestController extends ORestController<IBookingService> {
 
     @Autowired
-    private IBookingService bookSrv;
+    private IBookingService bookingSrv;
 
     @Override
     public IBookingService getService() {
-        return this.bookSrv;
+        return this.bookingSrv;
     }
 
 }

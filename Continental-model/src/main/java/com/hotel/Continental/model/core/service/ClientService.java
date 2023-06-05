@@ -21,23 +21,24 @@ public class ClientService implements IClientService {
 
     /**
      * Metodo que actualiza un cliente de la base de datos
-     *
+     * Updatear por id? o updatear por filtro? ejemplo dni, o id o country code, o todos...
      * @param attrMap Mapa con los campos de la clave
      * @param keyMap  Mapa con los campos de la clave
      * @return EntityResult con el id de los clientes o un mensaje de error
      */
     @Override
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
-        //El check insert hace las comprobaciones oportunas
-        if(!existsDocument(((String)keyMap.get(ClientDao.DOCUMENT)))){
+        //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
+        if(keyMap.get(ClientDao.CLIENTID)==null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("No se puede actualizar un documento que no existe");
+            er.setMessage("El id del cliente no puede ser nulo");
             return er;
         }
-        EntityResult check = checkUpdate(attrMap);
-        if (check.getCode() == EntityResult.OPERATION_WRONG) {
-            return check;
+        //El check update hace las comprobaciones de los datos a insertar
+        EntityResult checkDatos = checkUpdate(attrMap);
+        if (checkDatos.getCode() == EntityResult.OPERATION_WRONG) {
+            return checkDatos;
         }
         EntityResult er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
@@ -53,8 +54,15 @@ public class ClientService implements IClientService {
      */
     @Override
     public EntityResult clientInsert(Map<String, Object> attrMap) {
-        //El check insert hace las comprobaciones oportunas
-        EntityResult check = checkInsert(attrMap);
+        //Si alguno de los campos necesarios esta vacio esta mal
+        if (((String) attrMap.get(ClientDao.COUNTRYCODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("Alguno de los campos necesarios  estan vacio");
+            return er;
+        }
+        //El check comprueba que los datos a insertar/Actualizar son correctos
+        EntityResult check = checkUpdate(attrMap);
         if (check.getCode() == EntityResult.OPERATION_WRONG) {
             return check;
         }
@@ -64,57 +72,9 @@ public class ClientService implements IClientService {
         return er;
     }
 
-    /**
-     * Metodo que hace las comprobaciones generales previas a un insert
-     *
-     * @param attrMap Mapa con los campos de la clave
-     * @return EntityResult con OPERATION_SUCCESSFUL o un mensaje de error
-     */
-    private EntityResult checkInsert(Map<String, Object> attrMap) {
-        //Hago esto para asegurarme de que el codigo de pais esta en mayusculas
-        attrMap.put(ClientDao.COUNTRYCODE, ((String) attrMap.remove(ClientDao.COUNTRYCODE)).toUpperCase());
-        //Si alguno de los campos necesarios esta vacio esta mal
-        if (((String) attrMap.get(ClientDao.COUNTRYCODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Alguno de los campos necesarios  estan vacio");
-            return er;
-        }
-        //Si el country code no mide 2 Caracteres esta mal
-        if (((String) attrMap.get(ClientDao.COUNTRYCODE)).length() != 2) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El codigo de pais no tiene el formato correcto");
-            return er;
-        }
-        //Si el country code no es un codigo de pais valido esta mal
-        if (!checkCountryCode((String) ((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El codigo de pais no es valido");
-            return er;
-        }
-        //Si el documento no es valido esta mal
-        if (!checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El documento no es valido");
-            return er;
-        }
-        //Si el documento ya exite en la base de datos esta mal
-        if (existsDocument((String) attrMap.get(ClientDao.DOCUMENT))) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El documento ya existe en la base de datos");
-            return er;
-        }
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        return er;
-    }
 
     /**
-     * Metodo que hace las comprobacioes previas a un insert
+     * Metodo que hace las comprobacioes previas a un insert/update
      *
      * @param attrMap Mapa con los campos de la clave
      * @return EntityResult con OPERATION_SUCCESSFUL o un mensaje de error

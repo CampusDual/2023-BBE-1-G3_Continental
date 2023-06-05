@@ -35,6 +35,12 @@ public class ClientService implements IClientService {
             er.setMessage("El id del cliente no puede ser nulo");
             return er;
         }
+        if(!existsKeymap(new HashMap<>(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID))))){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("El id del cliente no existe en la base de datos");
+            return er;
+        }
         //El check update hace las comprobaciones de los datos a insertar
         EntityResult checkDatos = checkUpdate(attrMap);
         if (checkDatos.getCode() == EntityResult.OPERATION_WRONG) {
@@ -107,7 +113,7 @@ public class ClientService implements IClientService {
                 return er;
             }
             //Si el documento ya exite en la base de datos esta mal
-            if (existsDocument((String) attrMap.get(ClientDao.DOCUMENT))) {
+            if (existsKeymap(new HashMap<>(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT))))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage("El documento ya existe en la base de datos");
@@ -159,12 +165,10 @@ public class ClientService implements IClientService {
     /**
      * Metodo que comprueba si el documento ya existe en la base de datos
      *
-     * @param document Documento
+     * @param keyMap Mapa con los campos de la clave
      * @return true si existe, false si no existe
      */
-    private boolean existsDocument(String document) {
-        Map<String, Object> keyMap = new HashMap<>();
-        keyMap.put(ClientDao.DOCUMENT, document);
+    private boolean existsKeymap(Map<String, Object> keyMap) {
         List<Object> attrList = new ArrayList<>();
         attrList.add(ClientDao.DOCUMENT);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);

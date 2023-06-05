@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Lazy
@@ -67,6 +68,8 @@ public class ClientService implements IClientService {
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put(ClientDao.CLIENTDOWNDATE, new Timestamp(System.currentTimeMillis()));
             er = this.daoHelper.update(clientDao, attrMap, keyMap);
+            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            er.setMessage("Este cliente se ha dado de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         }
         return er;
     }
@@ -202,7 +205,7 @@ public class ClientService implements IClientService {
         List<Object> attrList = new ArrayList<>();
         attrList.add(ClientDao.CLIENTDOWNDATE);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        if (er.get(0) != null) {
+        if (er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE)!=null) {
             return true;
         }
             return false;

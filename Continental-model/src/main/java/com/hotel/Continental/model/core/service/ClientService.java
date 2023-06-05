@@ -29,6 +29,12 @@ public class ClientService implements IClientService {
     @Override
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //El check insert hace las comprobaciones oportunas
+        if(!existsDocument(((String)keyMap.get(ClientDao.DOCUMENT)))){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("No se puede actualizar un documento que no existe");
+            return er;
+        }
         EntityResult check = checkUpdate(attrMap);
         if (check.getCode() == EntityResult.OPERATION_WRONG) {
             return check;
@@ -114,12 +120,6 @@ public class ClientService implements IClientService {
      * @return EntityResult con OPERATION_SUCCESSFUL o un mensaje de error
      */
     private EntityResult checkUpdate(Map<String, Object> attrMap) {
-        if(!existsDocument(((String)attrMap.get(ClientDao.DOCUMENT)))){
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("No se puede actualizar un documento que no existe");
-            return er;
-        }
         //Hago esto para asegurarme de que el codigo de pais esta en mayusculas y que no sea nulo
         if (((String) attrMap.get(ClientDao.COUNTRYCODE)) != null) {
             attrMap.put(ClientDao.COUNTRYCODE, ((String) attrMap.remove(ClientDao.COUNTRYCODE)).toUpperCase());

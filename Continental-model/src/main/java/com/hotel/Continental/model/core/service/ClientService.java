@@ -35,7 +35,8 @@ public class ClientService implements IClientService {
             er.setMessage("El id del cliente no puede ser nulo");
             return er;
         }
-        if(!existsKeymap(new HashMap<>(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID))))){
+        //Si el id del cliente no existe en la base de datos esta mal
+        if(!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("El id del cliente no existe en la base de datos");
@@ -113,7 +114,7 @@ public class ClientService implements IClientService {
                 return er;
             }
             //Si el documento ya exite en la base de datos esta mal
-            if (existsKeymap(new HashMap<>(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT))))) {
+            if (existsKeymap(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage("El documento ya existe en la base de datos");
@@ -163,14 +164,14 @@ public class ClientService implements IClientService {
     }
 
     /**
-     * Metodo que comprueba si el documento ya existe en la base de datos
+     * Metodo que comprueba si el keyMap ya existe en la base de datos
      *
      * @param keyMap Mapa con los campos de la clave
      * @return true si existe, false si no existe
      */
     private boolean existsKeymap(Map<String, Object> keyMap) {
         List<Object> attrList = new ArrayList<>();
-        attrList.add(ClientDao.DOCUMENT);
+        attrList.add(ClientDao.CLIENTID);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
         if (er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0) {
             return true;

@@ -26,20 +26,6 @@ public class ClientService implements IClientService {
     private DefaultOntimizeDaoHelper daoHelper;
 
     /**
-     * Metodo que devuelve los clientes
-     * @param keyMap  Mapa con los campos de la clave
-     * @param attrList Lista de atributos que se quieren devolver
-     * @return EntityResult con los clientes o un mensaje de error
-     */
-    @Override
-    public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setMessage("Not implemented yet");
-        er.setCode(EntityResult.OPERATION_WRONG);
-        return er;
-    }
-
-    /**
      * Metodo que devuelve todos los clientes
      * @param attrMap Mapa con los campos de la clave
      * @return EntityResult con los clientes o un mensaje de error
@@ -57,37 +43,7 @@ public class ClientService implements IClientService {
         return er;
     }
 
-    /**
-     * Metodo que borra un cliente de la base de datos
-     * @param keyMap Mapa con los campos de la clave
-     * @return EntityResult con los clientes o un mensaje de error
-     */
-    @Override
-    public EntityResult clientDelete(Map<String, Object> keyMap){
-        EntityResult er = new EntityResultMapImpl();
-        er.setMessage("Not implemented yet");
-        er.setCode(EntityResult.OPERATION_WRONG);
-        return er;
-    }
 
-    /**
-     * Metodo que actualiza un cliente de la base de datos
-     * @param attrMap Mapa con los campos de la clave
-     * @param keyMap Mapa con los campos de la clave
-     * @return EntityResult con el id de los clientes o un mensaje de error
-     */
-    @Override
-    public EntityResult clienteUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
-        //El check insert hace las comprobaciones oportunas
-        EntityResult check = checkInsert(attrMap);
-        if(check.getCode() == EntityResult.OPERATION_WRONG){
-            return check;
-        }
-        EntityResult er= this.daoHelper.update(this.clientDao, attrMap, keyMap);
-        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        er.setMessage("Cliente actualizado correctamente");
-        return er;
-    }
 
     /**
      * Metodo que hace las comprobaciones generales previas a un insert o update

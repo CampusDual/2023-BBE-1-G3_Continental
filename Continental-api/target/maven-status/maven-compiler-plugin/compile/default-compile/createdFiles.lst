@@ -1,2 +1,4 @@
+com\hotel\Continental\api\core\service\IBookingService.class
 com\hotel\Continental\api\core\service\IHotelService.class
+com\hotel\Continental\api\core\service\IRoomService.class
 com\hotel\Continental\api\core\service\IUserService.class

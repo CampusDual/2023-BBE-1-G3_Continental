@@ -15,7 +15,6 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Continental" options="" />
       <module name="Continental-api" options="-parameters" />
       <module name="Continental-boot" options="-parameters" />
       <module name="Continental-model" options="-parameters" />

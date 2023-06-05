@@ -100,8 +100,6 @@
   
   
   <dependencyManagement>
-                		
-    
     
     
     <dependencies>
@@ -113,11 +111,8 @@
       </dependency>
 
 
-
-
-
       <dependency>
-                                				
+
         
         
         

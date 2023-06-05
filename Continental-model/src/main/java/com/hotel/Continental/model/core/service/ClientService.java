@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Lazy
@@ -52,6 +54,26 @@ public class ClientService implements IClientService {
         er.setMessage("Cliente actualizado correctamente");
         return er;
     }
+
+
+    public EntityResult clientDelete(Map<?, ?> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        if(!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("El id del cliente no existe en la base de datos");
+        }else if (isCanceled(keyMap)) {
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("Este cliente ya ha sido dado de baja");
+        } else {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put(ClientDao.CLIENTDOWNDATE, new Timestamp(System.currentTimeMillis()));
+            er = this.daoHelper.update(clientDao, attrMap, keyMap);
+            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            er.setMessage("Este cliente se ha dado de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        }
+        return er;
+    }
+
 
     /**
      * Metodo que devuelve todos los clientes
@@ -177,5 +199,15 @@ public class ClientService implements IClientService {
             return true;
         }
         return false;
+    }
+
+    private boolean isCanceled(Map<?, ?> keyMap) {
+        List<Object> attrList = new ArrayList<>();
+        attrList.add(ClientDao.CLIENTDOWNDATE);
+        EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
+        if (er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE)!=null) {
+            return true;
+        }
+            return false;
     }
 }

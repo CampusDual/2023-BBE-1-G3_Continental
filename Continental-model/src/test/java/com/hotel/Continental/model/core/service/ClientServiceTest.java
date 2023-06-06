@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -101,15 +102,41 @@ public class ClientServiceTest {
         @DisplayName("Test client insert with duplicate document")
         void testClientInsertDuplicateDocument(){
             EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
+            er.setCode(0);
+            er.put("document", List.of("12345678Z"));
 
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
             when(daoHelper.query(any(ClientDao.class),anyMap(),anyList())).thenReturn(er);
-            when(daoHelper.insert(any(ClientDao.class),anyMap())).thenReturn(er);
             EntityResult result = clientService.clientInsert(clientToInsert);
+            Assertions.assertEquals(1, result.getCode());
+        }
+    }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class ClienteServiceUpdate{
+        @Test
+        @DisplayName("Test client update")
+        void testCliendUpdateGood() {
+            //Primer er para simular que el id existe en la base de datos
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(ClientDao.CLIENTID, List.of(1));
+            //Segundo er simula que el documento no existe en la base de datos
+            EntityResult er2 = new EntityResultMapImpl();
+            er2.setCode(0);
+
+            Map<String,Object> clientToUpdate = new HashMap<>();
+            clientToUpdate.put(ClientDao.DOCUMENT, "12345678Z");
+            clientToUpdate.put(ClientDao.NAME, "Tomás");
+            clientToUpdate.put(ClientDao.COUNTRYCODE, "ES");
+            Map<String,Object> clientToFilter = new HashMap<>();
+            clientToFilter.put(ClientDao.CLIENTID, 1);
+            when(daoHelper.query(any(ClientDao.class),anyMap(),anyList())).thenReturn(er,er2);
+            when(daoHelper.update(any(ClientDao.class),anyMap(),anyMap())).thenReturn(er);
+            EntityResult result = clientService.clientUpdate(clientToUpdate,clientToFilter);
             Assertions.assertEquals(0, result.getCode());
         }
     }

@@ -120,7 +120,7 @@ public class BookingService implements IBookingService {
         if (book.getCode() == EntityResult.OPERATION_WRONG) {
             return book;
         }
-        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.remove(BookingDao.STARTDATE).toString().isEmpty()) {
+        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.STARTDATE).toString().isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("No hay datos de las fechas");

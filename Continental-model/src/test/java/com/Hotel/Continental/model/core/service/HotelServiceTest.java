@@ -55,6 +55,31 @@ public class HotelServiceTest {
 
             assertEquals(0, result.getCode());
         }
+
+        @Test
+        void testInsertHotelEmpty() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            Map<String, Object> hotelToInsert = new HashMap<>();
+
+            when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
+
+            EntityResult result = hotelService.hotelInsert(hotelToInsert);
+
+            assertEquals(0, result.getCode());
+        }
+
+        @Test
+        void testInsertHotelNull() {
+            EntityResult er = null;
+            Map<String, Object> hotelToInsert = new HashMap<>();
+
+            when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
+
+            EntityResult result = hotelService.hotelInsert(hotelToInsert);
+
+            assertNull(result);
+        }
     }
 
     @Nested
@@ -146,6 +171,28 @@ public class HotelServiceTest {
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
         }
+
+        @Test
+        void testUpdateHotelNull(){
+            EntityResult er = null;
+            EntityResult erQuery = new EntityResultMapImpl();
+            erQuery.setCode(0);
+            erQuery.put(HotelDao.NAME, List.of("prueba"));
+            erQuery.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
+
+            when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(HotelDao.ID, List.of(1));
+
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put(HotelDao.NAME, List.of("pruebaActualizada"));
+            attrMap.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
+
+            EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
+
+            assertNull(queryResult);
+        }
     }
 
     @Nested
@@ -182,23 +229,39 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("pruebaActualizada"));
             er.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(0);
-            erQuery.put("nombre", List.of("prueba"));
-            erQuery.put("direccion", List.of("direccionPrueba"));
+            EntityResult erDelete = new EntityResultMapImpl();
+            erDelete.setCode(0);
+            erDelete.put(HotelDao.NAME, List.of("prueba"));
+            erDelete.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
+            erDelete.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));
 
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put("id", List.of(1));
+            keyMap.put(HotelDao.ID, List.of(1));
 
-            Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put("nombre", List.of("pruebaActualizada"));
-            attrMap.put("direccion", List.of("direccionActualizada"));
-
-            EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
+            EntityResult queryResult = hotelService.hotelDelete(keyMap);
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
+        }
+
+        @Test
+        void testDeleteHotelNull() {
+            EntityResult er = null;
+            EntityResult erDelete = new EntityResultMapImpl();
+            erDelete.setCode(0);
+            erDelete.put(HotelDao.NAME, List.of("prueba"));
+            erDelete.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
+            erDelete.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));
+
+            when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(HotelDao.ID, List.of(1));
+
+            EntityResult queryResult = hotelService.hotelDelete(keyMap);
+
+            assertNull(queryResult);
         }
     }
 }

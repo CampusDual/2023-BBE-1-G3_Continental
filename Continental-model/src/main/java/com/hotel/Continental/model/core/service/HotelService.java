@@ -31,7 +31,7 @@ public class HotelService implements IHotelService {
      */
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
-        if(hotel.calculateRecordNumber() == 0){
+        if(hotel != null && hotel.calculateRecordNumber() == 0){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -61,7 +61,7 @@ public class HotelService implements IHotelService {
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
         EntityResult er;
-        if(hotel.getCode() == EntityResult.OPERATION_WRONG){
+        if(hotel == null || hotel.getCode() == EntityResult.OPERATION_WRONG){
             return hotel;
         }
         //Sino hacemos la actualización
@@ -79,7 +79,7 @@ public class HotelService implements IHotelService {
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
         EntityResult er;
-        if(hotel.getCode() == EntityResult.OPERATION_WRONG){
+        if(hotel == null || hotel.getCode() == EntityResult.OPERATION_WRONG){
             return hotel;
         }
         //Comprobamos que el hotel esta en activo

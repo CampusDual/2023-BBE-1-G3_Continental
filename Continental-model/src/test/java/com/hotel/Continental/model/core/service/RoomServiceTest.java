@@ -1,5 +1,6 @@
 package com.hotel.Continental.model.core.service;
 
+import com.hotel.Continental.model.core.dao.ClientDao;
 import com.hotel.Continental.model.core.dao.HotelDao;
 import com.hotel.Continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -30,7 +31,7 @@ public class RoomServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class TestRoomService {
+    public class TestRoomInsert {
         @Test
         @DisplayName("Test room insert good")
         void testRoomInsertGood() {
@@ -59,7 +60,10 @@ public class RoomServiceTest {
             EntityResult result = roomService.roomInsert(roomToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
-
+    }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class TestRoomQuery {
         @Test
         @DisplayName("Test room query good")
         void testRoomQueryGood() {
@@ -94,7 +98,11 @@ public class RoomServiceTest {
 
             Assertions.assertEquals(1, result.getCode());
         }
+    }
 
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class TestRoomUpdate {
         @Test
         @DisplayName("Test room update good")
         void testRoomUpdateGood() {
@@ -114,6 +122,7 @@ public class RoomServiceTest {
             EntityResult result = roomService.roomUpdate(keyMap, attr);
             Assertions.assertEquals(0, result.getCode());
         }
+
         @Test
         @DisplayName("Test room update bad")
         void testRoomUpdateBad() {
@@ -131,6 +140,11 @@ public class RoomServiceTest {
             EntityResult result = roomService.roomUpdate(keyMap, attr);
             Assertions.assertEquals(1, result.getCode());
         }
+    }
+
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class TestRoomDelete {
         @Test
         @DisplayName("Test room delete good")
         void testRoomDeleteGood() {
@@ -142,11 +156,25 @@ public class RoomServiceTest {
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
-
-            when(daoHelper.update(any(RoomDao.class), anyMap(),a)).thenReturn(er);
+            when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);
             EntityResult result = roomService.roomDelete(keyMap);
             Assertions.assertEquals(0, result.getCode());
         }
-    }
 
+        @Test
+        @DisplayName("Test wrong room delete")
+        void testRoomDeleteWrong() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(RoomDao.IDHABITACION, null);
+
+            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = roomService.roomDelete(keyMap);
+
+            Assertions.assertEquals(1, result.getCode());
+        }
+    }
 }

@@ -64,12 +64,48 @@ public class BookingServiceTest {
             Map<String, Object> hotelToInsert = new HashMap<>();
 
             hotelToInsert.put(BookingDao.CLIENT, 0);
-            hotelToInsert.put(BookingDao.STARTDATE,"2023-06-09T10:31:10.000+0000");
+            hotelToInsert.put(BookingDao.STARTDATE, "2023-06-09T10:31:10.000+0000");
             hotelToInsert.put(BookingDao.ENDDATE, "2023-10-09T10:31:10.000+0000");
 
             EntityResult result = bookingService.bookingInsert(hotelToInsert);
 
             assertEquals(0, result.getCode());
+        }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    public class hotelServiceQuery {
+        @Test
+        void testQueryBooking() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(BookingDao.CLIENT, List.of(0));
+            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+
+            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
+
+            Map<String, Object> hotelToQuery = new HashMap<>();
+            hotelToQuery.put(BookingDao.CLIENT, 0);
+
+            List<String> list = List.of(BookingDao.CLIENT, BookingDao.STARTDATE, BookingDao.ENDDATE);
+
+            EntityResult result = bookingService.bookingQuery(hotelToQuery, list);
+
+            assertEquals(0, result.getCode());
+
+        }
+
+        @Test
+        void testQueryBowowakingEmpty(){
+            EntityResult er = new EntityResultMapImpl();
+
+            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = bookingService.bookingQuery(new HashMap<>(), List.of());
+
+            assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
     }
 }

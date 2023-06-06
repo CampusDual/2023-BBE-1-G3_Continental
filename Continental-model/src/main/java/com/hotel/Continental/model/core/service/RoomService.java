@@ -36,6 +36,8 @@ public class RoomService implements IRoomService {
      * @param keyMap Mapa de claves que identifican la habitacion
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos de la habitacion o un mensaje de error
+     *
+     * Comprobar cliente correcto
      */
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room= this.daoHelper.query(this.roomDao, keyMap, attrList);

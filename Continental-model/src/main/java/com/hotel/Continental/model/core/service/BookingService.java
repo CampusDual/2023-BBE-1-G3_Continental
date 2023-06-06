@@ -86,7 +86,6 @@ public class BookingService implements IBookingService {
         er.setCode(EntityResult.OPERATION_WRONG);
         er.setMessage("La habitacion no esta libre en esas fechas");
         return er;
-
     }
 
     /**

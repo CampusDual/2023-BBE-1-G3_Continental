@@ -83,6 +83,13 @@ public class ClientService implements IClientService {
      */
     @Override
     public EntityResult clientInsert(Map<String, Object> attrMap) {
+        //Si alguno de los campos necesarios esta nulo esta mal
+        if (((String) attrMap.get(ClientDao.COUNTRYCODE)) == null || ((String) attrMap.get(ClientDao.NAME)) == null || ((String) attrMap.get(ClientDao.DOCUMENT)) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("Alguno de los campos necesarios  estan nulos");
+            return er;
+        }
         //Si alguno de los campos necesarios esta vacio esta mal
         if (((String) attrMap.get(ClientDao.COUNTRYCODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
             EntityResult er = new EntityResultMapImpl();

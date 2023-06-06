@@ -1,390 +1,231 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-        	
-  
-  
-  
-  <modelVersion>4.0.0</modelVersion>
-        	
-  
-  
-  
-  <parent>
-                		
-    
-    
-    
-    <groupId>com.ontimize.boot</groupId>
-                		
-    
-    
-    
-    <artifactId>ontimize-boot-parent</artifactId>
-                		
-    
-    
-    
-    <version>3.1.0</version>
-                	
-  
-  
-  
-  </parent>
-        	
-  
-  
-  
-  <groupId>com.hotel</groupId>
-        	
-  
-  
-  
-  <artifactId>Continental</artifactId>
-        	
-  
-  
-  
-  <version>1.0.0</version>
-        	
-  
-  
-  
-  <packaging>pom</packaging>
-        	
-  
-  
-  
-  <properties>
-                		
-    
-    
-    
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                		
-    
-    
-    
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-                		
-    
-    
-    
-    <java.version>11</java.version>
-                		
-    
-    
-    
-    <hsqldatabase.path>src/main/db</hsqldatabase.path>
-                		
-    
-    
-    
-    <database.url>jdbc:hsqldb:hsql://localhost:9013/templateDB</database.url>
-                		
-    
-    
-    
-    <hsqldb.version>2.3.4</hsqldb.version>
-                		
-    
-    
-    
-    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-                	
-  
-  
-  
-  </properties>
-        	
-  
-  
-  
-  <dependencyManagement>
-                		
-    
-    
-    
-    <dependencies>
-      <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.6.0</version>
-      </dependency>
-
-
-
-
-
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>org.springframework.boot</groupId>
-                                				
-        
-        
-        
-        <artifactId>spring-boot-starter-web</artifactId>
-                                			
-      
-      
-      
-      </dependency>
-                        			
-      
-      
-      
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>com.hotel</groupId>
-                                				
-        
-        
-        
-        <artifactId>Continental-api</artifactId>
-                                				
-        
-        
-        
-        <version>1.0.0</version>
-                                			
-      
-      
-      
-      </dependency>
-                        			
-      
-      
-      
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>com.hotel</groupId>
-                                				
-        
-        
-        
-        <artifactId>Continental-boot</artifactId>
-                                				
-        
-        
-        
-        <version>1.0.0</version>
-                                			
-      
-      
-      
-      </dependency>
-                        			
-      
-      
-      
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>com.hotel</groupId>
-                                				
-        
-        
-        
-        <artifactId>Continental-model</artifactId>
-                                				
-        
-        
-        
-        <version>1.0.0</version>
-                                			
-      
-      
-      
-      </dependency>
-                        			
-			
-      
-      
-      
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>com.hotel</groupId>
-                                				
-        
-        
-        
-        <artifactId>Continental-ws</artifactId>
-                                				
-        
-        
-        
-        <version>1.0.0</version>
-                                			
-      
-      
-      
-      </dependency>
-                        			
-      
-      
-      
-      <dependency>
-                                				
-        
-        
-        
-        <groupId>org.hsqldb</groupId>
-                                				
-        
-        
-        
-        <artifactId>hsqldb</artifactId>
-                                				
-        
-        
-        
-        <version>${hsqldb.version}</version>
-                                			
-      
-      
-      
-      </dependency>
-                        		
-    
-    
-    
-    </dependencies>
-                	
-  
-  
-  
-  </dependencyManagement>
-        
-  
-  
-  
-  <modules>
-                  
-    
-    
-    
-    <module>Continental-api</module>
-                  
-    
-    
-    
-    <module>Continental-model</module>
-              
-    
-    
-    <module>Continental-ws</module>
-          
-    
-    <module>Continental-boot</module>
-      
-  </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <profiles>
 
+    <modelVersion>4.0.0</modelVersion>
 
 
+    <parent>
 
 
-    <profile>
+        <groupId>com.ontimize.boot</groupId>
 
 
+        <artifactId>ontimize-boot-parent</artifactId>
 
 
+        <version>3.1.0</version>
 
-    <id>default</id>
 
+    </parent>
 
 
+    <groupId>com.hotel</groupId>
 
 
-    <activation>
+    <artifactId>Continental</artifactId>
 
 
+    <version>1.0.0</version>
 
 
+    <packaging>pom</packaging>
 
-    <activeByDefault>true</activeByDefault>
 
+    <properties>
 
 
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
-    </activation>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 
+        <java.version>11</java.version>
 
 
+        <hsqldatabase.path>src/main/db</hsqldatabase.path>
 
-   <repositories>
 
+        <database.url>jdbc:hsqldb:hsql://localhost:9013/templateDB</database.url>
 
 
+        <hsqldb.version>2.3.4</hsqldb.version>
 
 
-   <repository>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 
 
+    </properties>
 
 
+    <dependencyManagement>
 
-     <id>imatia-artifactory</id>
 
+        <dependencies>
+            <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.6.0</version>
+            </dependency>
 
 
+            <dependency>
 
 
-     <url>https://artifactory.imatia.com/public-artifactory/libs-release</url>
+                <groupId>org.springframework.boot</groupId>
 
 
+                <artifactId>spring-boot-starter-web</artifactId>
 
 
+            </dependency>
 
-     <releases></releases>
 
+            <dependency>
 
 
+                <groupId>com.hotel</groupId>
 
 
-    <snapshots></snapshots>
+                <artifactId>Continental-api</artifactId>
 
 
+                <version>1.0.0</version>
 
 
+            </dependency>
 
-     </repository>
 
+            <dependency>
 
 
+                <groupId>com.hotel</groupId>
 
 
-    </repositories>
+                <artifactId>Continental-boot</artifactId>
 
 
+                <version>1.0.0</version>
 
 
+            </dependency>
 
-     </profile>
 
+            <dependency>
 
 
+                <groupId>com.hotel</groupId>
 
 
-   </profiles>
-      
+                <artifactId>Continental-model</artifactId>
+
+
+                <version>1.0.0</version>
+
+
+            </dependency>
+
+
+            <dependency>
+
+
+                <groupId>com.hotel</groupId>
+
+
+                <artifactId>Continental-ws</artifactId>
+
+
+                <version>1.0.0</version>
+
+
+            </dependency>
+
+
+            <dependency>
+
+
+                <groupId>org.hsqldb</groupId>
+
+
+                <artifactId>hsqldb</artifactId>
+
+
+                <version>${hsqldb.version}</version>
+
+
+            </dependency>
+
+        </dependencies>
+
+
+    </dependencyManagement>
+
+
+    <modules>
+
+
+        <module>Continental-api</module>
+
+
+        <module>Continental-model</module>
+
+
+        <module>Continental-ws</module>
+
+
+        <module>Continental-boot</module>
+
+    </modules>
+
+    <profiles>
+
+
+        <profile>
+
+
+            <id>default</id>
+
+
+            <activation>
+
+
+                <activeByDefault>true</activeByDefault>
+
+
+            </activation>
+
+
+            <repositories>
+
+
+                <repository>
+
+
+                    <id>imatia-artifactory</id>
+
+
+                    <url>https://artifactory.imatia.com/public-artifactory/libs-release</url>
+
+
+                    <releases></releases>
+
+
+                    <snapshots></snapshots>
+
+
+                </repository>
+
+
+            </repositories>
+
+
+        </profile>
+
+
+    </profiles>
 
 
 </project>

@@ -140,4 +140,43 @@ public class ClientServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
     }
+
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class ClienteServiceDelete {
+        @Test
+        @DisplayName("Test correct client delete")
+        void testClientDeleteGood() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(ClientDao.CLIENTID, List.of(1));
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(ClientDao.CLIENTID, 7);
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+            when(daoHelper.update(any(ClientDao.class), anyMap(), anyMap())).thenReturn(er);
+
+            EntityResult result = clientService.clientDelete(keyMap);
+
+            Assertions.assertEquals(0, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test null client delete")
+        void testClientDeleteNull() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(ClientDao.CLIENTID, null);
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = clientService.clientDelete(keyMap);
+
+            Assertions.assertEquals(1, result.getCode());
+        }
+
+    }
 }

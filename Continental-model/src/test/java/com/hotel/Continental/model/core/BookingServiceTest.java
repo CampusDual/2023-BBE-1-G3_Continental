@@ -95,7 +95,7 @@ public class BookingServiceTest {
         }
 
         @Test
-        void testQueryBowowakingEmpty(){
+        void testQueryBookingEmpty(){
             EntityResult er = new EntityResultMapImpl();
 
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
@@ -122,20 +122,20 @@ public class BookingServiceTest {
             erUpdate.setCode(0);
             erUpdate.put(BookingDao.CLIENT, List.of(2));
             erUpdate.put(BookingDao.ROOMID, List.of(2));
-            erUpdate.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            erUpdate.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+            erUpdate.put(BookingDao.STARTDATE, List.of("2010-06-09"));
+            erUpdate.put(BookingDao.ENDDATE, List.of("2010-10-09"));
 
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
             when(daoHelper.update(any(BookingDao.class), anyMap(), anyMap())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(BookingDao.BOOKINGID, 0);
-            keyMap.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            keyMap.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
 
             Map<String, Object> bookingToUpdate = new HashMap<>();
-            bookingToUpdate.put(BookingDao.CLIENT, List.of(2));
-            bookingToUpdate.put(BookingDao.ROOMID, List.of(2));
+            bookingToUpdate.put(BookingDao.CLIENT, 2);
+            bookingToUpdate.put(BookingDao.ROOMID, 2);
+            bookingToUpdate.put(BookingDao.STARTDATE, "2010-06-09");
+            bookingToUpdate.put(BookingDao.ENDDATE, "2023-10-09");
 
             EntityResult result = bookingService.bookingUpdate(bookingToUpdate, keyMap);
 
@@ -143,12 +143,24 @@ public class BookingServiceTest {
         }
 
         @Test
-        void testQueryBowowakingEmpty(){
+        void testUpdateBookingEmpty(){
             EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(BookingDao.CLIENT, List.of(0));
+            er.put(BookingDao.ROOMID, List.of(1));
+            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
 
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
 
-            EntityResult result = bookingService.bookingQuery(new HashMap<>(), List.of());
+            EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
+
+            assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+
+        @Test
+        void testUpdateBookingNull(){
+            EntityResult result = bookingService.bookingUpdate(null, null);
 
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }

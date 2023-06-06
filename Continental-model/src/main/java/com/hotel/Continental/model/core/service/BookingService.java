@@ -110,7 +110,7 @@ public class BookingService implements IBookingService {
      */
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Primero comprobamos si la reserva existe
-        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, null);
+        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, Arrays.asList(BookingDao.ROOMID));
         if (book.getCode() == EntityResult.OPERATION_WRONG) {
             return book;
         }

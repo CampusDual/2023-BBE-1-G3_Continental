@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -95,7 +96,7 @@ public class BookingServiceTest {
         }
 
         @Test
-        void testQueryBookingEmpty(){
+        void testQueryBookingEmpty() {
             EntityResult er = new EntityResultMapImpl();
 
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
@@ -143,7 +144,7 @@ public class BookingServiceTest {
         }
 
         @Test
-        void testUpdateBookingEmpty(){
+        void testUpdateBookingEmpty() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
             er.put(BookingDao.CLIENT, List.of(0));
@@ -159,10 +160,84 @@ public class BookingServiceTest {
         }
 
         @Test
-        void testUpdateBookingNull(){
+        void testUpdateBookingNull() {
             EntityResult result = bookingService.bookingUpdate(null, null);
 
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    public class testDeleteBookin {
+        @Test
+        void testDeleteBookin() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(BookingDao.CLIENT, List.of(0));
+            er.put(BookingDao.ROOMID, List.of(1));
+            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+
+            EntityResult erDelete = new EntityResultMapImpl();
+            erDelete.setCode(0);
+
+            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
+            when(daoHelper.delete(any(BookingDao.class), anyMap())).thenReturn(erDelete);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(BookingDao.BOOKINGID, 0);
+
+            EntityResult result = bookingService.bookingDelete(keyMap);
+
+            assertEquals(0, result.getCode());
+        }
+
+        @Test
+        void testDeleteBookinEmpty() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.put(BookingDao.CLIENT, List.of(0));
+            er.put(BookingDao.ROOMID, List.of(1));
+            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+
+            EntityResult erDelete = new EntityResultMapImpl();
+            erDelete.setCode(0);
+            erDelete.put(BookingDao.CLIENT, List.of(0));
+            erDelete.put(BookingDao.ROOMID, List.of(1));
+            erDelete.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            erDelete.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+
+            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
+
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(BookingDao.BOOKINGID, 0);
+
+            EntityResult result = bookingService.bookingDelete(keyMap);
+
+            assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+
+        }
+
+        @Test
+        void testDeleteBookinNull() {
+            EntityResult erDelete = new EntityResultMapImpl();
+            erDelete.setCode(0);
+            erDelete.put(BookingDao.CLIENT, List.of(0));
+            erDelete.put(BookingDao.ROOMID, List.of(1));
+            erDelete.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
+            erDelete.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+
+            when(daoHelper.query(any(BookingDao.class), anyMap(),anyList())).thenReturn(erDelete);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(BookingDao.BOOKINGID, List.of(1));
+
+            EntityResult queryResult = bookingService.bookingDelete(keyMap);
+
+            assertNull(queryResult);
         }
     }
 }

@@ -31,7 +31,7 @@ public class HotelService implements IHotelService {
      */
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
-        if(hotel.calculateRecordNumber() == 0){
+        if(hotel == null || hotel.calculateRecordNumber() == 0){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

@@ -139,6 +139,77 @@ public class ClientServiceTest {
             EntityResult result = clientService.clientUpdate(clientToUpdate,clientToFilter);
             Assertions.assertEquals(0, result.getCode());
         }
+
+        @Test
+        @DisplayName("Test client update bad client")
+        void testClientUpdateNullData() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+
+            Map<String, Object> clientToUpdate = new HashMap<>();
+            clientToUpdate.put(ClientDao.DOCUMENT, null);
+            clientToUpdate.put(ClientDao.NAME, null);
+            clientToUpdate.put(ClientDao.COUNTRYCODE, null);
+            Map<String, Object> filter = new HashMap<>();
+            filter.put(ClientDao.CLIENTID, "9");
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+            EntityResult result = clientService.clientUpdate(clientToUpdate, filter);
+            Assertions.assertEquals(1, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test client update with bad document")
+        void testClientUpdateBadDocument() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+
+            Map<String, Object> clientToUpdate = new HashMap<>();
+            clientToUpdate.put(ClientDao.DOCUMENT, "12345678");
+            clientToUpdate.put(ClientDao.NAME, "Tomás");
+            clientToUpdate.put(ClientDao.COUNTRYCODE, "ES");
+
+            Map<String, Object> filter = new HashMap<>();
+            filter.put(ClientDao.CLIENTID, "9");
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+            EntityResult result = clientService.clientUpdate(clientToUpdate, filter);
+            Assertions.assertEquals(1, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test client update with bad countrycode")
+        void testClientUpdateBadCountryCode() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+
+            Map<String, Object> clientToInsert = new HashMap<>();
+            clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
+            clientToInsert.put(ClientDao.NAME, "Tomás");
+            clientToInsert.put(ClientDao.COUNTRYCODE, "IS");
+
+            Map<String, Object> filter = new HashMap<>();
+            filter.put(ClientDao.CLIENTID, "9");
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = clientService.clientUpdate(clientToInsert, filter);
+            Assertions.assertEquals(1, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test update client with a new document already existent")
+        void testClientUpdateDuplicateDocument() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put("document", List.of("12345678Z"));
+
+            Map<String, Object> clientToInsert = new HashMap<>();
+            clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
+            clientToInsert.put(ClientDao.NAME, "Tomás");
+            clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+            EntityResult result = clientService.clientInsert(clientToInsert);
+            Assertions.assertEquals(1, result.getCode());
+        }
     }
 
     @Nested
@@ -177,6 +248,5 @@ public class ClientServiceTest {
 
             Assertions.assertEquals(1, result.getCode());
         }
-
     }
 }

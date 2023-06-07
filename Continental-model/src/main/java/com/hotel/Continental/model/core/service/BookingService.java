@@ -44,8 +44,8 @@ public class BookingService implements IBookingService {
     }
 
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
-        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
-        attrMap.get(BookingDao.CLIENT) == null) {
+        if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
+                attrMap.get(BookingDao.CLIENT) == null) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -133,7 +133,7 @@ public class BookingService implements IBookingService {
             er.setMessage("La reserva que quiere cambiar no existe");
             return er;
         }
-        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
+        if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
             er.setMessage("No se han proporcionado las fechas");
             return er;
         }
@@ -143,13 +143,14 @@ public class BookingService implements IBookingService {
         if (finalDate == null || initialDate == null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-        if(finalDate==null || initialDate==null){
-            er.setMessage("Problemas al parsear las fechas");
-            return er;
-        }
-        if (finalDate.before(initialDate)) {
-            er.setMessage("La fecha de fin no puede ser anterior a la de inicio");
-            return er;
+            if (finalDate == null || initialDate == null) {
+                er.setMessage("Problemas al parsear las fechas");
+                return er;
+            }
+            if (finalDate.before(initialDate)) {
+                er.setMessage("La fecha de fin no puede ser anterior a la de inicio");
+                return er;
+            }
         }
         //actualizamos la reserva
         attrMap.put(BookingDao.STARTDATE, initialDate);

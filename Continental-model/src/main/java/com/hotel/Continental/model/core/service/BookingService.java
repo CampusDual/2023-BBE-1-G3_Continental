@@ -33,7 +33,7 @@ public class BookingService implements IBookingService {
      */
     public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
-        if (result.calculateRecordNumber() == 0) {
+        if (result == null || result.calculateRecordNumber() == 0) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -44,6 +44,14 @@ public class BookingService implements IBookingService {
     }
 
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
+        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
+        attrMap.get(BookingDao.CLIENT) == null) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("Algunos de los valores es null");
+            return er;
+        }
         String initialDateString = attrMap.remove(BookingDao.STARTDATE).toString();
         String finalDateString = attrMap.remove(BookingDao.ENDDATE).toString();
         Date initialDate = getDateFromString(initialDateString);
@@ -98,9 +106,12 @@ public class BookingService implements IBookingService {
      */
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Primero comprobamos si la reserva existe
-        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, null);
-        if (book.getCode() == EntityResult.OPERATION_WRONG) {
-            return book;
+        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
+        if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage("No se ha encontrado la reserva especificada");
+            return er;
         }
         return this.daoHelper.delete(this.bookingDao, keyMap);
     }
@@ -113,23 +124,30 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
         //Primero comprobamos si la reserva existe
-        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, null);
-        if (book.getCode() == EntityResult.OPERATION_WRONG) {
-            return book;
+        EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
+        if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
+            er.setMessage("La reserva que quiere cambiar no existe");
+            return er;
+        }
+        if(attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
+            er.setMessage("No se han proporcionado las fechas");
+            return er;
         }
         //Guardamos las fechas en variables para poder compararlas
         Date initialDate = getDateFromString(attrMap.remove(BookingDao.STARTDATE).toString());
         Date finalDate = getDateFromString(attrMap.remove(BookingDao.ENDDATE).toString());
         if (finalDate == null || initialDate == null) {
-            EntityResult er = new EntityResultMapImpl();
+            er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
+        if(finalDate==null || initialDate==null){
             er.setMessage("Problemas al parsear las fechas");
             return er;
         }
         if (finalDate.before(initialDate)) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("La fecha de fin no puede ser anterior a la de inicio");
             return er;
         }

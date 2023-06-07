@@ -1,7 +1,6 @@
-package com.hotel.Continental.ws.core.rest;
+package com.hotel.continental.ws.core.rest;
 
-import com.hotel.Continental.api.core.service.IClientService;
-import com.hotel.Continental.api.core.service.IRoomService;
+import com.hotel.continental.api.core.service.IClientService;
 import com.ontimize.jee.server.rest.ORestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

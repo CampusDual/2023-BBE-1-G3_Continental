@@ -1,4 +1,4 @@
-package com.hotel.Continental.ws.core.rest;
+package com.hotel.continental.ws.core.rest;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hotel.Continental.api.core.service.IUserService;
+import com.hotel.continental.api.core.service.IUserService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.server.rest.ORestController;
 
 
 @RestController
 @RequestMapping("/users")
-@ComponentScan(basePackageClasses={com.hotel.Continental.api.core.service.IUserService.class})
+@ComponentScan(basePackageClasses={com.hotel.continental.api.core.service.IUserService.class})
 public class UserRestController extends ORestController<IUserService> {
 
 	@Autowired

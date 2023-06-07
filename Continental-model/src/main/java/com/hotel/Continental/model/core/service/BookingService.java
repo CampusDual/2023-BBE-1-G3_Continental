@@ -1,8 +1,8 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.api.core.service.IBookingService;
-import com.hotel.Continental.model.core.dao.BookingDao;
-import com.hotel.Continental.model.core.dao.RoomDao;
+import com.hotel.continental.api.core.service.IBookingService;
+import com.hotel.continental.model.core.dao.BookingDao;
+import com.hotel.continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -26,6 +26,7 @@ public class BookingService implements IBookingService {
 
     /**
      * Metodo que devuelve las reservas
+     *
      * @param keyMap   Mapa con los campos de la clave
      * @param attrList Lista de atributos que se quieren devolver
      * @return EntityResult con las reservas o un mensaje de error
@@ -49,7 +50,7 @@ public class BookingService implements IBookingService {
         Date finalDate = getDateFromString(finalDateString);
         attrMap.put(BookingDao.STARTDATE, initialDate);
         attrMap.put(BookingDao.ENDDATE, finalDate);
-        if(finalDate==null || initialDate==null){
+        if (finalDate == null || initialDate == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("Problemas al parsear las fechas");
@@ -91,6 +92,7 @@ public class BookingService implements IBookingService {
 
     /**
      * Metodo que borra una reserva
+     *
      * @param keyMap Mapa con los campos de la clave
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
@@ -105,8 +107,9 @@ public class BookingService implements IBookingService {
 
     /**
      * Metodo que actualiza una reserva
+     *
      * @param attrMap Mapa con los campos a actualizar
-     * @param keyMap Mapa con los campos de la clave
+     * @param keyMap  Mapa con los campos de la clave
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
@@ -118,7 +121,7 @@ public class BookingService implements IBookingService {
         //Guardamos las fechas en variables para poder compararlas
         Date initialDate = getDateFromString(attrMap.remove(BookingDao.STARTDATE).toString());
         Date finalDate = getDateFromString(attrMap.remove(BookingDao.ENDDATE).toString());
-        if(finalDate==null || initialDate==null){
+        if (finalDate == null || initialDate == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("Problemas al parsear las fechas");
@@ -135,6 +138,7 @@ public class BookingService implements IBookingService {
         attrMap.put(BookingDao.ENDDATE, finalDate);
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
+
     private static Date getDateFromString(String dateString) {
         Date date = null;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

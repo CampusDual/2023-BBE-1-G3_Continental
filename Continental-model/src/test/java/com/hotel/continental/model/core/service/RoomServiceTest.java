@@ -1,8 +1,6 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.model.core.dao.ClientDao;
-import com.hotel.Continental.model.core.dao.HotelDao;
-import com.hotel.Continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -31,7 +29,7 @@ public class RoomServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class TestRoomInsert {
+    class TestRoomInsert {
         @Test
         @DisplayName("Test room insert good")
         void testRoomInsertGood() {
@@ -63,7 +61,7 @@ public class RoomServiceTest {
     }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class TestRoomQuery {
+    class TestRoomQuery {
         @Test
         @DisplayName("Test room query good")
         void testRoomQueryGood() {
@@ -102,7 +100,7 @@ public class RoomServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class TestRoomUpdate {
+    class TestRoomUpdate {
         @Test
         @DisplayName("Test room update good")
         void testRoomUpdateGood() {
@@ -144,7 +142,7 @@ public class RoomServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class TestRoomDelete {
+    class TestRoomDelete {
         @Test
         @DisplayName("Test room delete good")
         void testRoomDeleteGood() {

@@ -1,4 +1,4 @@
-package com.hotel.Continental.api.core.service;
+package com.hotel.continental.api.core.service;
 
 
 import java.util.List;

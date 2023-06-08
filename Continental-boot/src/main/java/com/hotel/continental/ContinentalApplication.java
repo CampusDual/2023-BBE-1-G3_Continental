@@ -1,4 +1,4 @@
-package com.hotel.Continental;
+package com.hotel.continental;
 
 
 import org.springframework.boot.SpringApplication;

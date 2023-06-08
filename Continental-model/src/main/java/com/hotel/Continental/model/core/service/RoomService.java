@@ -1,12 +1,12 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.api.core.service.IRoomService;
-import com.hotel.Continental.model.core.dao.BookingDao;
-import com.hotel.Continental.model.core.dao.RoomDao;
+import com.hotel.continental.api.core.service.IRoomService;
+import com.hotel.continental.model.core.dao.BookingDao;
+import com.hotel.continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.exceptions.OntimizeJEERuntimeException;
@@ -30,16 +30,19 @@ public class RoomService implements IRoomService {
     private BookingDao bookingDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
+    //declara un a constante con yyyy-MM-dd
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     /**
      * Metodo que devuelve un EntityResult con los datos de la habitacion
-     * @param keyMap Mapa de claves que identifican la habitacion
+     *
+     * @param keyMap   Mapa de claves que identifican la habitacion
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
-        EntityResult room= this.daoHelper.query(this.roomDao, keyMap, attrList);
-        if(room.calculateRecordNumber() == 0){
+        EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
+        if (room.calculateRecordNumber() == 0) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -51,24 +54,26 @@ public class RoomService implements IRoomService {
 
     /**
      * Método inserta una habitacion en la base de datos y devuelve un EntityResult con los datos de la habitacion
+     *
      * @param attrMap Mapa de atributos de la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
-        room.setMessage("La habitación ha sido dada de alta con fecha "+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        room.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         return room;
     }
 
     /**
      * Método que da de baja una habitacion y devuelve un EntityResult con los datos de la habitacion
+     *
      * @param keyMap Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //si la habitacion no existe lanzar un error
-        EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION,RoomDao.ROOMDOWNDATE));
-        if (room.getCode()==EntityResult.OPERATION_WRONG){
+        EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION, RoomDao.ROOMDOWNDATE));
+        if (room.getCode() == EntityResult.OPERATION_WRONG) {
             return room;
         }
         //Si la habitacion existe y esta dada de baja lanzar un error
@@ -82,14 +87,15 @@ public class RoomService implements IRoomService {
         Map<Object, Object> attrMap = new HashMap<>();
         attrMap.put(RoomDao.ROOMDOWNDATE, new Timestamp(System.currentTimeMillis()));
         EntityResult er = this.daoHelper.update(this.roomDao, attrMap, keyMap);
-        er.setMessage("La habitación ha sido dada de baja con fecha "+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        er.setMessage("La habitación ha sido dada de baja con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         return er;
     }
 
     /**
      * Método que actualiza los datos de una habitacion y devuelve un EntityResult con los datos de la habitacion
+     *
      * @param attrMap Mapa de atributos de la habitacion
-     * @param keyMap Mapa de claves que identifican la habitacion
+     * @param keyMap  Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
@@ -97,7 +103,7 @@ public class RoomService implements IRoomService {
         columns.add("idhabitacion");
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, columns);
-        if (room.getCode()==EntityResult.OPERATION_WRONG){
+        if (room.getCode() == EntityResult.OPERATION_WRONG) {
             return room;
         }
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
@@ -109,7 +115,7 @@ public class RoomService implements IRoomService {
         String finalDateString = keyMap.remove("finaldate").toString();
         Date initialDate = null;
         Date finalDate = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         try {
             initialDate = formatter.parse(initialDateString);
             finalDate = formatter.parse(finalDateString);
@@ -154,7 +160,7 @@ public class RoomService implements IRoomService {
             BasicExpression bexpByIDSandHotel = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByHotel);
             //Se usa como filtro los ids+hotel
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDSandHotel);
-        }else{
+        } else {
             //Se usa como filtro los ids
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
         }

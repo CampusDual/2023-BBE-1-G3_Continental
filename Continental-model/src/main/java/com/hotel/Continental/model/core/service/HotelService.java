@@ -1,7 +1,7 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.api.core.service.IHotelService;
-import com.hotel.Continental.model.core.dao.HotelDao;
+import com.hotel.continental.api.core.service.IHotelService;
+import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -25,13 +25,14 @@ public class HotelService implements IHotelService {
 
     /**
      * Metodo que devuelve un EntityResult con los datos del hotel
-     * @param keyMap Mapa de claves que identifican el hotel
+     *
+     * @param keyMap   Mapa de claves que identifican el hotel
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
-        if(hotel == null || hotel.calculateRecordNumber() == 0){
+        if (hotel == null || hotel.calculateRecordNumber() == 0) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -43,6 +44,7 @@ public class HotelService implements IHotelService {
 
     /**
      * Método inserta un hotel en la base de datos y devuelve un EntityResult con los datos del hotel
+     *
      * @param attrMap Mapa de atributos que se quieren obtener
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
@@ -52,6 +54,7 @@ public class HotelService implements IHotelService {
 
     /**
      * Método actualiza los datos de un hotel y devuelve un EntityResult con los datos del hotel
+     *
      * @param keyMap Mapa de claves que identifican el hotel
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
@@ -61,29 +64,30 @@ public class HotelService implements IHotelService {
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
         EntityResult er;
-        if(hotel.getCode() == EntityResult.OPERATION_WRONG){
+        if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }
         //Sino hacemos la actualización
-        er=this.daoHelper.update(this.hotelDao, attrMap, keyMap);
+        er = this.daoHelper.update(this.hotelDao, attrMap, keyMap);
         return er;
     }
 
     /**
      * Método que da de baja un hotel y devuelve un EntityResult con los datos del hotel
+     *
      * @param keyMap Mapa de claves que identifican el hotel
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
-    public EntityResult hotelDelete(Map<?, ?> keyMap){
+    public EntityResult hotelDelete(Map<?, ?> keyMap) {
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
         EntityResult er;
-        if(hotel.getCode() == EntityResult.OPERATION_WRONG){
+        if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }
         //Comprobamos que el hotel esta en activo
-        if(hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null){
+        if (hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("El hotel ya esta dado de baja");

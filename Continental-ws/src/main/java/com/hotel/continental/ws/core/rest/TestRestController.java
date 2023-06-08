@@ -1,4 +1,4 @@
-package com.hotel.Continental.ws.core.rest;
+package com.hotel.continental.ws.core.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

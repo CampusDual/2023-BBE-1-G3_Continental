@@ -1,6 +1,6 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.model.core.dao.ClientDao;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -31,7 +31,7 @@ public class ClientServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class ClienteServiceInsert{
+    class ClienteServiceInsert{
         @Test
         @DisplayName("Test client insert")
         void testClientInsertGood() {
@@ -117,7 +117,7 @@ public class ClientServiceTest {
     }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class ClienteServiceUpdate{
+    class ClienteServiceUpdate{
         @Test
         @DisplayName("Test client update")
         void testCliendUpdateGood() {
@@ -215,7 +215,7 @@ public class ClientServiceTest {
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class ClienteServiceDelete {
+    class ClienteServiceDelete {
         @Test
         @DisplayName("Test correct client delete")
         void testClientDeleteGood() {

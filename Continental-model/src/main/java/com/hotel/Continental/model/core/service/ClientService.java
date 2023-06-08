@@ -1,7 +1,7 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.api.core.service.IClientService;
-import com.hotel.Continental.model.core.dao.ClientDao;
+import com.hotel.continental.api.core.service.IClientService;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -24,6 +24,7 @@ public class ClientService implements IClientService {
     /**
      * Metodo que actualiza un cliente de la base de datos
      * Updatear por id? o updatear por filtro? ejemplo dni, o id o country code, o todos...
+     *
      * @param attrMap Mapa con los campos de la clave
      * @param keyMap  Mapa con los campos de la clave
      * @return EntityResult con el id de los clientes o un mensaje de error
@@ -31,14 +32,14 @@ public class ClientService implements IClientService {
     @Override
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
-        if(keyMap.get(ClientDao.CLIENTID)==null){
+        if (keyMap.get(ClientDao.CLIENTID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("El id del cliente no puede ser nulo");
             return er;
         }
         //Si el id del cliente no existe en la base de datos esta mal
-        if(!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))){
+        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("El id del cliente no existe en la base de datos");
@@ -58,10 +59,10 @@ public class ClientService implements IClientService {
 
     public EntityResult clientDelete(Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
-        if(!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
+        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("El id del cliente no existe en la base de datos");
-        }else if (isCanceled(keyMap)) {
+        } else if (isCanceled(keyMap)) {
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("Este cliente ya ha sido dado de baja");
         } else {
@@ -84,7 +85,7 @@ public class ClientService implements IClientService {
     @Override
     public EntityResult clientInsert(Map<String, Object> attrMap) {
         //Si alguno de los campos necesarios esta nulo esta mal
-        if (((String) attrMap.get(ClientDao.COUNTRYCODE)) == null || ((String) attrMap.get(ClientDao.NAME)) == null || ((String) attrMap.get(ClientDao.DOCUMENT)) == null) {
+        if (attrMap.get(ClientDao.COUNTRYCODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage("Alguno de los campos necesarios  estan nulos");
@@ -117,7 +118,7 @@ public class ClientService implements IClientService {
      */
     private EntityResult checkUpdate(Map<String, Object> attrMap) {
         //Hago esto para asegurarme de que el codigo de pais esta en mayusculas y que no sea nulo
-        if (((String) attrMap.get(ClientDao.COUNTRYCODE)) != null) {
+        if (attrMap.get(ClientDao.COUNTRYCODE) != null) {
             attrMap.put(ClientDao.COUNTRYCODE, ((String) attrMap.remove(ClientDao.COUNTRYCODE)).toUpperCase());
             //Si el country code no mide 2 Caracteres esta mal
             if (((String) attrMap.get(ClientDao.COUNTRYCODE)).length() != 2) {
@@ -127,14 +128,14 @@ public class ClientService implements IClientService {
                 return er;
             }
             //Si el country code no es un codigo de pais valido esta mal
-            if (!checkCountryCode((String) ((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
+            if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage("El codigo de pais no es valido");
                 return er;
             }
         }
-        if (((String) attrMap.get(ClientDao.DOCUMENT)) != null) {
+        if (attrMap.get(ClientDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
             if (!checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
@@ -163,20 +164,18 @@ public class ClientService implements IClientService {
      * @return true si es valido, false si no lo es
      */
     private boolean checkDocument(String document, String countryCode) {
-        if (countryCode != null) {
-            if (countryCode.equals("ES")) {
-                String dniRegex = "^\\d{8}[A-HJ-NP-TV-Z]$";
-                if (!document.matches(dniRegex)) {
-                    return false;
-                }
-                String dniNumbers = document.substring(0, 8);
-                String dniLetter = document.substring(8).toUpperCase();
-
-                String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
-                int dniMod = Integer.parseInt(dniNumbers) % 23;
-                char calculatedLetter = validLetters.charAt(dniMod);
-                return dniLetter.charAt(0) == calculatedLetter;
+        if (countryCode != null && countryCode.equals("ES")) {
+            String dniRegex = "^\\d{8}[A-HJ-NP-TV-Z]$";
+            if (!document.matches(dniRegex)) {
+                return false;
             }
+            String dniNumbers = document.substring(0, 8);
+            String dniLetter = document.substring(8).toUpperCase();
+
+            String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
+            int dniMod = Integer.parseInt(dniNumbers) % 23;
+            char calculatedLetter = validLetters.charAt(dniMod);
+            return dniLetter.charAt(0) == calculatedLetter;
         }
         return true;
     }
@@ -202,20 +201,14 @@ public class ClientService implements IClientService {
         List<Object> attrList = new ArrayList<>();
         attrList.add(ClientDao.CLIENTID);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        if (er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0) {
-            return true;
-        }
-        return false;
+        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0;
     }
 
     private boolean isCanceled(Map<?, ?> keyMap) {
         List<Object> attrList = new ArrayList<>();
         attrList.add(ClientDao.CLIENTDOWNDATE);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        if (er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE)!=null) {
-            return true;
-        }
-            return false;
+        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE) != null;
     }
 
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {

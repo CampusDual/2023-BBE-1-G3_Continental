@@ -1,11 +1,9 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.model.core.dao.HotelDao;
-import com.hotel.Continental.model.core.service.HotelService;
+import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,8 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import javax.management.Query;
-import javax.swing.text.Keymap;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +41,7 @@ public class HotelServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class hotelServiceInsert {
+    class hotelServiceInsert {
         @Test
         void testInsertHotel() {
             EntityResult er = new EntityResultMapImpl();
@@ -103,7 +99,7 @@ public class HotelServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class hotelServiceQuery {
+    class hotelServiceQuery {
         @Test
         void testQueryHotel() {
             EntityResult er = new EntityResultMapImpl();
@@ -147,7 +143,7 @@ public class HotelServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class testUpdateHotel {
+    class testUpdateHotel {
         @Test
         void testUpdateHotel() {
             EntityResult er = new EntityResultMapImpl();
@@ -246,7 +242,7 @@ public class HotelServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class testDeleteHotel {
+    class testDeleteHotel {
         @Test
         void testDeleteHotel() {
             EntityResult er = new EntityResultMapImpl();

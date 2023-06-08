@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,6 +247,64 @@ public class ClientServiceTest {
 
             EntityResult result = clientService.clientDelete(keyMap);
 
+            Assertions.assertEquals(1, result.getCode());
+        }
+    }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class ClientServiceQuery {
+        @Test
+        @DisplayName("Test good query client")
+        void testQueryGood() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+            er.put(ClientDao.CLIENTID, List.of(1));
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(ClientDao.CLIENTID, 8);
+
+            List<String> columns = new ArrayList<>();
+            columns.add(ClientDao.CLIENTID);
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = clientService.clientQuery(keyMap, columns);
+            Assertions.assertEquals(0, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test bad query client")
+        void testQueryWrong() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(ClientDao.CLIENTID, 9798);
+
+            List<String> columns = new ArrayList<>();
+            columns.add("CLIENTESIDS");
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = clientService.clientQuery(keyMap,columns);
+            Assertions.assertEquals(1, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test query with null data")
+        void testQueryNullData() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(0);
+
+            Map<String, Object> keyMap = new HashMap<>();
+            keyMap.put(ClientDao.CLIENTID, null);
+
+            List<String> columns = new ArrayList<>();
+            columns.add(ClientDao.CLIENTID);
+
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
+            EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }
     }

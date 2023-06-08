@@ -3,15 +3,15 @@
         xmlns="http://www.ontimize.com/schema/jdbc"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.ontimize.com/schema/jdbc http://www.ontimize.com/schema/jdbc/ontimize-jdbc-dao.xsd"
-        catalog="" schema="${mainschema}" table="reservas"
+        catalog="" schema="${mainschema}" table="bookings"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>idreserva</Column>
+        <Column>bookingid</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>idreserva</Column>
+        <Column>bookingid</Column>
     </UpdateKeys>
-    <GeneratedKey>idreserva</GeneratedKey>
+    <GeneratedKey>bookingid</GeneratedKey>
     <Queries>
         <Query id="current_bookings">
             <Sentence>

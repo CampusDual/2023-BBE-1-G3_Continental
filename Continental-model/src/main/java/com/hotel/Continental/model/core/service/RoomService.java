@@ -72,6 +72,14 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomDelete(Map<?, ?> keyMap) {
+        //comprobar que se envian los campos necesarios
+        if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION, RoomDao.ROOMDOWNDATE));
         if (room.getCode() == EntityResult.OPERATION_WRONG) {

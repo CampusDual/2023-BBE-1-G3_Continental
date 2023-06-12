@@ -127,8 +127,12 @@ public class BookingService implements IBookingService {
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
-
-        //Primero comprobamos si la reserva existe
+        //Comprobamos que se ha introducido el id de la reserva
+        if (keyMap.get(BookingDao.BOOKINGID) == null) {
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);

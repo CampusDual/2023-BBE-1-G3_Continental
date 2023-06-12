@@ -59,6 +59,11 @@ public class ClientService implements IClientService {
 
     public EntityResult clientDelete(Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
+        //Comprobar que se envia el id del cliente
+        if (keyMap.get(ClientDao.CLIENTID) == null) {
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+        }
         if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);

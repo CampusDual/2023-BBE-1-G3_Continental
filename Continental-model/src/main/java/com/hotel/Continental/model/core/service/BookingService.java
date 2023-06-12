@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -37,7 +38,7 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Esa reserva no existe");
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
         return result;
@@ -49,7 +50,7 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Algunos de los valores es null");
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
         String initialDateString = attrMap.remove(BookingDao.STARTDATE).toString();
@@ -61,13 +62,13 @@ public class BookingService implements IBookingService {
         if (finalDate == null || initialDate == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Problemas al parsear las fechas");
+            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
             return er;
         }
         if (finalDate.before(initialDate)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("La fecha de fin no puede ser anterior a la de inicio");
+            er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
             return er;
         }
         //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
@@ -93,7 +94,7 @@ public class BookingService implements IBookingService {
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
-        er.setMessage("La habitacion no esta libre en esas fechas");
+        er.setMessage(ErrorMessages.ROOM_NOT_FREE);
         return er;
 
     }
@@ -110,7 +111,7 @@ public class BookingService implements IBookingService {
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("No se ha encontrado la reserva especificada");
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
         return this.daoHelper.delete(this.bookingDao, keyMap);
@@ -130,11 +131,11 @@ public class BookingService implements IBookingService {
         //Primero comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
-            er.setMessage("La reserva que quiere cambiar no existe");
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
         if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
-            er.setMessage("No se han proporcionado las fechas");
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
         //Guardamos las fechas en variables para poder compararlas
@@ -144,11 +145,11 @@ public class BookingService implements IBookingService {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             if (finalDate == null || initialDate == null) {
-                er.setMessage("Problemas al parsear las fechas");
+                er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
                 return er;
             }
             if (finalDate.before(initialDate)) {
-                er.setMessage("La fecha de fin no puede ser anterior a la de inicio");
+                er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
                 return er;
             }
         }

@@ -80,10 +80,17 @@ public class HotelService implements IHotelService {
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
     public EntityResult hotelDelete(Map<?, ?> keyMap) {
+        EntityResult er;
+        //Comprobamos que nos envia un id
+        if (!keyMap.containsKey(HotelDao.ID)) {
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
-        EntityResult er;
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }

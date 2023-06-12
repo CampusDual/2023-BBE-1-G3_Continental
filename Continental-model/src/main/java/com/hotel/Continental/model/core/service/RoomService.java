@@ -60,6 +60,23 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomInsert(Map<?, ?> attrMap) {
+        //Comprobar que se envian los campos necesarios
+        if (!attrMap.containsKey(RoomDao.IDHABITACION) || !attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Comprobar que el hotel existe
+        EntityResult hotel = this.daoHelper.query(this.roomDao, new HashMap<>(), Arrays.asList(RoomDao.IDHOTEL));
+        if (hotel.calculateRecordNumber() == 0) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            return er;
+        }
         EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
         room.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         return room;

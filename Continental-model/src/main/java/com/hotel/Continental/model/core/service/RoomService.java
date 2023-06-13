@@ -61,7 +61,7 @@ public class RoomService implements IRoomService {
      */
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
-        if (!attrMap.containsKey(RoomDao.IDHABITACION) || !attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
+        if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

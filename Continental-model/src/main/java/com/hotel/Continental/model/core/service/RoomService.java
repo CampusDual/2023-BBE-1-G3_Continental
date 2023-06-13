@@ -166,11 +166,31 @@ public class RoomService implements IRoomService {
         Date initialDate = null;
         Date finalDate = null;
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        //Comprubo que el formato de las fechas es correcto
         try {
             initialDate = formatter.parse(initialDateString);
             finalDate = formatter.parse(finalDateString);
+            keyMap.put("initialdate", initialDate);
+            keyMap.put("finaldate", finalDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            EntityResult er= new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
+            return er;
+        }
+        //Comprobar que la fecha inicial es anterior a la final
+        if (initialDate.after(finalDate)) {
+            EntityResult er= new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
+            return er;
+        }
+        //Comprobar que la fecha inicial es posterior a la actual
+        if (initialDate.before(new Date())) {
+            EntityResult er= new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.INITIAL_DATE_BEFORE_CURRENT_DATE);
+            return er;
         }
         BasicField startDateField = new BasicField(BookingDao.STARTDATE);
         BasicField endDateField = new BasicField(BookingDao.ENDDATE);

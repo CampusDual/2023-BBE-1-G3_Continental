@@ -106,7 +106,14 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
-        //Primero comprobamos si la reserva existe
+        //Comprobamos si se nos envia el id
+        if (keyMap.get(BookingDao.BOOKINGID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();

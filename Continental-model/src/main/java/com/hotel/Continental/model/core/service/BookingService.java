@@ -52,6 +52,7 @@ public class BookingService implements IBookingService {
      */
     @Override
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
+        //Primero comprobamos que nos envian startdate, enddate y client
         if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
                 attrMap.get(BookingDao.CLIENT) == null) {
             EntityResult er;
@@ -60,6 +61,7 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+        //Comprobamos que las fechas estan en el formato correcto y que la fecha final es posterior a la inicial
         String initialDateString = attrMap.remove(BookingDao.STARTDATE).toString();
         String finalDateString = attrMap.remove(BookingDao.ENDDATE).toString();
         Date initialDate = getDateFromString(initialDateString);
@@ -78,6 +80,14 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
             return er;
         }
+        //Comprobar que la fecha de inicio es posterior o igual a la fecha actual
+        Date currentDate = new Date();
+        if (initialDate.before(currentDate)) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.INITIAL_DATE_BEFORE_CURRENT_DATE);
+            return er;
+        }
         //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
         //Si esta libre se inserta
         //Si no esta libre se devuelve un error
@@ -86,6 +96,7 @@ public class BookingService implements IBookingService {
         Map<String, Object> roomAttrMap = new HashMap<>();
         roomAttrMap.put("initialdate", initialDateString);
         roomAttrMap.put("finaldate", finalDateString);
+        //Si se ha enviado el id de la habitacion se añade al mapa de atributos
         if (attrMap.get(BookingDao.ROOMID) != null) {
             roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
         }

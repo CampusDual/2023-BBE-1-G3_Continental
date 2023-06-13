@@ -19,7 +19,7 @@
           SELECT
             #COLUMNS#
           FROM
-             ${mainschema}.current_books
+             ${mainschema}.current_bookings
           #WHERE#
         ]]>
             </Sentence>

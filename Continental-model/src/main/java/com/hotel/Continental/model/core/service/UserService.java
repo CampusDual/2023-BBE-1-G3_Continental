@@ -1,10 +1,10 @@
-package com.hotel.continental.model.core.service;
+package com.hotel.Continental.model.core.service;
 
 
 import com.hotel.continental.api.core.service.IUserService;
-import com.hotel.continental.model.core.dao.UserDao;
-import com.hotel.continental.model.core.dao.UserRoleDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.Continental.model.core.dao.UserDao;
+import com.hotel.Continental.model.core.dao.UserRoleDao;
+import com.hotel.Continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;

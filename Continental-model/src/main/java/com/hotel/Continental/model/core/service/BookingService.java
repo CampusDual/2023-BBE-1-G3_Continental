@@ -1,9 +1,9 @@
-package com.hotel.continental.model.core.service;
+package com.hotel.Continental.model.core.service;
 
+import com.hotel.Continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
-import com.hotel.continental.model.core.dao.BookingDao;
-import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.Continental.model.core.dao.BookingDao;
+import com.hotel.Continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;

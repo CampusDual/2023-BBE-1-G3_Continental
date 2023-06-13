@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.Continental.model.core.dao.HotelDao;
+import com.hotel.Continental.model.core.service.HotelService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;

@@ -1,4 +1,4 @@
-package com.hotel.continental.model.core.tools;
+package com.hotel.Continental.model.core.tools;
 public class ErrorMessages {
     //Generales
     public final static String NECESSARY_KEY = "M_NECESSARY_KEY";

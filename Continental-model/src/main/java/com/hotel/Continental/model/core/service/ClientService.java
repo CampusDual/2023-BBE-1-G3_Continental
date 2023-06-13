@@ -212,16 +212,21 @@ public class ClientService implements IClientService {
     }
 
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
-        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        EntityResult er = new EntityResultMapImpl();
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
         if(keyMap.get(ClientDao.CLIENTID) != null){
-            if(client.calculateRecordNumber() == 0){
+            EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
+            if(client.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
                 return er;
             }
+            return client;
+        }else{
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
         }
-        return client;
     }
 }

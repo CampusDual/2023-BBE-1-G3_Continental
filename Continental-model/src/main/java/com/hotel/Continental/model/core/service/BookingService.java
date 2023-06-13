@@ -6,9 +6,11 @@ import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -33,6 +35,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con las reservas o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
         if (result == null || result.calculateRecordNumber() == 0) {
@@ -51,6 +54,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva insertada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
         if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
                 attrMap.get(BookingDao.CLIENT) == null) {
@@ -113,6 +117,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Comprobamos si se nos envia el id
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -140,6 +145,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);

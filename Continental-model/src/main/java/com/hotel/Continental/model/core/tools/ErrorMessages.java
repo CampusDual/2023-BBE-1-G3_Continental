@@ -15,6 +15,7 @@ public class ErrorMessages {
     //Fechas
     public final static String DATE_FORMAT_ERROR = "M_DATE_FORMAT_ERROR";
     public final static String FINAL_DATE_BEFORE_INITIAL_DATE = "M_FINAL_DATE_BEFORE_INITIAL_DATE";
+    public final static String INITIAL_DATE_BEFORE_CURRENT_DATE = "M_INITIAL_DATE_BEFORE_CURRENT_DATE";
     //Clientes
     public final static String CLIENT_NOT_EXIST = "M_CLIENT_NOT_EXIST";
     public final static String CLIENT_ALREADY_DELETED = "M_CLIENT_ALREADY_DELETED";

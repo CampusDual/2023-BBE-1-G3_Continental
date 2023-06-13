@@ -31,6 +31,7 @@ public class HotelService implements IHotelService {
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
+    @Override
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
@@ -49,6 +50,7 @@ public class HotelService implements IHotelService {
      * @param attrMap Mapa de atributos que se quieren obtener
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
+    @Override
     public EntityResult hotelInsert(Map<?, ?> attrMap) {
         if (!attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
             EntityResult er;
@@ -86,6 +88,7 @@ public class HotelService implements IHotelService {
      * @param keyMap Mapa de claves que identifican el hotel
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
+    @Override
     public EntityResult hotelDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id

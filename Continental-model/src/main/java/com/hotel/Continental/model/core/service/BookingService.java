@@ -32,6 +32,7 @@ public class BookingService implements IBookingService {
      * @param attrList Lista de atributos que se quieren devolver
      * @return EntityResult con las reservas o un mensaje de error
      */
+    @Override
     public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
         if (result == null || result.calculateRecordNumber() == 0) {
@@ -44,6 +45,12 @@ public class BookingService implements IBookingService {
         return result;
     }
 
+    /**
+     * Metodo que inserta una reserva
+     * @param attrMap Mapa con los campos de la reserva
+     * @return EntityResult con la reserva insertada o un mensaje de error
+     */
+    @Override
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
         if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
                 attrMap.get(BookingDao.CLIENT) == null) {
@@ -105,6 +112,7 @@ public class BookingService implements IBookingService {
      * @param keyMap Mapa con los campos de la clave
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
+    @Override
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Comprobamos si se nos envia el id
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -131,6 +139,7 @@ public class BookingService implements IBookingService {
      * @param keyMap  Mapa con los campos de la clave
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
+    @Override
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);

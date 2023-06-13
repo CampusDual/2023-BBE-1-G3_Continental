@@ -41,6 +41,7 @@ public class RoomService implements IRoomService {
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
@@ -59,6 +60,7 @@ public class RoomService implements IRoomService {
      * @param attrMap Mapa de atributos de la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
         if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
@@ -100,6 +102,7 @@ public class RoomService implements IRoomService {
      * @param keyMap Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
@@ -136,6 +139,7 @@ public class RoomService implements IRoomService {
      * @param keyMap  Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {

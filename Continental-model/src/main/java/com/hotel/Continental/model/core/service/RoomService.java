@@ -161,8 +161,10 @@ public class RoomService implements IRoomService {
 
         @Override
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
-        String initialDateString = keyMap.remove("initialdate").toString();
-        String finalDateString = keyMap.remove("finaldate").toString();
+        //Copiamos el mapa de claves para no modificar el original
+        Map<String, Object> keyMapCopy = new HashMap<>(keyMap);
+        String initialDateString = keyMapCopy.remove("initialdate").toString();
+        String finalDateString = keyMapCopy.remove("finaldate").toString();
         Date initialDate = null;
         Date finalDate = null;
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
@@ -170,6 +172,8 @@ public class RoomService implements IRoomService {
         try {
             initialDate = formatter.parse(initialDateString);
             finalDate = formatter.parse(finalDateString);
+            keyMap.remove("initialdate");
+            keyMap.remove("finaldate");
             keyMap.put("initialdate", initialDate);
             keyMap.put("finaldate", finalDate);
         } catch (ParseException e) {
@@ -216,7 +220,7 @@ public class RoomService implements IRoomService {
         EntityResult bookedRooms = this.daoHelper.query(this.bookingDao, filter, attrIdsBookedRooms, BookingDao.QUERY_BOOKED_ROOMS);
         //Si no hay habitaciones reservadas para esas fechas, se obtienen todas las habitaciones
         if (bookedRooms.get(BookingDao.ROOMID) == null) {
-            return this.daoHelper.query(this.roomDao, keyMap, attrList);
+            return this.daoHelper.query(this.roomDao, keyMapCopy, attrList);
         }
         //Si hay habitaciones reservadas para esas fechas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
         Map<String, Object> filter2 = new HashMap<>();
@@ -224,9 +228,9 @@ public class RoomService implements IRoomService {
         BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookingDao.ROOMID));
 
         //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
-        if (keyMap.get(RoomDao.IDHOTEL) != null) {
+        if (keyMapCopy.get(RoomDao.IDHOTEL) != null) {
 
-            BasicExpression bexpByHotel = new BasicExpression(new BasicField(RoomDao.IDHOTEL), BasicOperator.EQUAL_OP, keyMap.get(RoomDao.IDHOTEL));
+            BasicExpression bexpByHotel = new BasicExpression(new BasicField(RoomDao.IDHOTEL), BasicOperator.EQUAL_OP, keyMapCopy.get(RoomDao.IDHOTEL));
             BasicExpression bexpByIDSandHotel = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByHotel);
             //Se usa como filtro los ids+hotel
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDSandHotel);
@@ -235,7 +239,6 @@ public class RoomService implements IRoomService {
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
         }
         return this.daoHelper.query(this.roomDao, filter2, attrList);
-
     }
 
 }

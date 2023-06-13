@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Lazy
 @Service("BookingService")
@@ -47,6 +48,7 @@ public class BookingService implements IBookingService {
 
     /**
      * Metodo que inserta una reserva
+     *
      * @param attrMap Mapa con los campos de la reserva
      * @return EntityResult con la reserva insertada o un mensaje de error
      */
@@ -144,33 +146,40 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
-        if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
-            return er;
-        }
-        //Comprobamos si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
-        //Si esta libre se actualiza
-        //Si no esta libre se devuelve un error
-        List<String> roomKeyMap = new ArrayList<>();
-        roomKeyMap.add(RoomDao.IDHABITACION);
-        Map<String, Object> roomAttrMap = new HashMap<>();
-        roomAttrMap.put("initialdate", attrMap.get(BookingDao.STARTDATE));
-        roomAttrMap.put("finaldate", attrMap.get(BookingDao.ENDDATE));
-        //Si se nos envia el id de la habitacion se busca esa habitacion
-        if (attrMap.get(BookingDao.ROOMID) != null) {
-            roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
-        }
-        EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
-        //Comprobar que no dio error
-        if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {
-            return habitacionesLibres;
-        }
-        //Si hay habitaciones libres se busca si esa habitacion esta libre en esas fechas
-        //Si esta libre se actualiza
-        //Si no esta libre se devuelve un error
-        if (habitacionesLibres.calculateRecordNumber() > 0) {
+        //Si se envia alguna fecha comprobamos que se envian ambas
+        if (attrMap.get(BookingDao.STARTDATE) != null || attrMap.get(BookingDao.ENDDATE) != null) {
+            if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.NECESSARY_DATA);
+                return er;
+            }
+            //Comprobamos si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
+            //Si esta libre se actualiza
+            //Si no esta libre se devuelve un error
+            List<String> roomKeyMap = new ArrayList<>();
+            roomKeyMap.add(RoomDao.IDHABITACION);
+            Map<String, Object> roomAttrMap = new HashMap<>();
+            roomAttrMap.put("initialdate", attrMap.get(BookingDao.STARTDATE));
+            roomAttrMap.put("finaldate", attrMap.get(BookingDao.ENDDATE));
+            //Si se nos envia el id de la habitacion se busca esa habitacion
+            if (attrMap.get(BookingDao.ROOMID) != null) {
+                roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
+            }
+            EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
+            //Comprobar que no dio error
+            if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {
+                return habitacionesLibres;
+            }
+            //Si hay habitaciones libres se busca si esa habitacion esta libre en esas fechas
+            //Si esta libre se actualiza
+            //Si no esta libre se devuelve un error
+            if (habitacionesLibres.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.ROOM_NOT_FREE);
+                return er;
+            }
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
             attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
@@ -178,11 +187,8 @@ public class BookingService implements IBookingService {
             attrMap.remove(BookingDao.ENDDATE);
             attrMap.put(BookingDao.STARTDATE, roomAttrMap.get("initialdate"));
             attrMap.put(BookingDao.ENDDATE, roomAttrMap.get("finaldate"));
-            return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
         }
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_WRONG);
-        er.setMessage(ErrorMessages.ROOM_NOT_FREE);
-        return er;
+        return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
+
 }

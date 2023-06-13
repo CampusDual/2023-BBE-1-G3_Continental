@@ -50,6 +50,13 @@ public class HotelService implements IHotelService {
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
     public EntityResult hotelInsert(Map<?, ?> attrMap) {
+        if (!attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         return this.daoHelper.insert(hotelDao, attrMap);
     }
 

@@ -41,6 +41,7 @@ public class RoomService implements IRoomService {
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
@@ -59,6 +60,7 @@ public class RoomService implements IRoomService {
      * @param attrMap Mapa de atributos de la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
         room.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
@@ -71,6 +73,7 @@ public class RoomService implements IRoomService {
      * @param keyMap Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION, RoomDao.ROOMDOWNDATE));
@@ -99,6 +102,7 @@ public class RoomService implements IRoomService {
      * @param keyMap  Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         List<String> columns = new ArrayList<>();
         columns.add("idhabitacion");

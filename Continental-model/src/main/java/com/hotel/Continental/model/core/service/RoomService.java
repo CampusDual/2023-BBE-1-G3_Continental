@@ -41,6 +41,7 @@ public class RoomService implements IRoomService {
      * @param attrList Lista de atributos que se quieren obtener
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
@@ -59,6 +60,7 @@ public class RoomService implements IRoomService {
      * @param attrMap Mapa de atributos de la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
         if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
@@ -77,9 +79,21 @@ public class RoomService implements IRoomService {
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
-        EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
-        room.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
-        return room;
+        //Comprobar que la habitacion no existe
+        Map<Object, Object> erQueryRoomKeyMap = new HashMap<>();
+        erQueryRoomKeyMap.put(RoomDao.ROOMNUMBER, attrMap.get(RoomDao.ROOMNUMBER));
+        erQueryRoomKeyMap.put(RoomDao.IDHOTEL, attrMap.get(RoomDao.IDHOTEL));
+        EntityResult erQueryRoom = this.daoHelper.query(this.roomDao, erQueryRoomKeyMap, Arrays.asList(RoomDao.ROOMNUMBER, RoomDao.IDHOTEL));
+        if (erQueryRoom.calculateRecordNumber() != 0) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROOM_ALREADY_EXIST);
+            return er;
+        }
+        EntityResult erInsertRoom = this.daoHelper.insert(this.roomDao, attrMap);
+        erInsertRoom.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
+        return erInsertRoom;
     }
 
     /**
@@ -88,7 +102,16 @@ public class RoomService implements IRoomService {
      * @param keyMap Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomDelete(Map<?, ?> keyMap) {
+        //comprobar que se envian los campos necesarios
+        if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION, RoomDao.ROOMDOWNDATE));
         if (room.getCode() == EntityResult.OPERATION_WRONG) {
@@ -116,9 +139,18 @@ public class RoomService implements IRoomService {
      * @param keyMap  Mapa de claves que identifican la habitacion
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
+    @Override
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
+        //comprobar que se envian los campos necesarios
+        if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
         List<String> columns = new ArrayList<>();
-        columns.add("idhabitacion");
+        columns.add(RoomDao.IDHABITACION);
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, columns);
         if (room.getCode() == EntityResult.OPERATION_WRONG) {
@@ -127,7 +159,7 @@ public class RoomService implements IRoomService {
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
     }
 
-    @Override
+        @Override
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
         String initialDateString = keyMap.remove("initialdate").toString();
         String finalDateString = keyMap.remove("finaldate").toString();

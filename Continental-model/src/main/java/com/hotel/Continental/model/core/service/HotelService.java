@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IHotelService;
 import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -36,7 +37,7 @@ public class HotelService implements IHotelService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El hotel no existe");
+            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
         return hotel;
@@ -90,7 +91,7 @@ public class HotelService implements IHotelService {
         if (hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El hotel ya esta dado de baja");
+            er.setMessage(ErrorMessages.HOTEL_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos

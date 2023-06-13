@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -35,14 +36,14 @@ public class ClientService implements IClientService {
         if (keyMap.get(ClientDao.CLIENTID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El id del cliente no puede ser nulo");
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
         //Si el id del cliente no existe en la base de datos esta mal
         if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El id del cliente no existe en la base de datos");
+            er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
             return er;
         }
         //El check update hace las comprobaciones de los datos a insertar
@@ -52,7 +53,6 @@ public class ClientService implements IClientService {
         }
         EntityResult er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        er.setMessage("Cliente actualizado correctamente");
         return er;
     }
 
@@ -61,10 +61,10 @@ public class ClientService implements IClientService {
         EntityResult er = new EntityResultMapImpl();
         if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El id del cliente no existe en la base de datos");
+            er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
         } else if (isCanceled(keyMap)) {
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Este cliente ya ha sido dado de baja");
+            er.setMessage(ErrorMessages.CLIENT_ALREADY_DELETED);
         } else {
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put(ClientDao.CLIENTDOWNDATE, new Timestamp(System.currentTimeMillis()));
@@ -88,14 +88,14 @@ public class ClientService implements IClientService {
         if (attrMap.get(ClientDao.COUNTRYCODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Alguno de los campos necesarios  estan nulos");
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
         //Si alguno de los campos necesarios esta vacio esta mal
         if (((String) attrMap.get(ClientDao.COUNTRYCODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("Alguno de los campos necesarios  estan vacio");
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
         //El check comprueba que los datos a insertar/Actualizar son correctos
@@ -124,14 +124,14 @@ public class ClientService implements IClientService {
             if (((String) attrMap.get(ClientDao.COUNTRYCODE)).length() != 2) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage("El codigo de pais no tiene el formato correcto");
+                er.setMessage(ErrorMessages.COUNTRY_CODE_FORMAT_ERROR);
                 return er;
             }
             //Si el country code no es un codigo de pais valido esta mal
             if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage("El codigo de pais no es valido");
+                er.setMessage(ErrorMessages.COUNTRY_CODE_NOT_VALID);
                 return er;
             }
         }
@@ -140,14 +140,14 @@ public class ClientService implements IClientService {
             if (!checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage("El documento no es valido");
+                er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
                 return er;
             }
             //Si el documento ya exite en la base de datos esta mal
             if (existsKeymap(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage("El documento ya existe en la base de datos");
+                er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
                 return er;
             }
         }
@@ -216,12 +216,12 @@ public class ClientService implements IClientService {
         EntityResult er = new EntityResultMapImpl();
         if(client.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("El cliente no existe");
+            er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
             return er;
         }
         if (keyMap.get(ClientDao.CLIENTID) == null) {
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("No se ha enviado un id");
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
         return client;

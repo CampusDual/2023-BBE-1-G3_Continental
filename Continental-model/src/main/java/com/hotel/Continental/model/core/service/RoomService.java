@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IRoomService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -46,7 +47,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("La habitación no existe");
+            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
             return er;
         }
         return this.daoHelper.query(roomDao, keyMap, attrList);
@@ -81,7 +82,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage("La habitación ya está dada de baja");
+            er.setMessage(ErrorMessages.ROOM_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();

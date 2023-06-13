@@ -24,4 +24,5 @@ public class ErrorMessages {
     //Habitaciones
     public final static String ROOM_NOT_EXIST = "M_ROOM_NOT_EXIST";
     public final static String ROOM_ALREADY_INACTIVE = "M_ROOM_ALREADY_INACTIVE";
+    public final static String ROOM_ALREADY_EXIST = "M_ROOM_ALREADY_EXIST";
 }

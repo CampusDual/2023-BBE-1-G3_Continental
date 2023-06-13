@@ -60,9 +60,38 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     public EntityResult roomInsert(Map<?, ?> attrMap) {
-        EntityResult room = this.daoHelper.insert(this.roomDao, attrMap);
-        room.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
-        return room;
+        //Comprobar que se envian los campos necesarios
+        if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Comprobar que el hotel existe
+        EntityResult hotel = this.daoHelper.query(this.roomDao, new HashMap<>(), Arrays.asList(RoomDao.IDHOTEL));
+        if (hotel.calculateRecordNumber() == 0) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            return er;
+        }
+        //Comprobar que la habitacion no existe
+        Map<Object, Object> erQueryRoomKeyMap = new HashMap<>();
+        erQueryRoomKeyMap.put(RoomDao.ROOMNUMBER, attrMap.get(RoomDao.ROOMNUMBER));
+        erQueryRoomKeyMap.put(RoomDao.IDHOTEL, attrMap.get(RoomDao.IDHOTEL));
+        EntityResult erQueryRoom = this.daoHelper.query(this.roomDao, erQueryRoomKeyMap, Arrays.asList(RoomDao.ROOMNUMBER, RoomDao.IDHOTEL));
+        if (erQueryRoom.calculateRecordNumber() != 0) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROOM_ALREADY_EXIST);
+            return er;
+        }
+        EntityResult erInsertRoom = this.daoHelper.insert(this.roomDao, attrMap);
+        erInsertRoom.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
+        return erInsertRoom;
     }
 
     /**

@@ -1,8 +1,8 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
-import com.hotel.Continental.model.core.dao.BookingDao;
-import com.hotel.Continental.model.core.dao.RoomDao;
-import com.hotel.Continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.dao.BookingDao;
+import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IRoomService;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;

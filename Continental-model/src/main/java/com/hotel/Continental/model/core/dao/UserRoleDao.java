@@ -1,4 +1,4 @@
-package com.hotel.Continental.model.core.dao;
+package com.hotel.continental.model.core.dao;
 
 
 import com.ontimize.jee.server.dao.common.ConfigurationFile;
@@ -15,5 +15,5 @@ import org.springframework.stereotype.Repository;
 public class UserRoleDao extends OntimizeJdbcDaoSupport {
     public static final String id_user_role = "id_user_role";
     public static final String id_rolename = "id_rolename";
-    public static final String USER_ = "user_";
+    public static final String USERNAME = "username";
 }

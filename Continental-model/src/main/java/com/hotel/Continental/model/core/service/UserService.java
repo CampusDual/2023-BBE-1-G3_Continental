@@ -1,10 +1,10 @@
-package com.hotel.Continental.model.core.service;
+package com.hotel.continental.model.core.service;
 
 
 import com.hotel.continental.api.core.service.IUserService;
-import com.hotel.Continental.model.core.dao.UserDao;
-import com.hotel.Continental.model.core.dao.UserRoleDao;
-import com.hotel.Continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.dao.UserDao;
+import com.hotel.continental.model.core.dao.UserRoleDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -39,9 +39,10 @@ public class UserService implements IUserService {
     public EntityResult userQuery(Map<?, ?> keyMap, List<?> attrList) {
         return this.daoHelper.query(userDao, keyMap, attrList);
     }
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult userInsert(Map<?, ?> attrMap) {
         //Hay que asegurarse que el nif no este ya en la base de datos
-        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USER_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
+        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USERNAME) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
                 !attrMap.containsKey(UserDao.SURNAME)|| !attrMap.containsKey(UserDao.NIF)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -54,7 +55,7 @@ public class UserService implements IUserService {
         EntityResult userId = this.daoHelper.insert(this.userDao, attrMap);
         Map<String, Object> attrRole = new HashMap<>();
         attrRole.put(UserRoleDao.id_rolename, idRole);
-        attrRole.put(UserRoleDao.USER_, userId);
+        attrRole.put(UserRoleDao.USERNAME, userId);
 
         this.daoHelper.insert(userRoleDao, attrRole);
 

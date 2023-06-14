@@ -49,16 +49,17 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        Map<String,Object> prueba=new HashMap<>();
-        prueba.put("user_","nuevoregistro");
-        prueba.put(UserDao.PASSWORD,"nuevoregistro");
-        String idRole = attrMap.remove("role").toString();
-        EntityResult userId = this.daoHelper.insert(this.userDao, prueba);
-        Map<String, Object> attrRole = new HashMap<>();
-        attrRole.put(UserRoleDao.id_rolename, idRole);
-        attrRole.put(UserRoleDao.user_, userId);
 
-        this.daoHelper.insert(this.userRoleDao, attrRole);
+        EntityResult userId = this.daoHelper.insert(this.userDao, attrMap);
+        if (userId.getCode() != EntityResult.OPERATION_SUCCESSFUL) {
+            return userId;
+        }
+        String idRole = attrMap.remove("role").toString();
+        //Insertamos el rol del usuario
+        Map<String, Object> userRole = new HashMap<>();
+        userRole.put(UserRoleDao.user_, attrMap.get(UserDao.user_));
+        userRole.put(UserRoleDao.id_rolename, idRole);
+        EntityResult userRoleId = this.daoHelper.insert(this.userRoleDao, userRole);
 
         return userId;
     }

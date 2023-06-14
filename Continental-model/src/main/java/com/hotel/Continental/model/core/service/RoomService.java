@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.BookingDao;
+import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IRoomService;
@@ -13,6 +14,7 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.exceptions.OntimizeJEERuntimeException;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
@@ -27,6 +29,8 @@ import java.util.*;
 @Service("RoomService")
 public class RoomService implements IRoomService {
 
+    @Autowired
+    private HotelDao hotelDao;
     @Autowired
     private RoomDao roomDao;
     @Autowired
@@ -75,10 +79,10 @@ public class RoomService implements IRoomService {
             return er;
         }
         //Comprobar que el hotel existe
-        EntityResult hotel = this.daoHelper.query(this.roomDao, new HashMap<>(), Arrays.asList(RoomDao.IDHOTEL));
-        if (hotel.calculateRecordNumber() == 0) {
-            EntityResult er;
-            er = new EntityResultMapImpl();
+        try {
+            EntityResult hotel = this.daoHelper.query(this.hotelDao, new HashMap<>(), Arrays.asList(HotelDao.ID));
+        } catch (Exception e) {
+            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;

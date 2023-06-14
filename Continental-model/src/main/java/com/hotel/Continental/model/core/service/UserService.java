@@ -50,8 +50,8 @@ public class UserService implements IUserService {
             return er;
         }
         Map<String,Object> prueba=new HashMap<>();
-        prueba.put("user_","prueba");
-        prueba.put(UserDao.PASSWORD,"prueba");
+        prueba.put("user_","nuevoregistro");
+        prueba.put(UserDao.PASSWORD,"nuevoregistro");
         String idRole = attrMap.remove("role").toString();
         EntityResult userId = this.daoHelper.insert(this.userDao, prueba);
         Map<String, Object> attrRole = new HashMap<>();

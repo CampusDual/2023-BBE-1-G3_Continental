@@ -49,18 +49,20 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        Map<String,Object> prueba=new HashMap<>();
-        prueba.put("user_","nuevoregistro");
-        prueba.put(UserDao.PASSWORD,"nuevoregistro");
+
         String idRole = attrMap.remove("role").toString();
-        EntityResult userId = this.daoHelper.insert(this.userDao, prueba);
+
+        String idUser = (String) attrMap.get(UserDao.user_);
+
+        this.daoHelper.insert(this.userDao, attrMap);
+
         Map<String, Object> attrRole = new HashMap<>();
         attrRole.put(UserRoleDao.id_rolename, idRole);
-        attrRole.put(UserRoleDao.user_, userId);
+        attrRole.put(UserRoleDao.user_, idUser);
 
         this.daoHelper.insert(this.userRoleDao, attrRole);
 
-        return userId;
+        return null;
     }
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {

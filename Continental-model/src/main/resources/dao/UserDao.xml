@@ -6,16 +6,15 @@
     catalog="" schema="${mainschema}" table="tuser"
     datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>username</Column>
+        <Column>user_</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>username</Column>
+        <Column>user_</Column>
     </UpdateKeys>
-    <GeneratedKey>username</GeneratedKey>
     <Queries>
         <Query id="default">
             <ValidColumns>
-                <Column>username</Column>
+                <Column>user_</Column>
                 <Column>email</Column>
                 <Column>password</Column>
                 <Column>name</Column>
@@ -33,7 +32,7 @@
         </Query>    
         <Query id="login">
             <ValidColumns>
-                <Column>username</Column>
+                <Column>user_</Column>
                 <Column>email</Column>
                 <Column>password</Column>
                 <Column>name</Column>

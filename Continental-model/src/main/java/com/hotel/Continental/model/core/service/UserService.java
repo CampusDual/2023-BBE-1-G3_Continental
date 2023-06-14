@@ -42,22 +42,23 @@ public class UserService implements IUserService {
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult userInsert(Map<?, ?> attrMap) {
         //Hay que asegurarse que el nif no este ya en la base de datos
-        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USERNAME) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
+        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.user_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
                 !attrMap.containsKey(UserDao.SURNAME)|| !attrMap.containsKey(UserDao.NIF)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-
+        Map<String,Object> prueba=new HashMap<>();
+        prueba.put("user_","prueba");
+        prueba.put(UserDao.PASSWORD,"prueba");
         String idRole = attrMap.remove("role").toString();
-
-        EntityResult userId = this.daoHelper.insert(this.userDao, attrMap);
+        EntityResult userId = this.daoHelper.insert(this.userDao, prueba);
         Map<String, Object> attrRole = new HashMap<>();
         attrRole.put(UserRoleDao.id_rolename, idRole);
-        attrRole.put(UserRoleDao.USERNAME, userId);
+        attrRole.put(UserRoleDao.user_, userId);
 
-        this.daoHelper.insert(userRoleDao, attrRole);
+        this.daoHelper.insert(this.userRoleDao, attrRole);
 
         return userId;
     }

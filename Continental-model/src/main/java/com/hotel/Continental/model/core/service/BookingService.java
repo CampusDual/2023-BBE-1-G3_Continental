@@ -55,6 +55,8 @@ public class BookingService implements IBookingService {
     @Override
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
         //Comprobar que se han introducido los datos necesarios
+        //Primero comprobamos que nos envian startdate, enddate y client
+
         if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null ||
                 attrMap.get(BookingDao.CLIENT) == null) {
             EntityResult er;
@@ -72,6 +74,7 @@ public class BookingService implements IBookingService {
         roomAttrMap.put("initialdate", attrMap.get(BookingDao.STARTDATE));
         roomAttrMap.put("finaldate", attrMap.get(BookingDao.ENDDATE));
         //Si se nos envia el id de la habitacion se busca esa habitacion
+
         if (attrMap.get(BookingDao.ROOMID) != null) {
             roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
         }

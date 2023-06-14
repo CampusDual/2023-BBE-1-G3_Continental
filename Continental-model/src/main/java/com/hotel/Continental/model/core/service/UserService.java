@@ -59,8 +59,11 @@ public class UserService implements IUserService {
         Map<String, Object> attrRole = new HashMap<>();
         attrRole.put(UserRoleDao.id_rolename, idRole);
         attrRole.put(UserRoleDao.user_, idUser);
-
-        this.daoHelper.insert(this.userRoleDao, attrRole);
+        //Insertamos el rol del usuario
+        Map<String, Object> userRole = new HashMap<>();
+        userRole.put(UserRoleDao.user_, attrMap.get(UserDao.user_));
+        userRole.put(UserRoleDao.id_rolename, idRole);
+        this.daoHelper.insert(this.userRoleDao, userRole);
 
         return null;
     }

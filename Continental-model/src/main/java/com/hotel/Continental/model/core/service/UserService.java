@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 
 import com.hotel.continental.api.core.service.IUserService;
+import com.hotel.continental.model.core.dao.RoleDao;
 import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.dao.UserRoleDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Lazy
@@ -29,6 +32,9 @@ public class UserService implements IUserService {
     private UserRoleDao userRoleDao;
 
     @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
     public void loginQuery(Map<?, ?> key, List<?> attr) {
@@ -39,10 +45,10 @@ public class UserService implements IUserService {
     public EntityResult userQuery(Map<?, ?> keyMap, List<?> attrList) {
         return this.daoHelper.query(userDao, keyMap, attrList);
     }
-    @Secured({PermissionsProviderSecured.SECURED})
+
     public EntityResult userInsert(Map<?, ?> attrMap) {
         //Hay que asegurarse que el nif no este ya en la base de datos
-        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.user_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
+        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USER_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
                 !attrMap.containsKey(UserDao.SURNAME)|| !attrMap.containsKey(UserDao.NIF)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -51,21 +57,51 @@ public class UserService implements IUserService {
         }
 
         String idRole = attrMap.remove("role").toString();
+        String idUser = (String) attrMap.get(UserDao.USER_);
 
-        String idUser = (String) attrMap.get(UserDao.user_);
+        Map<String, Object> filterUser = new HashMap<>();
+        filterUser.put(UserDao.USER_, attrMap.get(UserDao.USER_));
 
-        this.daoHelper.insert(this.userDao, attrMap);
+        EntityResult query = this.daoHelper.query(this.userDao, filterUser, Arrays.asList(UserDao.USER_));
+
+        if (query.calculateRecordNumber() > 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(1);
+                er.setMessage(ErrorMessages.USER_ALREADY_EXIST);
+                return er;
+        }
+
+        Map<String, Object> filterRole = new HashMap<>();
+        filterRole.put(RoleDao.ID_ROLENAME, Integer.parseInt(idRole));
+
+        EntityResult roles = this.daoHelper.query(this.roleDao, filterRole, Arrays.asList(RoleDao.ID_ROLENAME));
+
+        if (roles.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.ROLE_DOESNT_EXIST);
+            return er;
+        }
+
+        if (!attrMap.get(UserDao.PASSWORD).toString().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.INCORRECT_PASSWORD);
+            return er;
+        }
+
+        EntityResult user = this.daoHelper.insert(this.userDao, attrMap);
 
         Map<String, Object> attrRole = new HashMap<>();
         attrRole.put(UserRoleDao.id_rolename, idRole);
         attrRole.put(UserRoleDao.user_, idUser);
         //Insertamos el rol del usuario
         Map<String, Object> userRole = new HashMap<>();
-        userRole.put(UserRoleDao.user_, attrMap.get(UserDao.user_));
+        userRole.put(UserRoleDao.user_, attrMap.get(UserDao.USER_));
         userRole.put(UserRoleDao.id_rolename, idRole);
         this.daoHelper.insert(this.userRoleDao, userRole);
 
-        return null;
+        return user;
     }
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
@@ -73,6 +109,12 @@ public class UserService implements IUserService {
     }
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userDelete(Map<?, ?> keyMap) {
+        if (!keyMap.containsKey(UserDao.USER_)) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         Map<Object, Object> attrMap = new HashMap<>();
         attrMap.put("user_down_date", new Timestamp(Calendar.getInstance().getTimeInMillis()));
         return this.daoHelper.update(this.userDao, attrMap, keyMap);

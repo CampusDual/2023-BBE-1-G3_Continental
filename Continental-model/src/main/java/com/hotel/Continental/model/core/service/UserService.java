@@ -10,6 +10,7 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
+import org.postgresql.shaded.com.ongres.scram.common.message.ServerFinalMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
@@ -41,11 +42,13 @@ public class UserService implements IUserService {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userQuery(Map<?, ?> keyMap, List<?> attrList) {
         return this.daoHelper.query(userDao, keyMap, attrList);
     }
 
+    @Override
     public EntityResult userInsert(Map<?, ?> attrMap) {
         //Hay que asegurarse que el nif no este ya en la base de datos
         if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USER_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
@@ -103,10 +106,34 @@ public class UserService implements IUserService {
 
         return user;
     }
+    @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
-        return this.daoHelper.update(userDao, attrMap, keyMap);
+        if(attrMap == null || attrMap.isEmpty()){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+
+        if(!keyMap.containsKey(UserDao.USER_)){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+
+        EntityResult queryUser = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER_));
+        if(queryUser.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.USER_DOESNT_EXIST);
+            return er;
+        }
+
+        return this.daoHelper.update(this.userDao, attrMap, keyMap);
     }
+    @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userDelete(Map<?, ?> keyMap) {
         if (!keyMap.containsKey(UserDao.USER_)) {
@@ -128,5 +155,4 @@ public class UserService implements IUserService {
         attrMap.put("user_down_date", new Timestamp(Calendar.getInstance().getTimeInMillis()));
         return this.daoHelper.update(this.userDao, attrMap, keyMap);
     }
-
 }

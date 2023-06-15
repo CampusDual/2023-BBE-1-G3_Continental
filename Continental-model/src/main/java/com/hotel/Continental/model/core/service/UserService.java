@@ -115,6 +115,15 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+
+        EntityResult query = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER_));
+        if (query.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.USER_DOESNT_EXIST);
+            return er;
+        }
+
         Map<Object, Object> attrMap = new HashMap<>();
         attrMap.put("user_down_date", new Timestamp(Calendar.getInstance().getTimeInMillis()));
         return this.daoHelper.update(this.userDao, attrMap, keyMap);

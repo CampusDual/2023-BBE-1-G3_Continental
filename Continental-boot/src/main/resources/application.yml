@@ -37,22 +37,22 @@ ontimize:
          client-permission-column: XMLCLIENTPERMISSION
       user-information-service:
          user-repository: UserDao
-         user-login-column: USER_
-         user-password-column: PASSWORD
+         user-login-column: user_
+         user-password-column: password
          query-id: login
          other-data:
-            - NAME
-            - SURNAME
-            - EMAIL
-            - NIF
-            - USERBLOCKED
-            - LASTPASSWORDUPDATE
-            - FIRSTLOGIN
+            - name
+            - surname
+            - email
+            - nif
+            - userblocked
+            - lastpasswordupdate
+            - firstlogin
       user-role-information-service:
          user-role-repository: UserRoleDao
          query-id: userRole
-         role-login-column: USER_
-         role-name-column: ROLENAME
+         role-login-column: user_
+         role-name-column: rolename
 server:
    port: 30030
    tomcat:

@@ -1,14 +1,16 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con las reservas o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
         if (result == null || result.calculateRecordNumber() == 0) {
@@ -53,6 +56,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva insertada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
         //Comprobar que se han introducido los datos necesarios
         //Primero comprobamos que nos envian startdate, enddate y client
@@ -106,6 +110,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Comprobamos si se nos envia el id
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -133,6 +138,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos que se ha introducido el id de la reserva
         if (keyMap.get(BookingDao.BOOKINGID) == null) {

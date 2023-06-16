@@ -1,9 +1,10 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IRoomService;
 import com.hotel.continental.model.core.dao.BookingDao;
+import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.api.core.service.IRoomService;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -11,9 +12,11 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.exceptions.OntimizeJEERuntimeException;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -25,6 +28,8 @@ import java.util.*;
 @Service("RoomService")
 public class RoomService implements IRoomService {
 
+    @Autowired
+    private HotelDao hotelDao;
     @Autowired
     private RoomDao roomDao;
     @Autowired
@@ -42,6 +47,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
@@ -61,6 +67,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
         if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
@@ -71,10 +78,10 @@ public class RoomService implements IRoomService {
             return er;
         }
         //Comprobar que el hotel existe
-        EntityResult hotel = this.daoHelper.query(this.roomDao, new HashMap<>(), Arrays.asList(RoomDao.IDHOTEL));
-        if (hotel.calculateRecordNumber() == 0) {
-            EntityResult er;
-            er = new EntityResultMapImpl();
+        try {
+            EntityResult hotel = this.daoHelper.query(this.hotelDao, new HashMap<>(), Arrays.asList(HotelDao.ID));
+        } catch (Exception e) {
+            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
@@ -103,6 +110,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
@@ -140,6 +148,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
@@ -160,6 +169,7 @@ public class RoomService implements IRoomService {
     }
 
         @Override
+        @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
         //Copiamos el mapa de claves para no modificar el original
         Map<String, Object> keyMapCopy = new HashMap<>(keyMap);

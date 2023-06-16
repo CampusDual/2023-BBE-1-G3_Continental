@@ -1,13 +1,15 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IHotelService;
 import com.hotel.continental.model.core.dao.HotelDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -32,6 +34,7 @@ public class HotelService implements IHotelService {
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
@@ -51,6 +54,7 @@ public class HotelService implements IHotelService {
      * @return EntityResult con los datos del hotel o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelInsert(Map<?, ?> attrMap) {
         if (!attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
             EntityResult er;
@@ -69,6 +73,7 @@ public class HotelService implements IHotelService {
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
@@ -89,6 +94,7 @@ public class HotelService implements IHotelService {
      * @return EntityResult que representa el éxito o fracaso de la operación
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id

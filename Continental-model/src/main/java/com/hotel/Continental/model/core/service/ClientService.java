@@ -5,9 +5,11 @@ import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -31,6 +33,7 @@ public class ClientService implements IClientService {
      * @return EntityResult con el id de los clientes o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
         if (keyMap.get(ClientDao.CLIENTID) == null) {
@@ -57,6 +60,7 @@ public class ClientService implements IClientService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientDelete(Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que se envia el id del cliente
@@ -88,6 +92,7 @@ public class ClientService implements IClientService {
      * @return EntityResult con los clientes o un mensaje de error
      */
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientInsert(Map<String, Object> attrMap) {
         //Si alguno de los campos necesarios esta nulo esta mal
         if (attrMap.get(ClientDao.COUNTRYCODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
@@ -217,6 +222,7 @@ public class ClientService implements IClientService {
         return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE) != null;
     }
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
         if(keyMap.get(ClientDao.CLIENTID) != null){

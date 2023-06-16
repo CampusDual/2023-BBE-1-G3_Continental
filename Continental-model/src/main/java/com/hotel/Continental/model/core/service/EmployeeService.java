@@ -8,9 +8,11 @@ import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -67,6 +69,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult employeeDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
@@ -87,6 +90,7 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }
+
         //Comprobamos que el empleado esta en activo
         if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
             er = new EntityResultMapImpl();
@@ -94,6 +98,7 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_INACTIVE);
             return er;
         }
+
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos
         attrMap.put(EmployeeDao.EMPLOYEEDOWNDATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
         //Devolvemos un entityResult que representa el éxito de la operación

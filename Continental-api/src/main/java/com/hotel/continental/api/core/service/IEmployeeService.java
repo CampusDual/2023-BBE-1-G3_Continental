@@ -6,4 +6,5 @@ import java.util.Map;
 public interface IEmployeeService {
     public EntityResult employeeInsert(Map<?, ?> attrMap);
     public EntityResult employeeDelete(Map<?, ?> keyMap);
+    public EntityResult employeeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap);
 }

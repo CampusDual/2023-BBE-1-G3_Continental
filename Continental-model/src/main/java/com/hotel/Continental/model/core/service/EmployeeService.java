@@ -1,10 +1,8 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
-import com.hotel.continental.api.core.service.IUserService;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
-import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -41,7 +39,7 @@ public class EmployeeService implements IEmployeeService {
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
         }
-        
+
         // Comprueba que el hotel existe
 
         Map<String, Object> filter = new HashMap<>();
@@ -54,7 +52,7 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
-//Check que no existe el nif
+        //Check que no existe el nif
         filter = new HashMap<>();
         filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
         EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
@@ -69,7 +67,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
@@ -83,7 +81,7 @@ public class EmployeeService implements IEmployeeService {
         //Si no existe, devolvemos un entityResult que representa un error
         Map<String, Object> filter = new HashMap<>();
         filter.put(EmployeeDao.EMPLOYEEID, keyMap.get(EmployeeDao.EMPLOYEEID));
-        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID,EmployeeDao.EMPLOYEEDOWNDATE));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID, EmployeeDao.EMPLOYEEDOWNDATE));
         if (employee.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -106,6 +104,53 @@ public class EmployeeService implements IEmployeeService {
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.setMessage("Empleado dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;
+    }
+
+    public EntityResult employeeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        Map<String, Object> filter = new HashMap<>();
+
+        //Comprobamos que nos envia un EmployeeId
+        if (!attrMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+        }
+
+        // Comprueba que el hotel existe
+        if (attrMap.containsKey(EmployeeDao.IDHOTEL)) {
+            filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
+            EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
+            if (hotel.calculateRecordNumber() == 0) {
+                er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+                return er;
+            }
+        }
+
+        //Comprobamos que el nif no existe
+        filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT, EmployeeDao.EMPLOYEEDOWNDATE));
+        if (attrMap.containsKey(EmployeeDao.DOCUMENT)) {
+            filter = new HashMap<>();
+
+            if (employee.calculateRecordNumber() > 0) {
+                er = new EntityResultMapImpl();
+                er.setCode(1);
+                er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
+                return er;
+            }
+        }
+        
+        //Check de que no esta dado de baja
+        if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
+            er = new EntityResultMapImpl();
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_INACTIVE);
+            return er;
+        }
+        return this.daoHelper.insert(this.employeeDao, attrMap);
     }
 }
 

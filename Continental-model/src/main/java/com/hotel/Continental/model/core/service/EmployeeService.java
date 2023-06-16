@@ -30,12 +30,14 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
-        if (!attrMap.containsKey(EmployeeDao.EMPLOYEEID) || !attrMap.containsKey(EmployeeDao.EMPLOYMENT) || !attrMap.containsKey(EmployeeDao.IDHOTEL)
+        if (!attrMap.containsKey(EmployeeDao.EMPLOYMENT) || !attrMap.containsKey(EmployeeDao.IDHOTEL)
                 || attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
         }
+        
+        // Comprueba que el hotel existe
 
         Map<String, Object> filter = new HashMap<>();
         filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
@@ -47,9 +49,9 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
-
+//Check que no existe el nif
         filter = new HashMap<>();
-        filter.put(EmployeeDao.EMPLOYEEID, attrMap.get(EmployeeDao.EMPLOYEEID));
+        filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
         EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
 
         if (nif.calculateRecordNumber() > 0) {

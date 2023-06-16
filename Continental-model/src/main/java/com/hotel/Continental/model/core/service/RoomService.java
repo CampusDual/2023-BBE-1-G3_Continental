@@ -78,19 +78,24 @@ public class RoomService implements IRoomService {
             return er;
         }
         //Comprobar que el hotel existe
-        try {
-            EntityResult hotel = this.daoHelper.query(this.hotelDao, new HashMap<>(), Arrays.asList(HotelDao.ID));
-        } catch (Exception e) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
-            return er;
-        }
+
+            Map<String, Object> filterHotel = new HashMap<>();
+            filterHotel.put(HotelDao.ID, attrMap.get(RoomDao.IDHOTEL));
+            EntityResult hotel = this.daoHelper.query(this.hotelDao, filterHotel, Arrays.asList(HotelDao.ID));
+
+            if (hotel.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+                return er;
+            }
+
         //Comprobar que la habitacion no existe
         Map<Object, Object> erQueryRoomKeyMap = new HashMap<>();
         erQueryRoomKeyMap.put(RoomDao.ROOMNUMBER, attrMap.get(RoomDao.ROOMNUMBER));
         erQueryRoomKeyMap.put(RoomDao.IDHOTEL, attrMap.get(RoomDao.IDHOTEL));
         EntityResult erQueryRoom = this.daoHelper.query(this.roomDao, erQueryRoomKeyMap, Arrays.asList(RoomDao.ROOMNUMBER, RoomDao.IDHOTEL));
+
         if (erQueryRoom.calculateRecordNumber() != 0) {
             EntityResult er;
             er = new EntityResultMapImpl();
@@ -98,6 +103,7 @@ public class RoomService implements IRoomService {
             er.setMessage(ErrorMessages.ROOM_ALREADY_EXIST);
             return er;
         }
+
         EntityResult erInsertRoom = this.daoHelper.insert(this.roomDao, attrMap);
         erInsertRoom.setMessage("La habitación ha sido dada de alta con fecha " + new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         return erInsertRoom;

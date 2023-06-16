@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
 import com.hotel.continental.api.core.service.IUserService;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Lazy
@@ -61,5 +63,20 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
         return this.daoHelper.insert(this.employeeDao, attrMap);
+    }
+
+    @Override
+    public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
+        if(keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)){
+            EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
+            if(employees.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.FILTER_DOESNT_EXIST);
+                return er;
+            }
+            return employees;
+        }
+        return this.daoHelper.query(this.employeeDao, keyMap, attrList);
     }
 }

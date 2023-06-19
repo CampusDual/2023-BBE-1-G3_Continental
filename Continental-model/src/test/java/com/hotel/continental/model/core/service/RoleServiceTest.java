@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoleDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -75,6 +76,61 @@ public class RoleServiceTest {
             List<Object> attr = new ArrayList<>();
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
             EntityResult result = roleService.roleQuery(keyMap, attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+    }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class TestRoleInsert {
+        @Test
+        @DisplayName("Test role insert good")
+        void testRoleInsertGood() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            EntityResult erQuery=new EntityResultMapImpl();
+            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ROLENAME,"admin");
+            //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
+            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
+            //Ejecutamos el insert
+            when(daoHelper.insert(any(RoleDao.class), anyMap())).thenReturn(er);
+            EntityResult result = roleService.roleInsert(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test role insert null data ")
+        void testRoleInsertNullData() {
+            Map<String, Object> attr = new HashMap<>();
+            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
+            EntityResult result = roleService.roleInsert(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+        }
+        @Test
+        @DisplayName("Test role insert empty data")
+        void testRoleInsertEmptyData() {
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ROLENAME,"");
+            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
+            EntityResult result = roleService.roleInsert(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+        }
+        @Test
+        @DisplayName("Test role insert duplicated data")
+        void testRoleInsertDuplicatedData() {
+            EntityResult erQuery=new EntityResultMapImpl();
+            erQuery.put(RoleDao.ROLENAME, List.of("admin"));
+            erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ROLENAME,"admin");
+            //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
+            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
+            //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
+            EntityResult result = roleService.roleInsert(attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
     }

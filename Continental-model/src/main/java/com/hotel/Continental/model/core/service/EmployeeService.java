@@ -1,6 +1,8 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
+import com.hotel.continental.api.core.service.IUserService;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -18,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Lazy
@@ -74,6 +77,49 @@ public class EmployeeService implements IEmployeeService {
         if(attrMap.isEmpty() || keyMap.isEmpty()) {
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+
+        //Comprobamos que nos envia un EmployeeId
+        if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+
+        // Comprobar que el empleado exista
+        if(this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID)) == null){
+            er.setCode(1);
+            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+            return er;
+        }
+
+        return this.daoHelper.update(this.employeeDao, attrMap, keyMap);
+    }
+          
+    @Override
+    public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
+        if(keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)){
+            EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
+            if(employees.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.EMPLOYEE_DOESNT_EXIST);
+                return er;
+            }
+            return employees;
+        }
+        return this.daoHelper.query(this.employeeDao, keyMap, attrList);
+    }
+  
+    @Secured({ PermissionsProviderSecured.SECURED })
+    public EntityResult employeeDelete(Map<?, ?> keyMap) {
+        EntityResult er;
+        //Comprobamos que nos envia un id
+        if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
 

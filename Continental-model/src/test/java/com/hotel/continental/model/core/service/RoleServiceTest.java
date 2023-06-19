@@ -6,8 +6,10 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+@ExtendWith(MockitoExtension.class)
 
 public class RoleServiceTest {
     //Generame los test para el metodo roleQuery
@@ -50,6 +53,8 @@ public class RoleServiceTest {
         void testRoleQueryGoodWitoutFilter() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            er.put(RoleDao.ID_ROLENAME, List.of(1));
+            er.put(RoleDao.ROLENAME, List.of("admin"));
 
             Map<String, Object> keyMap = new HashMap<>();
             List<Object> attr = new ArrayList<>();
@@ -65,7 +70,6 @@ public class RoleServiceTest {
         void testRoleQueryBadWithoutColumns() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoleDao.ROLENAME,"admin");
             List<Object> attr = new ArrayList<>();

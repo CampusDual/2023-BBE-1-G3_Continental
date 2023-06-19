@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
 import com.hotel.continental.api.core.service.IUserService;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Lazy
@@ -54,7 +56,7 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
-//Check que no existe el nif
+        //Check que no existe el nif
         filter = new HashMap<>();
         filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
         EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
@@ -69,6 +71,19 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
+        if(keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)){
+            EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
+            if(employees.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(EntityResult.OPERATION_WRONG);
+                er.setMessage(ErrorMessages.EMPLOYEE_DOESNT_EXIST);
+                return er;
+            }
+            return employees;
+        }
+        return this.daoHelper.query(this.employeeDao, keyMap, attrList);
+  
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult employeeDelete(Map<?, ?> keyMap) {
         EntityResult er;

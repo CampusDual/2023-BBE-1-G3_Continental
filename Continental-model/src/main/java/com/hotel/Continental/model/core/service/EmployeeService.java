@@ -108,49 +108,29 @@ public class EmployeeService implements IEmployeeService {
 
     public EntityResult employeeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
-        Map<String, Object> filter = new HashMap<>();
 
-        //Comprobamos que nos envia un EmployeeId
-        if (!attrMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+        // Comprobar que los mapas no están vacios
+        if(attrMap.isEmpty() || keyMap.isEmpty()) {
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
-        }
-
-        // Comprueba que el hotel existe
-        if (attrMap.containsKey(EmployeeDao.IDHOTEL)) {
-            filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
-            EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
-            if (hotel.calculateRecordNumber() == 0) {
-                er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
-                return er;
-            }
-        }
-
-        //Comprobamos que el nif no existe
-        filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
-        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT, EmployeeDao.EMPLOYEEDOWNDATE));
-        if (attrMap.containsKey(EmployeeDao.DOCUMENT)) {
-            filter = new HashMap<>();
-
-            if (employee.calculateRecordNumber() > 0) {
-                er = new EntityResultMapImpl();
-                er.setCode(1);
-                er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
-                return er;
-            }
-        }
-        
-        //Check de que no esta dado de baja
-        if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
-            er = new EntityResultMapImpl();
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_INACTIVE);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        return this.daoHelper.insert(this.employeeDao, attrMap);
+
+        //Comprobamos que nos envia un EmployeeId
+        if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+
+        // Comprobar que el empleado exista
+        if(this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID)) == null){
+            er.setCode(1);
+            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+            return er;
+        }
+
+        return this.daoHelper.update(this.employeeDao, attrMap, keyMap);
     }
 }
 

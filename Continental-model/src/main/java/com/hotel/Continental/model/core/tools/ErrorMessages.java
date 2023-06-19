@@ -30,5 +30,5 @@ public class ErrorMessages {
     public final static String USER_ALREADY_EXIST = "USER_ALREADY_EXIST";
     public final static String INCORRECT_PASSWORD = "INCORRECT_PASSWORD";
     public final static String USER_DOESNT_EXIST = "USER_DOESNT_EXIST";
-    public final static String FILTER_DOESNT_EXIST = "FILTER_DOESNT_EXIST";
+    public final static String EMPLOYEE_DOESNT_EXIST = "EMPLOYEE_DOESNT_EXIST";
 }

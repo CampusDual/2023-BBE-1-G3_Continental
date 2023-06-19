@@ -72,7 +72,7 @@ public class EmployeeService implements IEmployeeService {
             if(employees.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.FILTER_DOESNT_EXIST);
+                er.setMessage(ErrorMessages.EMPLOYEE_DOESNT_EXIST);
                 return er;
             }
             return employees;

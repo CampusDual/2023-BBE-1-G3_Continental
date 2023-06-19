@@ -28,6 +28,7 @@ public class ErrorMessages {
     public final static String ROOM_ALREADY_EXIST = "M_ROOM_ALREADY_EXIST";
     //Roles
     public final static String ROLE_DOESNT_EXIST = "M_ROLE_DOESNT_EXIST";
+    public final static String ROLE_ALREADY_EXISTS = "M_ROLE_ALREADY_EXISTS";
     //Usuarios
     public final static String USER_ALREADY_EXIST = "M_USER_ALREADY_EXIST";
     public final static String INCORRECT_PASSWORD = "M_INCORRECT_PASSWORD";

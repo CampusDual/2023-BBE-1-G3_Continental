@@ -125,6 +125,7 @@ public class EmployeeService implements IEmployeeService {
 
         //Comprobamos que nos envia un EmployeeId
         if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+            er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
@@ -132,12 +133,13 @@ public class EmployeeService implements IEmployeeService {
 
         // Comprobar que el empleado exista
         if(this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID)) == null){
+            er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }
 
-        return this.daoHelper.update(this.employeeDao, attrMap, keyMap);
+        return this.daoHelper.update(this.employeeDao, keyMap, keyMap);
     }
 }
 

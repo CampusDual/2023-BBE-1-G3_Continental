@@ -136,6 +136,59 @@ public class RoleServiceTest {
     }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class TestRoleDelete {
+        @Test
+        @DisplayName("Test role delete good")
+        void testRoleDeleteGood() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            EntityResult erQuery = new EntityResultMapImpl();
+            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ID_ROLENAME, 1);
+            //el delete comprueba a traves de un query que existe asique devolvemos un entity result okey + 1 resultado
+            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
+            //Ejecutamos el delete
+            when(daoHelper.delete(any(RoleDao.class), anyMap())).thenReturn(er);
+            EntityResult result = roleService.roleDelete(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test role delete null key ")
+        void testRoleDeleteNullKey() {
+            Map<String, Object> attr = new HashMap<>();
+            //Ejecutamos el delete, al no tener clave nos va petar sin llegar a tener que mockear nada
+            EntityResult result = roleService.roleDelete(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+
+        @Test
+        @DisplayName("Test role delete not exist key")
+        void testRoleDeleteNotExistKey() {
+            EntityResult erQuery = new EntityResultMapImpl();
+            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ID_ROLENAME, 1);
+            //Ejecutamos el delete, al no existir la clave nos va petar sin llegar a tener que mockear nada
+            EntityResult result = roleService.roleDelete(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+            Assertions.assertEquals(ErrorMessages.ROLE_DOESNT_EXIST, result.getMessage());
+        }
+
+        @Test
+        @DisplayName("Test role delete admin")
+        void testRoleDeleteAdmin() {
+            Map<String, Object> attr = new HashMap<>();
+            attr.put(RoleDao.ID_ROLENAME, 0);
+            //Ejecutamos el delete, da error porque se esta intentando borrar el admin
+            EntityResult result = roleService.roleDelete(attr);
+            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+    }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleUpdate {
         @Test
         @DisplayName("Test role update good")
@@ -159,10 +212,8 @@ public class RoleServiceTest {
             //Ejecutamos el insert
             when(daoHelper.update(any(RoleDao.class), anyMap(),anyMap())).thenReturn(er);
             EntityResult result = roleService.roleUpdate(attr,keyMap);
-            System.out.println(result.getMessage());
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
-
         @Test
         @DisplayName("Test role update null key ")
         void testRoleUpdateNullKey() {

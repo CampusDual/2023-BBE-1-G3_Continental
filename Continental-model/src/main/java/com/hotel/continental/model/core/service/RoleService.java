@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRoleService;
 import com.hotel.continental.model.core.dao.RoleDao;
+import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -12,9 +13,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 @Lazy
 @Service("RoleService")
 public class RoleService implements IRoleService {
@@ -73,6 +75,31 @@ public class RoleService implements IRoleService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
+    public EntityResult roleDelete(Map<?, ?> keyMap) {
+        if (!keyMap.containsKey(RoleDao.ID_ROLENAME)) {
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        if (keyMap.get(RoleDao.ID_ROLENAME).equals("0")) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ADMIN_ROLE_NOT_EDITABLE);
+            return er;
+        }
+        //si el rol no existe lanzar un error
+        EntityResult role = roleQuery(keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
+        if (role.getCode() == EntityResult.OPERATION_WRONG) {
+            return role;
+        }
+        EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
+        er.setMessage("El role con codigo " + keyMap.get(RoleDao.ID_ROLENAME) + " ha sido borrado correctamente");
+        return er;
+    }
+
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
         //Comprobamos que nos manda la clave primaria o que no es nula o vacia

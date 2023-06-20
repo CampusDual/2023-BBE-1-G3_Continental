@@ -75,6 +75,7 @@ public class RoleService implements IRoleService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleDelete(Map<?, ?> keyMap) {
         if (!keyMap.containsKey(RoleDao.ID_ROLENAME)) {
             EntityResult er;

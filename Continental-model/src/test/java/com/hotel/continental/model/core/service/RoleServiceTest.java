@@ -187,6 +187,8 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
     }
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleUpdate {
         @Test
         @DisplayName("Test role update good")

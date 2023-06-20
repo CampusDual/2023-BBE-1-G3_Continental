@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,8 +151,10 @@ public class BookingServiceTest {
             erUpdate.put(BookingDao.ROOMID, List.of(2));
             erUpdate.put(BookingDao.STARTDATE, List.of("2010-06-09"));
             erUpdate.put(BookingDao.ENDDATE, List.of("2010-10-09"));
-
-
+            EntityResult erFreeRooms= new EntityResultMapImpl();
+            erFreeRooms.setCode(0);
+            erFreeRooms.put(RoomDao.IDHOTEL, List.of(0));
+            when(roomService.freeRoomsQuery(anyMap(),anyList())).thenReturn(erFreeRooms);
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
             when(daoHelper.update(any(BookingDao.class), anyMap(), anyMap())).thenReturn(er);
 
@@ -178,15 +181,13 @@ public class BookingServiceTest {
         void testUpdateBookingEmpty() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
-            er.put(BookingDao.CLIENT, List.of(0));
-            er.put(BookingDao.ROOMID, List.of(1));
-            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
+            er.put(BookingDao.CLIENT, new ArrayList<>());
+            er.put(BookingDao.ROOMID, new ArrayList<>());
+            er.put(BookingDao.STARTDATE, List.of(""));
+            er.put(BookingDao.ENDDATE, List.of(""));
 
-            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
-
+           //No hace falta mockear nada porque lanza error antes
             EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
-
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
 

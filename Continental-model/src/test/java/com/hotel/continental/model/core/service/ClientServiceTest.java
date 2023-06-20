@@ -296,15 +296,11 @@ public class ClientServiceTest {
         void testQueryNullData() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
-
             List<String> columns = new ArrayList<>();
             columns.add(ClientDao.CLIENTID);
-
-            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
-
+            //No hace falta mockear porque lanza error antes
             EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }

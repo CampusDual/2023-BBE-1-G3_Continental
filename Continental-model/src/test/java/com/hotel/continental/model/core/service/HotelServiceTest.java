@@ -69,14 +69,10 @@ public class HotelServiceTest {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
             Map<String, Object> hotelToInsert = new HashMap<>();
-
-
+            hotelToInsert.put(HotelDao.NAME, "test");
+            hotelToInsert.put(HotelDao.ADDRESS, "test");
             when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
-
-
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
-
-
             assertEquals(0, result.getCode());
         }
 
@@ -85,15 +81,9 @@ public class HotelServiceTest {
         void testInsertHotelNull() {
             EntityResult er = null;
             Map<String, Object> hotelToInsert = new HashMap<>();
-
-
-            when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
-
-
+            //No hace falta mockear nada porque lanza error antes
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
-
-
-            assertNull(result);
+            assertEquals(result.getCode(),EntityResult.OPERATION_WRONG);
         }
     }
 

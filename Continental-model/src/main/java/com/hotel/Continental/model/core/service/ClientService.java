@@ -3,7 +3,6 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
-import org.apache.commons.validator.routines.*;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -148,7 +147,7 @@ public class ClientService implements IClientService {
         }
         if (attrMap.get(ClientDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
+            if (!checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
@@ -177,8 +176,8 @@ public class ClientService implements IClientService {
     private boolean checkDocument(String document, String countryCode) {
         if (countryCode.equals("ES")) {
             String dniRegex = "^\\d{8}[A-HJ-NP-TV-Z]$";
-            String nieRegex = "/^[XYZ]\\d{7}[A-Z]$/\n";
-            String cifRegex = "^[A-Za-z][0-9]{8}$";
+            String nieRegex = "^[XYZ]\\d{7}[A-Z]$";
+            String cifRegex = "^([ABCDEFGHJKLMNPQRSUVW])(\\d{7})([0-9A-J])$";
             if (document.matches(dniRegex)) {
                 String dniNumbers = document.substring(0, 8);
                 String dniLetter = document.substring(8).toUpperCase();
@@ -188,16 +187,16 @@ public class ClientService implements IClientService {
                 char calculatedLetter = validLetters.charAt(dniMod);
                 return dniLetter.charAt(0) == calculatedLetter;
             }
-            if (document.matches(nieRegex)) {
-                String firstLetter = document.substring(0,1);
-                if (!firstLetter.equals("Z") || !firstLetter.equals("X") || !firstLetter.equals("Y")) {
-                    return false;
+            String firstLetter = document.substring(0,1);
+            if (firstLetter.equals("Z") || firstLetter.equals("X") || firstLetter.equals("Y")) {
+                if (document.matches(nieRegex)) {
+                    String nieNumbers = document.substring(1, 7);
+                    String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
+                    String lastLetter = document.substring(8);
+                    int nieMod = Integer.parseInt(nieNumbers) % 23;
+                    char calculatedLetter = validLetters.charAt(nieMod);
+                    return lastLetter.charAt(0) == calculatedLetter;
                 }
-                String nieNumbers = document.substring(1, 7);
-                String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
-                int nieMod = Integer.parseInt(nieNumbers) % 23;
-                char calculatedLetter = validLetters.charAt(nieMod);
-                return firstLetter.charAt(0) == calculatedLetter;
             }
             if (document.matches(cifRegex)) {
                 return true;

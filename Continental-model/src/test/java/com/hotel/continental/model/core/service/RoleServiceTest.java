@@ -159,7 +159,6 @@ public class RoleServiceTest {
         @DisplayName("Test role delete null key ")
         void testRoleDeleteNullKey() {
             Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ID_ROLENAME, null);
             //Ejecutamos el delete, al no tener clave nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleDelete(attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());

@@ -8,4 +8,5 @@ import java.util.Map;
 public interface IRoleService {
     public EntityResult roleQuery(Map<?, ?> keyMap, List<?> attrList);
     public EntityResult roleInsert(Map<String, Object> attrMap);
+    public EntityResult roleDelete(Map<?,?>keyMap);
 }

@@ -33,8 +33,6 @@ public class ErrorMessages {
     public final static String USER_ALREADY_EXIST = "M_USER_ALREADY_EXIST";
     public final static String INCORRECT_PASSWORD = "M_INCORRECT_PASSWORD";
     public final static String USER_DOESNT_EXIST = "M_USER_DOESNT_EXIST";
-    public final static String EMPLOYEE_DOESNT_EXIST = "M_EMPLOYEE_DOESNT_EXIST";
-
     //Empleados
     public final static String EMPLOYEE_NOT_EXIST = "M_EMPLOYEE_NOT_EXIST";
     public final static String EMPLOYEE_ALREADY_INACTIVE = "M_EMPLOYEE_ALREADY_INACTIVE";

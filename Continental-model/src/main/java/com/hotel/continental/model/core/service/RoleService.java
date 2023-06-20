@@ -1,7 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRoleService;
-import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoleDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -41,6 +40,7 @@ public class RoleService implements IRoleService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleInsert(Map<String, Object> attrMap) {
         //Comnprobamos que nos mandan los atributos necesarios(rolename)
         if(!attrMap.containsKey(RoleDao.ROLENAME)){
@@ -96,6 +96,49 @@ public class RoleService implements IRoleService {
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
         er.setMessage("El role con codigo " + keyMap.get(RoleDao.ID_ROLENAME) + " ha sido borrado correctamente");
+        return er;
+    }
+
+    @Secured({ PermissionsProviderSecured.SECURED })
+    public EntityResult roleUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
+        //Comprobamos que nos manda la clave primaria o que no es nula o vacia
+        if(!keyMap.containsKey(RoleDao.ID_ROLENAME) || keyMap.get(RoleDao.ID_ROLENAME) == null || keyMap.get(RoleDao.ID_ROLENAME).toString().isEmpty()){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobamos que nos mandan el rolename
+        if(!attrMap.containsKey(RoleDao.ROLENAME)){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Ponemos el rolename en minusculas
+        attrMap.put(RoleDao.ROLENAME, attrMap.remove(RoleDao.ROLENAME).toString().toLowerCase());
+        //Comprobamos que ese rol existe
+        EntityResult role = this.daoHelper.query(this.roleDao, keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
+        if(role.calculateRecordNumber() == 0){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROLE_DOESNT_EXIST);
+            return er;
+        }
+        //Comprobamos que no hay otro rol con ese rolename
+        EntityResult role2 = this.daoHelper.query(this.roleDao, attrMap, Arrays.asList(RoleDao.ROLENAME));
+        if(role2.calculateRecordNumber() > 0){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROLE_ALREADY_EXISTS);
+            return er;
+        }
+        //Actualizamos el rol
+        EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
         return er;
     }
 }

@@ -9,4 +9,6 @@ public interface IRoleService {
     public EntityResult roleQuery(Map<?, ?> keyMap, List<?> attrList);
     public EntityResult roleInsert(Map<String, Object> attrMap);
     public EntityResult roleDelete(Map<?,?>keyMap);
+    public EntityResult roleUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap);
+
 }

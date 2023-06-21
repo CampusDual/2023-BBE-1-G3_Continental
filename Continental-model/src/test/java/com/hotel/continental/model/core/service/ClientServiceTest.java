@@ -51,8 +51,6 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test client insert with empty data")
         void testClientInsertEmptyData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "");
@@ -64,8 +62,6 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test client insert with null data")
         void testClientInsertNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, null);

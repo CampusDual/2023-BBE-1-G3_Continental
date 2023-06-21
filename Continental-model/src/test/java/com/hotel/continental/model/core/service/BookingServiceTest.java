@@ -76,8 +76,6 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking insert with null data")
         void testInsertBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
@@ -116,8 +114,6 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking query with null data")
         void testQueryBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
@@ -187,8 +183,6 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking update with null data")
         void testUpdateBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
@@ -260,8 +254,6 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking delete with null data")
         void testDeleteBookingNull() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToDelete = new HashMap<>();
             bookingToDelete.put(BookingDao.BOOKINGID, null);

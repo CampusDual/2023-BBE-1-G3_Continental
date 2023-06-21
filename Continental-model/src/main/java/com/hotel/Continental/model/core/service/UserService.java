@@ -48,7 +48,7 @@ public class UserService implements IUserService {
     @Override
     public EntityResult userInsert(Map<?, ?> attrMap) {
         //Hay que asegurarse que el nif no este ya en la base de datos
-        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USER) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
+        if (!attrMap.containsKey("role") || !attrMap.containsKey(UserDao.USER_) || !attrMap.containsKey(UserDao.PASSWORD) || !attrMap.containsKey(UserDao.NAME) ||
                 !attrMap.containsKey(UserDao.SURNAME)|| !attrMap.containsKey(UserDao.NIF)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -57,12 +57,12 @@ public class UserService implements IUserService {
         }
 
         String idRole = attrMap.remove("role").toString();
-        String idUser = (String) attrMap.get(UserDao.USER);
+        String idUser = (String) attrMap.get(UserDao.USER_);
 
         Map<String, Object> filterUser = new HashMap<>();
-        filterUser.put(UserDao.USER, attrMap.get(UserDao.USER));
+        filterUser.put(UserDao.USER_, attrMap.get(UserDao.USER_));
 
-        EntityResult query = this.daoHelper.query(this.userDao, filterUser, Arrays.asList(UserDao.USER));
+        EntityResult query = this.daoHelper.query(this.userDao, filterUser, Arrays.asList(UserDao.USER_));
 
         if (query.calculateRecordNumber() > 0) {
                 EntityResult er = new EntityResultMapImpl();
@@ -97,7 +97,7 @@ public class UserService implements IUserService {
         attrRole.put(UserRoleDao.USER, idUser);
         //Insertamos el rol del usuario
         Map<String, Object> userRole = new HashMap<>();
-        userRole.put(UserRoleDao.USER, attrMap.get(UserDao.USER));
+        userRole.put(UserRoleDao.USER, attrMap.get(UserDao.USER_));
         userRole.put(UserRoleDao.ID_ROLENAME, idRole);
         this.daoHelper.insert(this.userRoleDao, userRole);
 
@@ -113,14 +113,14 @@ public class UserService implements IUserService {
             return er;
         }
 
-        if(!keyMap.containsKey(UserDao.USER)){
+        if(!keyMap.containsKey(UserDao.USER_)){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
 
-        EntityResult queryUser = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER));
+        EntityResult queryUser = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER_));
         if(queryUser.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -133,14 +133,14 @@ public class UserService implements IUserService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult userDelete(Map<?, ?> keyMap) {
-        if (!keyMap.containsKey(UserDao.USER)) {
+        if (!keyMap.containsKey(UserDao.USER_)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
 
-        EntityResult query = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER));
+        EntityResult query = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER_));
         if (query.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);

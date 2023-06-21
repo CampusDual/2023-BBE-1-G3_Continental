@@ -92,7 +92,7 @@ public class RoleService implements IRoleService {
             return role;
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
-        er.setMessage("El role con codigo " + keyMap.get(RoleDao.ID_ROLENAME) + " ha sido borrado correctamente");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted succesfully");
         return er;
     }
 
@@ -135,6 +135,8 @@ public class RoleService implements IRoleService {
             return er;
         }
         //Actualizamos el rol
-        return this.daoHelper.update(this.roleDao, attrMap, keyMap);
+        EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
+        er.setMessage("Role updated succesfully");
+        return er;
     }
 }

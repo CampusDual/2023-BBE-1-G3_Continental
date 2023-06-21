@@ -189,7 +189,7 @@ public class ClientService implements IClientService {
             }
             String firstLetter = document.substring(0,1);
             if ((firstLetter.equals("Z") || firstLetter.equals("X") || firstLetter.equals("Y")) && document.matches(nieRegex)) {
-                    String nieNumbers = document.substring(1, 7);
+                    String nieNumbers = document.substring(1, 8);
                     String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
                     String lastLetter = document.substring(8);
                     int nieMod = Integer.parseInt(nieNumbers) % 23;

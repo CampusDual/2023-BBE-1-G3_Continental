@@ -197,10 +197,7 @@ public class ClientService implements IClientService {
                     return lastLetter.charAt(0) == calculatedLetter;
 
             }
-            if (document.matches(cifRegex)) {
-                return true;
-            }
-            return false;
+            return document.matches(cifRegex);
         }
         return true;
     }

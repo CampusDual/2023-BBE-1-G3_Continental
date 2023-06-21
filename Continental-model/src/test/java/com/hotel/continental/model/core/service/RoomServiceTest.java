@@ -7,6 +7,8 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,15 +48,16 @@ public class RoomServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
-        @Test
+        @ParameterizedTest
+        @NullSource
         @DisplayName("Test room insert bad")
-        void testRoomInsertBad() {
+        void testRoomInsertBad(String nullParameter) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             Map<String, Object> roomToInsert = new HashMap<>();
-            roomToInsert.put(RoomDao.ROOMDOWNDATE, null);
-            roomToInsert.put(RoomDao.ROOMNUMBER, null);
-            roomToInsert.put(RoomDao.IDHOTEL, null);
+            roomToInsert.put(RoomDao.ROOMDOWNDATE, nullParameter);
+            roomToInsert.put(RoomDao.ROOMNUMBER, nullParameter);
+            roomToInsert.put(RoomDao.IDHOTEL, nullParameter);
             when(daoHelper.insert(any(RoomDao.class), anyMap())).thenReturn(er);
             EntityResult result = roomService.roomInsert(roomToInsert);
             Assertions.assertEquals(1, result.getCode());

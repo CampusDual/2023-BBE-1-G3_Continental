@@ -253,7 +253,7 @@ public class ClientServiceTest {
     }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class ClientServiceQuery {
+    class ClientServiceQuery {
         @Test
         @DisplayName("Test good query client")
         void testQueryGood() {

@@ -21,12 +21,16 @@ import java.util.Map;
 @Lazy
 @Service("BookingService")
 public class BookingService implements IBookingService {
+
     @Autowired
     private BookingDao bookingDao;
     @Autowired
     private RoomService roomService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
+
+    public static final String INITIALDATE = "initialdate";
+    public static final String FINALDATE = "finaldate";
 
     /**
      * Metodo que devuelve las reservas
@@ -75,8 +79,8 @@ public class BookingService implements IBookingService {
         List<String> roomKeyMap = new ArrayList<>();
         roomKeyMap.add(RoomDao.IDHABITACION);
         Map<String, Object> roomAttrMap = new HashMap<>();
-        roomAttrMap.put("initialdate", attrMap.get(BookingDao.STARTDATE));
-        roomAttrMap.put("finaldate", attrMap.get(BookingDao.ENDDATE));
+        roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
+        roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
         //Si se nos envia el id de la habitacion se busca esa habitacion
 
         if (attrMap.get(BookingDao.ROOMID) != null) {
@@ -169,8 +173,8 @@ public class BookingService implements IBookingService {
             List<String> roomKeyMap = new ArrayList<>();
             roomKeyMap.add(RoomDao.IDHABITACION);
             Map<String, Object> roomAttrMap = new HashMap<>();
-            roomAttrMap.put("initialdate", attrMap.get(BookingDao.STARTDATE));
-            roomAttrMap.put("finaldate", attrMap.get(BookingDao.ENDDATE));
+            roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
+            roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
             //Si se nos envia el id de la habitacion se busca esa habitacion
             if (attrMap.get(BookingDao.ROOMID) != null) {
                 roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
@@ -194,8 +198,8 @@ public class BookingService implements IBookingService {
             attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
             attrMap.remove(BookingDao.STARTDATE);
             attrMap.remove(BookingDao.ENDDATE);
-            attrMap.put(BookingDao.STARTDATE, roomAttrMap.get("initialdate"));
-            attrMap.put(BookingDao.ENDDATE, roomAttrMap.get("finaldate"));
+            attrMap.put(BookingDao.STARTDATE, roomAttrMap.get(INITIALDATE));
+            attrMap.put(BookingDao.ENDDATE, roomAttrMap.get(FINALDATE));
         }
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }

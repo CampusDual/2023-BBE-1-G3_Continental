@@ -1,8 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
-import com.hotel.continental.api.core.service.IUserService;
-import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;

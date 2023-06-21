@@ -42,7 +42,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceInsert {
+    class bookingServiceInsert {
         @Test
         @DisplayName("Test booking insert")
         void testInsertBooking() {
@@ -90,7 +90,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceQuery {
+    class bookingServiceQuery {
         @Test
         @DisplayName("Test booking query")
         void testQueryBooking() {
@@ -132,7 +132,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceUpdate {
+    class bookingServiceUpdate {
         @Test
         @DisplayName("Test booking update")
         void testUpdateBooking() {
@@ -211,7 +211,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class testBookingServiceDelete {
+    class testBookingServiceDelete {
         @Test
         @DisplayName("Test booking delete")
         void testDeleteBooking() {

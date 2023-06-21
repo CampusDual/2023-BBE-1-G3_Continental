@@ -137,7 +137,7 @@ public class HotelServiceTest {
             EntityResult queryResult = hotelService.hotelQuery(new HashMap<>(), List.of());
 
 
-            assert queryResult.isEmpty();
+            assertTrue(queryResult.isEmpty());
         }
     }
 

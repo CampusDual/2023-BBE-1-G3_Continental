@@ -80,7 +80,7 @@ public class RoleService implements IRoleService {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
-        if (keyMap.get(RoleDao.ID_ROLENAME).equals("0")) {
+        if ((int) keyMap.get(RoleDao.ID_ROLENAME) == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.ADMIN_ROLE_NOT_EDITABLE);

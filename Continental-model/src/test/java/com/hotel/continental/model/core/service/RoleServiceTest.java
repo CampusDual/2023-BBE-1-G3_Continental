@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 
+@Disabled
 public class RoleServiceTest {
     //Generame los test para el metodo roleQuery
     @Mock

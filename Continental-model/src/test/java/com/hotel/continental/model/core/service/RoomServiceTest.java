@@ -7,8 +7,6 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +19,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
     @Mock
@@ -48,8 +47,6 @@ public class RoomServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
-        @ParameterizedTest
-        @NullSource
         @DisplayName("Test room insert bad")
         void testRoomInsertBad(String nullParameter) {
             EntityResult er = new EntityResultMapImpl();

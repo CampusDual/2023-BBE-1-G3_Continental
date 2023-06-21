@@ -79,7 +79,6 @@ public class HotelServiceTest {
 
         @Test
         void testInsertHotelNull() {
-            EntityResult er = null;
             Map<String, Object> hotelToInsert = new HashMap<>();
             //No hace falta mockear nada porque lanza error antes
             EntityResult result = hotelService.hotelInsert(hotelToInsert);

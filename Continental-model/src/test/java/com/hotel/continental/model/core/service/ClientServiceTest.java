@@ -77,9 +77,6 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test client insert with bad document")
         void testClientInsertBadDocument() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "12345678");
             clientToInsert.put(ClientDao.NAME, "Tomás");
@@ -90,9 +87,6 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test client insert with bad CountryCode")
         void testClientInsertBadCountryCode(){
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
@@ -294,8 +288,6 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test query with null data")
         void testQueryNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
             List<String> columns = new ArrayList<>();

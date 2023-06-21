@@ -179,13 +179,6 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking update with empty data")
         void testUpdateBookingEmpty() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-            er.put(BookingDao.CLIENT, new ArrayList<>());
-            er.put(BookingDao.ROOMID, new ArrayList<>());
-            er.put(BookingDao.STARTDATE, List.of(""));
-            er.put(BookingDao.ENDDATE, List.of(""));
-
            //No hace falta mockear nada porque lanza error antes
             EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());

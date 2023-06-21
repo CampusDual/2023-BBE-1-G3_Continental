@@ -64,12 +64,7 @@ public class RoomServiceTest {
         @Test
         @DisplayName("Test room insert no data")
         void testRoomInsertBad() {
-            EntityResult erQueryHotel = new EntityResultMapImpl();
-            erQueryHotel.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            erQueryHotel.put(HotelDao.ID, List.of(1));
             //Despues se hace una query para comprobar que la habitacion no existe
-            EntityResult erQueryHabitacion = new EntityResultMapImpl();
-            erQueryHabitacion.setCode(EntityResult.OPERATION_SUCCESSFUL);
             Map<String, Object> roomToInsert = new HashMap<>();
             //No hace falta mockear nada porque falla al comprobar los datos
             EntityResult result = roomService.roomInsert(roomToInsert);

@@ -31,14 +31,8 @@ public class HotelServiceTest {
     @Mock
     DefaultOntimizeDaoHelper daoHelper;
 
-
     @InjectMocks
     HotelService hotelService;
-
-
-    @Mock
-    HotelDao hotelDao;
-
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
@@ -71,7 +65,9 @@ public class HotelServiceTest {
             Map<String, Object> hotelToInsert = new HashMap<>();
             hotelToInsert.put(HotelDao.NAME, "test");
             hotelToInsert.put(HotelDao.ADDRESS, "test");
+
             when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
+
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
             assertEquals(0, result.getCode());
         }
@@ -97,19 +93,14 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("prueba"));
             er.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
 
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
-
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, 0);
 
-
             List<String> attrList = List.of(HotelDao.ID, HotelDao.NAME, HotelDao.ADDRESS);
 
-
             EntityResult queryResult = hotelService.hotelQuery(keyMap, attrList);
-
 
             assertEquals(0, queryResult.getCode(), "El código de retorno de hotelInsert() no es igual a 0");
         }
@@ -119,12 +110,9 @@ public class HotelServiceTest {
         void testQueryHotelEmpty() {
             EntityResult er = new EntityResultMapImpl();
 
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
-
             EntityResult queryResult = hotelService.hotelQuery(new HashMap<>(), List.of());
-
 
             assert queryResult.isEmpty();
         }
@@ -141,28 +129,22 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("pruebaActualizada"));
             er.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
             EntityResult erQuery = new EntityResultMapImpl();
             erQuery.setCode(0);
             erQuery.put(HotelDao.NAME, List.of("prueba"));
             erQuery.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
 
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
             when(daoHelper.update(any(HotelDao.class), anyMap(), anyMap())).thenReturn(erQuery);
 
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(0));
-
 
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put(HotelDao.NAME, List.of("pruebaActualizada"));
             attrMap.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
-
 
             assertEquals(0, queryResult.getCode(), "El código de retorno de hotelInsert() no es igual a 0");
         }
@@ -175,27 +157,16 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("pruebaActualizada"));
             er.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(0);
-            erQuery.put(HotelDao.NAME, List.of("prueba"));
-            erQuery.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
-
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
-
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(1));
-
 
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put(HotelDao.NAME, List.of("pruebaActualizada"));
             attrMap.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
-
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
         }
@@ -204,26 +175,17 @@ public class HotelServiceTest {
         @Test
         void testUpdateHotelNull() {
             EntityResult er = null;
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(0);
-            erQuery.put(HotelDao.NAME, List.of("prueba"));
-            erQuery.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
-
 
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(1));
-
 
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put(HotelDao.NAME, List.of("pruebaActualizada"));
             attrMap.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
-
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
         }
@@ -240,21 +202,17 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("pruebaDelete"));
             er.put(HotelDao.ADDRESS, List.of("direccionDelete"));
 
-
             EntityResult erUpdate = new EntityResultMapImpl();
             erUpdate.setCode(0);
             erUpdate.put(HotelDao.NAME, List.of("pruebaDelete"));
             erUpdate.put(HotelDao.ADDRESS, List.of("direccionDelete"));
             erUpdate.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));
 
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
             when(daoHelper.update(any(HotelDao.class), anyMap(), anyMap())).thenReturn(erUpdate);
 
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(0));
-
 
             EntityResult queryResult = hotelService.hotelDelete(keyMap);
 
@@ -270,23 +228,12 @@ public class HotelServiceTest {
             er.put(HotelDao.NAME, List.of("pruebaActualizada"));
             er.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
 
-
-            EntityResult erDelete = new EntityResultMapImpl();
-            erDelete.setCode(0);
-            erDelete.put(HotelDao.NAME, List.of("prueba"));
-            erDelete.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
-            erDelete.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));
-
-
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
-
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(1));
 
-
             EntityResult queryResult = hotelService.hotelDelete(keyMap);
-
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
         }
@@ -295,17 +242,11 @@ public class HotelServiceTest {
         @Test
         void testDeleteHotelNull() {
             EntityResult er = null;
-            EntityResult erDelete = new EntityResultMapImpl();
-            erDelete.setCode(0);
-            erDelete.put(HotelDao.NAME, List.of("prueba"));
-            erDelete.put(HotelDao.ADDRESS, List.of("direccionPrueba"));
-            erDelete.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));
 
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(1));
-
 
             EntityResult queryResult = hotelService.hotelDelete(keyMap);
 

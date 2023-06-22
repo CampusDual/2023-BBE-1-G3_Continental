@@ -23,10 +23,6 @@ public class RoomServiceTest {
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoomService roomService;
-    @Mock
-    RoomDao roomDao;
-    @Mock
-    HotelDao hotelDao;
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -50,7 +46,6 @@ public class RoomServiceTest {
             roomToInsert.put(RoomDao.IDHOTEL, 1);
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
-            List<Object> attr = Arrays.asList(HotelDao.ID);
 
             when(daoHelper.query(any(HotelDao.class),anyMap(), anyList())).thenReturn(erQueryHotel);
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(erQueryHabitacion);
@@ -83,6 +78,7 @@ public class RoomServiceTest {
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
+
             List<Object> attr = new ArrayList<>();
             attr.add(RoomDao.ROOMNUMBER);
 
@@ -100,6 +96,7 @@ public class RoomServiceTest {
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
+
             List<Object> attr = new ArrayList<>();
             attr.add(RoomDao.ROOMNUMBER);
 
@@ -119,17 +116,22 @@ public class RoomServiceTest {
             EntityResult query = new EntityResultMapImpl();
             query.setCode(0);
             query.put("ROOMNUMBER", List.of(1));
+
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
             er.put("ROOMNUMBER", List.of(1));
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoomDao.ROOMNUMBER, 1);
             attr.put(RoomDao.IDHOTEL, 1);
+
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
             when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);
-            EntityResult result = roomService.roomUpdate(attr,keyMap);
+
+            EntityResult result = roomService.roomUpdate(attr, keyMap);
             System.out.println(result.getMessage());
             Assertions.assertEquals(0, result.getCode());
         }
@@ -141,6 +143,7 @@ public class RoomServiceTest {
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoomDao.ROOMNUMBER, 1);
             attr.put(RoomDao.IDHOTEL, 1);
+
             EntityResult result = roomService.roomUpdate(keyMap, attr);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -155,12 +158,16 @@ public class RoomServiceTest {
             EntityResult query = new EntityResultMapImpl();
             query.setCode(0);
             query.put("ROOMNUMBER", List.of(1));
+
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
+
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
             when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);
+
             EntityResult result = roomService.roomDelete(keyMap);
             Assertions.assertEquals(0, result.getCode());
         }

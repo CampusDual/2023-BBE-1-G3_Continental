@@ -27,8 +27,6 @@ public class RoleServiceTest {
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoleService roleService;
-    @Mock
-    RoleDao roleDao;
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleQuery {
@@ -41,10 +39,13 @@ public class RoleServiceTest {
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoleDao.ROLENAME,"admin");
+
             List<Object> attr = new ArrayList<>();
             attr.add(RoleDao.ID_ROLENAME);
             attr.add(RoleDao.ROLENAME);
+
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = roleService.roleQuery(keyMap, attr);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
@@ -63,6 +64,7 @@ public class RoleServiceTest {
             attr.add(RoleDao.ROLENAME);
 
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = roleService.roleQuery(keyMap, attr);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
@@ -71,10 +73,14 @@ public class RoleServiceTest {
         void testRoleQueryBadWithoutColumns() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoleDao.ROLENAME,"admin");
+
             List<Object> attr = new ArrayList<>();
+
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = roleService.roleQuery(keyMap, attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
@@ -87,14 +93,18 @@ public class RoleServiceTest {
         void testRoleInsertGood() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            EntityResult erQuery=new EntityResultMapImpl();
+
+            EntityResult erQuery = new EntityResultMapImpl();
             erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ROLENAME,"admin");
+
             //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
             //Ejecutamos el insert
             when(daoHelper.insert(any(RoleDao.class), anyMap())).thenReturn(er);
+
             EntityResult result = roleService.roleInsert(attr);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
@@ -105,6 +115,7 @@ public class RoleServiceTest {
             Map<String, Object> attr = new HashMap<>();
             //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleInsert(attr);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
@@ -115,6 +126,7 @@ public class RoleServiceTest {
             attr.put(RoleDao.ROLENAME,"");
             //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleInsert(attr);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
@@ -125,11 +137,14 @@ public class RoleServiceTest {
             erQuery.put(RoleDao.ROLENAME, List.of("admin"));
             erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
             erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ROLENAME,"admin");
+
             //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
             //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
+
             EntityResult result = roleService.roleInsert(attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
@@ -142,15 +157,19 @@ public class RoleServiceTest {
         void testRoleDeleteGood() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
             EntityResult erQuery = new EntityResultMapImpl();
             erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
             erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ID_ROLENAME, 1);
+
             //el delete comprueba a traves de un query que existe asique devolvemos un entity result okey + 1 resultado
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
             //Ejecutamos el delete
             when(daoHelper.delete(any(RoleDao.class), anyMap())).thenReturn(er);
+
             EntityResult result = roleService.roleDelete(attr);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
@@ -169,10 +188,12 @@ public class RoleServiceTest {
         void testRoleDeleteNotExistKey() {
             EntityResult erQuery = new EntityResultMapImpl();
             erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ID_ROLENAME, 1);
             //Ejecutamos el delete, al no existir la clave nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleDelete(attr);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.ROLE_DOESNT_EXIST, result.getMessage());
         }
@@ -197,7 +218,7 @@ public class RoleServiceTest {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
             //Query buscar id, correcta+1 resultado
-            EntityResult erQueryID=new EntityResultMapImpl();
+            EntityResult erQueryID = new EntityResultMapImpl();
             erQueryID.setCode(EntityResult.OPERATION_SUCCESSFUL);
             erQueryID.put(RoleDao.ID_ROLENAME, List.of(1));
             //Query buscar rolename, correcta+ 0 resultado
@@ -205,13 +226,14 @@ public class RoleServiceTest {
             erQueryRolename.setCode(EntityResult.OPERATION_SUCCESSFUL);
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ROLENAME,"admin");
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoleDao.ID_ROLENAME,1);
             //el insert comprueba a traves de un query que existe asique devolvemos un entity result okey+1 resultado
             when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQueryID).thenReturn(erQueryRolename);
             //Ejecutamos el insert
             when(daoHelper.update(any(RoleDao.class), anyMap(),anyMap())).thenReturn(er);
-            EntityResult result = roleService.roleUpdate(attr,keyMap);
+            EntityResult result = roleService.roleUpdate(attr, keyMap);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
         @Test
@@ -221,6 +243,7 @@ public class RoleServiceTest {
             Map<String, Object> keyMap = new HashMap<>();
             //Ejecutamos el update, al no tener key nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleUpdate(attr,keyMap);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_KEY, result.getMessage());
         }
@@ -232,6 +255,7 @@ public class RoleServiceTest {
             keyMap.put(RoleDao.ID_ROLENAME,1);
             //Ejecutamos el update, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleUpdate(attr,keyMap);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
@@ -244,6 +268,7 @@ public class RoleServiceTest {
             keyMap.put(RoleDao.ID_ROLENAME,1);
             //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleInsert(attr);
+
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
@@ -254,6 +279,7 @@ public class RoleServiceTest {
             erQuery.put(RoleDao.ROLENAME, List.of("admin"));
             erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
             erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoleDao.ROLENAME,"admin");
             //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio

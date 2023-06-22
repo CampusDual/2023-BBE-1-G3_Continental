@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class HotelServiceTest {
     @Mock
@@ -35,6 +34,9 @@ public class HotelServiceTest {
 
     @InjectMocks
     HotelService hotelService;
+
+    @Mock
+    HotelDao hotelDao;
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)

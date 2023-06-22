@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
     @Mock
@@ -37,6 +36,9 @@ public class BookingServiceTest {
 
     @Mock
     RoomService roomService;
+
+    @Mock
+    BookingDao bookingDao;
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
@@ -217,6 +219,7 @@ public class BookingServiceTest {
             er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
 
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
+            when(daoHelper.delete(any(BookingDao.class), anyMap())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(BookingDao.BOOKINGID, 0);

@@ -24,6 +24,10 @@ public class RoomServiceTest {
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoomService roomService;
+    @Mock
+    RoomDao roomDao;
+    @Mock
+    HotelDao hotelDao;
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)

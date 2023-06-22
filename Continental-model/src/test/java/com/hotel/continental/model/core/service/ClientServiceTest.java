@@ -19,7 +19,6 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
     @Mock
@@ -27,6 +26,9 @@ public class ClientServiceTest {
 
     @InjectMocks
     ClientService clientService;
+
+    @Mock
+    ClientDao clientDao;
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -296,11 +298,13 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test query with null data")
         void testQueryNullData() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
             List<String> columns = new ArrayList<>();
             columns.add(ClientDao.CLIENTID);
-            //No hace falta mockear porque lanza error antes
+            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
             EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }

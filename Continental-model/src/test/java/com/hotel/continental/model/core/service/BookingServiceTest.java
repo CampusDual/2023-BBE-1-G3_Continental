@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +34,6 @@ public class BookingServiceTest {
 
     @InjectMocks
     BookingService bookingService;
-
-    @Mock
-    BookingDao bookingDao;
 
     @Mock
     RoomService roomService;
@@ -74,8 +72,6 @@ public class BookingServiceTest {
 
         @DisplayName("Test booking insert with null data")
         void testInsertBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
@@ -113,8 +109,6 @@ public class BookingServiceTest {
 
         @DisplayName("Test booking query with null data")
         void testQueryBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
 
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
@@ -141,22 +135,15 @@ public class BookingServiceTest {
             er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
             er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
 
-
-            EntityResult erUpdate = new EntityResultMapImpl();
-            erUpdate.setCode(0);
-            erUpdate.put(BookingDao.CLIENT, List.of(2));
-            erUpdate.put(BookingDao.ROOMID, List.of(2));
-            erUpdate.put(BookingDao.STARTDATE, List.of("2010-06-09"));
-            erUpdate.put(BookingDao.ENDDATE, List.of("2010-10-09"));
-
-
+            EntityResult erFreeRooms= new EntityResultMapImpl();
+            erFreeRooms.setCode(0);
+            erFreeRooms.put(RoomDao.IDHOTEL, List.of(0));
+            when(roomService.freeRoomsQuery(anyMap(),anyList())).thenReturn(erFreeRooms);
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
             when(daoHelper.update(any(BookingDao.class), anyMap(), anyMap())).thenReturn(er);
 
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(BookingDao.BOOKINGID, 0);
-
 
             Map<String, Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.CLIENT, 2);
@@ -164,9 +151,7 @@ public class BookingServiceTest {
             bookingToUpdate.put(BookingDao.STARTDATE, "2010-06-09");
             bookingToUpdate.put(BookingDao.ENDDATE, "2023-10-09");
 
-
             EntityResult result = bookingService.bookingUpdate(bookingToUpdate, keyMap);
-
 
             assertEquals(0, result.getCode());
         }
@@ -174,25 +159,13 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking update with empty data")
         void testUpdateBookingEmpty() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-            er.put(BookingDao.CLIENT, List.of(0));
-            er.put(BookingDao.ROOMID, List.of(1));
-            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
-
-            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
-
+           //No hace falta mockear nada porque lanza error antes
             EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
-
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
 
         @DisplayName("Test booking update with null data")
         void testUpdateBookingNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> bookingToUpdate = new HashMap<>();
             bookingToUpdate.put(BookingDao.BOOKINGID, null);
             bookingToUpdate.put(BookingDao.CLIENT, null);
@@ -243,13 +216,6 @@ public class BookingServiceTest {
             er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
             er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
 
-            EntityResult erDelete = new EntityResultMapImpl();
-            erDelete.setCode(0);
-            erDelete.put(BookingDao.CLIENT, List.of(0));
-            erDelete.put(BookingDao.ROOMID, List.of(1));
-            erDelete.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            erDelete.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
-
             when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
@@ -262,9 +228,6 @@ public class BookingServiceTest {
 
         @DisplayName("Test booking delete with null data")
         void testDeleteBookingNull() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> bookingToDelete = new HashMap<>();
             bookingToDelete.put(BookingDao.BOOKINGID, null);
             bookingToDelete.put(BookingDao.CLIENT, null);

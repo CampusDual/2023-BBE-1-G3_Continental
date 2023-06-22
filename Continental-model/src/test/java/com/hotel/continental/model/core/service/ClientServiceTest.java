@@ -28,9 +28,6 @@ public class ClientServiceTest {
     @InjectMocks
     ClientService clientService;
 
-    @Mock
-    ClientDao clientDao;
-
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class ClienteServiceInsert{
@@ -44,60 +41,54 @@ public class ClientServiceTest {
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
+
             when(daoHelper.query(any(ClientDao.class),anyMap(),anyList())).thenReturn(er);
             when(daoHelper.insert(any(ClientDao.class),anyMap())).thenReturn(er);
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(0, result.getCode());
         }
 
         @DisplayName("Test client insert with empty data")
         void testClientInsertEmptyData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "");
             clientToInsert.put(ClientDao.NAME, "");
             clientToInsert.put(ClientDao.COUNTRYCODE, "");
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
 
         @DisplayName("Test client insert with null data")
         void testClientInsertNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, null);
             clientToInsert.put(ClientDao.NAME, null);
             clientToInsert.put(ClientDao.COUNTRYCODE, null);
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
         @Test
         @DisplayName("Test client insert with bad document")
         void testClientInsertBadDocument() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "12345678");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
         @Test
         @DisplayName("Test client insert with bad CountryCode")
         void testClientInsertBadCountryCode(){
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String,Object> clientToInsert = new HashMap<>();
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ESPAÑA");
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -112,7 +103,9 @@ public class ClientServiceTest {
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
+
             when(daoHelper.query(any(ClientDao.class),anyMap(),anyList())).thenReturn(er);
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -135,10 +128,13 @@ public class ClientServiceTest {
             clientToUpdate.put(ClientDao.DOCUMENT, "12345678Z");
             clientToUpdate.put(ClientDao.NAME, "Tomás");
             clientToUpdate.put(ClientDao.COUNTRYCODE, "ES");
+
             Map<String,Object> clientToFilter = new HashMap<>();
             clientToFilter.put(ClientDao.CLIENTID, 1);
+
             when(daoHelper.query(any(ClientDao.class),anyMap(),anyList())).thenReturn(er,er2);
             when(daoHelper.update(any(ClientDao.class),anyMap(),anyMap())).thenReturn(er);
+
             EntityResult result = clientService.clientUpdate(clientToUpdate,clientToFilter);
             Assertions.assertEquals(0, result.getCode());
         }
@@ -154,7 +150,9 @@ public class ClientServiceTest {
             clientToUpdate.put(ClientDao.COUNTRYCODE, null);
             Map<String, Object> filter = new HashMap<>();
             filter.put(ClientDao.CLIENTID, "9");
+
             when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = clientService.clientUpdate(clientToUpdate, filter);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -172,7 +170,9 @@ public class ClientServiceTest {
 
             Map<String, Object> filter = new HashMap<>();
             filter.put(ClientDao.CLIENTID, "9");
+
             when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = clientService.clientUpdate(clientToUpdate, filter);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -208,7 +208,9 @@ public class ClientServiceTest {
             clientToInsert.put(ClientDao.DOCUMENT, "12345678Z");
             clientToInsert.put(ClientDao.NAME, "Tomás");
             clientToInsert.put(ClientDao.COUNTRYCODE, "ES");
+
             when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
@@ -287,24 +289,18 @@ public class ClientServiceTest {
 
             when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
 
-            EntityResult result = clientService.clientQuery(keyMap,columns);
+            EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }
 
         @Test
         @DisplayName("Test query with null data")
         void testQueryNullData() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
-
             List<String> columns = new ArrayList<>();
             columns.add(ClientDao.CLIENTID);
-
-            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
-
+            //No hace falta mockear porque lanza error antes
             EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }

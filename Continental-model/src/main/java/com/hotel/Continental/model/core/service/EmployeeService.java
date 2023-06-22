@@ -91,8 +91,9 @@ public class EmployeeService implements IEmployeeService {
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }
-
-        return this.daoHelper.update(this.employeeDao, attrMap, keyMap);
+        er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);
+        er.setMessage("Employee updated succesfully");
+        return er;
     }
           
     @Override
@@ -145,7 +146,7 @@ public class EmployeeService implements IEmployeeService {
         //Devolvemos un entityResult que representa el éxito de la operación
         er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);//Actualizamos el empleado
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        er.setMessage("Empleado dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        er.setMessage("Employee terminated: " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;
     }
 }

@@ -125,7 +125,7 @@ public class BookingService implements IBookingService {
         }
         //Comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
-        if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
+        if (book == null || book.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);

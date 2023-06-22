@@ -237,7 +237,6 @@ public class ClientService implements IClientService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
-        if(keyMap.get(ClientDao.CLIENTID) != null){
             EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
             if(client.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
@@ -246,11 +245,5 @@ public class ClientService implements IClientService {
                 return er;
             }
             return client;
-        }else{
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
-            return er;
-        }
     }
 }

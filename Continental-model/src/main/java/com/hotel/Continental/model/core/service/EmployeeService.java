@@ -15,11 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Lazy
 @Service("EmployeeService")
@@ -34,11 +30,11 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
-        if (!attrMap.containsKey(EmployeeDao.EMPLOYMENT) || !attrMap.containsKey(EmployeeDao.IDHOTEL)
-                || attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
+        if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
         }
 
         // Comprueba que el hotel existe
@@ -72,7 +68,7 @@ public class EmployeeService implements IEmployeeService {
         EntityResult er = new EntityResultMapImpl();
 
         // Comprobar que los mapas no están vacios
-        if(attrMap.isEmpty() || keyMap.isEmpty()) {
+        if (attrMap.isEmpty() || keyMap.isEmpty()) {
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
@@ -86,7 +82,8 @@ public class EmployeeService implements IEmployeeService {
         }
 
         // Comprobar que el empleado exista
-        if(this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID)) == null){
+        EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID));
+        if (employee.calculateRecordNumber() == 0) {
             er.setCode(1);
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
@@ -95,12 +92,12 @@ public class EmployeeService implements IEmployeeService {
         er.setMessage("Employee updated succesfully");
         return er;
     }
-          
+
     @Override
     public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
-        if(keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)){
+        if (keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)) {
             EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
-            if(employees.calculateRecordNumber() == 0) {
+            if (employees.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
@@ -110,8 +107,8 @@ public class EmployeeService implements IEmployeeService {
         }
         return this.daoHelper.query(this.employeeDao, keyMap, attrList);
     }
-  
-    @Secured({ PermissionsProviderSecured.SECURED })
+
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
@@ -125,7 +122,7 @@ public class EmployeeService implements IEmployeeService {
         //Si no existe, devolvemos un entityResult que representa un error
         Map<String, Object> filter = new HashMap<>();
         filter.put(EmployeeDao.EMPLOYEEID, keyMap.get(EmployeeDao.EMPLOYEEID));
-        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID,EmployeeDao.EMPLOYEEDOWNDATE));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID, EmployeeDao.EMPLOYEEDOWNDATE));
         if (employee.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

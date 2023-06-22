@@ -136,7 +136,7 @@ public class UserService implements IUserService {
         if (!keyMap.containsKey(UserDao.USER_)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
 

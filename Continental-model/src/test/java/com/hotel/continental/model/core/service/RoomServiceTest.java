@@ -17,7 +17,6 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
     @Mock
@@ -61,15 +60,14 @@ public class RoomServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
-        @DisplayName("Test room insert bad")
-        void testRoomInsertBad(String nullParameter) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
+        @Test
+        @DisplayName("Test room insert null data")
+        void testRoomInsertNull() {
             Map<String, Object> roomToInsert = new HashMap<>();
-            roomToInsert.put(RoomDao.ROOMDOWNDATE, nullParameter);
-            roomToInsert.put(RoomDao.ROOMNUMBER, nullParameter);
-            roomToInsert.put(RoomDao.IDHOTEL, nullParameter);
-            when(daoHelper.insert(any(RoomDao.class), anyMap())).thenReturn(er);
+            roomToInsert.put(RoomDao.ROOMDOWNDATE, null);
+            roomToInsert.put(RoomDao.ROOMNUMBER, null);
+            roomToInsert.put(RoomDao.IDHOTEL, null);
+
             EntityResult result = roomService.roomInsert(roomToInsert);
             Assertions.assertEquals(1, result.getCode());
         }

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 public class RoleServiceTest {
     //Generame los test para el metodo roleQuery

@@ -85,7 +85,7 @@ public class RoomService implements IRoomService {
             filterHotel.put(HotelDao.ID, attrMap.get(RoomDao.IDHOTEL));
             EntityResult hotel = this.daoHelper.query(this.hotelDao, filterHotel, Arrays.asList(HotelDao.ID));
 
-            if (hotel.calculateRecordNumber() == 0) {
+            if (hotel == null || hotel.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);

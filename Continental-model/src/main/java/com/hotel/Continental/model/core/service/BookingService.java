@@ -203,5 +203,4 @@ public class BookingService implements IBookingService {
         }
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
-
 }

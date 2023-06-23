@@ -1,7 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.ClientDao;
-import com.hotel.continental.model.core.service.ClientService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -51,6 +50,7 @@ public class ClientServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
+        @Test
         @DisplayName("Test client insert with empty data")
         void testClientInsertEmptyData() {
             Map<String,Object> clientToInsert = new HashMap<>();
@@ -62,6 +62,8 @@ public class ClientServiceTest {
             Assertions.assertEquals(1, result.getCode());
         }
 
+
+        @Test
         @DisplayName("Test client insert with null data")
         void testClientInsertNullData() {
             Map<String,Object> clientToInsert = new HashMap<>();
@@ -141,6 +143,8 @@ public class ClientServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
+
+        @Test
         @DisplayName("Test client update bad client")
         void testClientUpdateNullData() {
             EntityResult er = new EntityResultMapImpl();
@@ -300,11 +304,13 @@ public class ClientServiceTest {
         void testQueryNullData() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
+
             List<String> columns = new ArrayList<>();
             columns.add(ClientDao.CLIENTID);
-            when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(er);
+
             EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }

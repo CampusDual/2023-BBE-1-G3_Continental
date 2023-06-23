@@ -1,14 +1,10 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.HotelDao;
-import com.hotel.continental.model.core.service.HotelService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,33 +38,30 @@ public class HotelServiceTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class hotelServiceInsert {
         @Test
+        @DisplayName("Test good insert hotel")
         void testInsertHotel() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
+
             Map<String, Object> hotelToInsert = new HashMap<>();
-
-
             hotelToInsert.put(HotelDao.NAME, "prueba");
             hotelToInsert.put(HotelDao.ADDRESS, "direccionPrueba");
 
-
             when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
 
-
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
-
 
             assertEquals(0, result.getCode());
         }
 
-
         @Test
+        @DisplayName("Test insert empty data hotel")
         void testInsertHotelEmpty() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
             Map<String, Object> hotelToInsert = new HashMap<>();
-            hotelToInsert.put(HotelDao.NAME, "test");
-            hotelToInsert.put(HotelDao.ADDRESS, "test");
+            hotelToInsert.put(HotelDao.NAME, "");
+            hotelToInsert.put(HotelDao.ADDRESS, "");
 
             when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
 
@@ -78,11 +71,15 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test insert null data hotel")
         void testInsertHotelNull() {
             Map<String, Object> hotelToInsert = new HashMap<>();
+            hotelToInsert.put(HotelDao.NAME, null);
+            hotelToInsert.put(HotelDao.ADDRESS, null);
+
             //No hace falta mockear nada porque lanza error antes
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
-            assertEquals(result.getCode(),EntityResult.OPERATION_WRONG);
+            assertEquals(1, result.getCode());
         }
     }
 
@@ -91,6 +88,7 @@ public class HotelServiceTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class hotelServiceQuery {
         @Test
+        @DisplayName("Test good query hotel")
         void testQueryHotel() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
@@ -111,6 +109,7 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test insert empty data")
         void testQueryHotelEmpty() {
             EntityResult er = new EntityResultMapImpl();
 
@@ -126,8 +125,9 @@ public class HotelServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    class testUpdateHotel {
+    class hotelUpdateHotel {
         @Test
+        @DisplayName("Test good update hotel")
         void testUpdateHotel() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
@@ -156,6 +156,7 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test bad update hotel doesnt exist")
         void testUpdateHotelDoesntExist() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -178,17 +179,14 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test update hotel with null data")
         void testUpdateHotelNull() {
-            EntityResult er = null;
-
-            when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
-
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(HotelDao.ID, List.of(1));
+            keyMap.put(HotelDao.ID, null);
 
             Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put(HotelDao.NAME, List.of("pruebaActualizada"));
-            attrMap.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
+            attrMap.put(HotelDao.NAME, null);
+            attrMap.put(HotelDao.ADDRESS, null);
 
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
 
@@ -201,6 +199,7 @@ public class HotelServiceTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class testDeleteHotel {
         @Test
+        @DisplayName("Test good delete hotel")
         void testDeleteHotel() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
@@ -227,6 +226,7 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test delete hotel doesnt exist")
         void testDeleteHotelDoesntExist() {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -245,13 +245,14 @@ public class HotelServiceTest {
 
 
         @Test
+        @DisplayName("Test delete hotel with null data")
         void testDeleteHotelNull() {
             EntityResult er = null;
 
             when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(HotelDao.ID, List.of(1));
+            keyMap.put(HotelDao.ID, null);
 
             EntityResult queryResult = hotelService.hotelDelete(keyMap);
 

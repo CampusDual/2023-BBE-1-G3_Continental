@@ -238,7 +238,7 @@ public class ClientService implements IClientService {
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
             EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
-            if(client.calculateRecordNumber() == 0) {
+            if(client == null || client.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);

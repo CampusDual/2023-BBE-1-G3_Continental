@@ -23,6 +23,10 @@ public class RoomServiceTest {
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoomService roomService;
+    @Mock
+    RoomDao roomDao;
+    @Mock
+    HotelDao hotelDao;
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -56,6 +60,18 @@ public class RoomServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
+        @Test
+        @DisplayName("Test room insert null data")
+        void testRoomInsertNull() {
+            Map<String, Object> roomToInsert = new HashMap<>();
+            roomToInsert.put(RoomDao.ROOMDOWNDATE, null);
+            roomToInsert.put(RoomDao.ROOMNUMBER, null);
+            roomToInsert.put(RoomDao.IDHOTEL, null);
+
+            EntityResult result = roomService.roomInsert(roomToInsert);
+            Assertions.assertEquals(1, result.getCode());
+        }
+    
         @Test
         @DisplayName("Test room insert no data")
         void testRoomInsertBad() {

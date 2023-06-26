@@ -188,20 +188,16 @@ public class ClientService implements IClientService {
                 return dniLetter.charAt(0) == calculatedLetter;
             }
             String firstLetter = document.substring(0,1);
-            if (firstLetter.equals("Z") || firstLetter.equals("X") || firstLetter.equals("Y")) {
-                if (document.matches(nieRegex)) {
-                    String nieNumbers = document.substring(1, 7);
+            if ((firstLetter.equals("Z") || firstLetter.equals("X") || firstLetter.equals("Y")) && document.matches(nieRegex)) {
+                    String nieNumbers = document.substring(1, 8);
                     String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
                     String lastLetter = document.substring(8);
                     int nieMod = Integer.parseInt(nieNumbers) % 23;
                     char calculatedLetter = validLetters.charAt(nieMod);
                     return lastLetter.charAt(0) == calculatedLetter;
-                }
+
             }
-            if (document.matches(cifRegex)) {
-                return true;
-            }
-            return false;
+            return document.matches(cifRegex);
         }
         return true;
     }
@@ -241,20 +237,13 @@ public class ClientService implements IClientService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
-        if(keyMap.get(ClientDao.CLIENTID) != null){
             EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
-            if(client.calculateRecordNumber() == 0) {
+            if(client == null || client.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
                 return er;
             }
             return client;
-        }else{
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
-            return er;
-        }
     }
 }

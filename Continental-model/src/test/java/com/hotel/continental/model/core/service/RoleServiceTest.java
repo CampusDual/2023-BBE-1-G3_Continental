@@ -19,14 +19,17 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-@ExtendWith(MockitoExtension.class)
 
+@ExtendWith(MockitoExtension.class)
 public class RoleServiceTest {
     //Generame los test para el metodo roleQuery
     @Mock
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoleService roleService;
+
+    @Mock
+    RoleDao roleDao;
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleQuery {

@@ -2,7 +2,6 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRoleService;
 import com.hotel.continental.model.core.dao.RoleDao;
-import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -13,8 +12,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Lazy
@@ -70,8 +67,7 @@ public class RoleService implements IRoleService {
             return er;
         }
         //Insertamos el rol
-        EntityResult er = this.daoHelper.insert(this.roleDao, attrMap);
-        return er;
+        return this.daoHelper.insert(this.roleDao, attrMap);
     }
 
     @Override
@@ -84,7 +80,7 @@ public class RoleService implements IRoleService {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
-        if (keyMap.get(RoleDao.ID_ROLENAME).equals("0")) {
+        if ((int) keyMap.get(RoleDao.ID_ROLENAME) == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.ADMIN_ROLE_NOT_EDITABLE);
@@ -96,7 +92,7 @@ public class RoleService implements IRoleService {
             return role;
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
-        er.setMessage("El role con codigo " + keyMap.get(RoleDao.ID_ROLENAME) + " ha sido borrado correctamente");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted succesfully");
         return er;
     }
 
@@ -140,6 +136,7 @@ public class RoleService implements IRoleService {
         }
         //Actualizamos el rol
         EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
+        er.setMessage("Role updated succesfully");
         return er;
     }
 }

@@ -2,8 +2,6 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.service.BookingService;
-import com.hotel.continental.model.core.service.RoomService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -14,18 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -38,9 +31,12 @@ public class BookingServiceTest {
     @Mock
     RoomService roomService;
 
+    @Mock
+    BookingDao bookingDao;
+
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceInsert {
+    class bookingServiceInsert {
         @Test
         @DisplayName("Test booking insert")
         void testInsertBooking() {
@@ -86,7 +82,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceQuery {
+    class bookingServiceQuery {
         @Test
         @DisplayName("Test booking query")
         void testQueryBooking() {
@@ -126,7 +122,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class bookingServiceUpdate {
+    class bookingServiceUpdate {
         @Test
         @DisplayName("Test booking update")
         void testUpdateBooking() {
@@ -161,7 +157,7 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking update with empty data")
         void testUpdateBookingEmpty() {
-           //No hace falta mockear nada porque lanza error antes
+            //No hace falta mockear nada porque lanza error antes
             EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
@@ -184,7 +180,7 @@ public class BookingServiceTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    public class testBookingServiceDelete {
+    class testBookingServiceDelete {
         @Test
         @DisplayName("Test booking delete")
         void testDeleteBooking() {
@@ -212,17 +208,8 @@ public class BookingServiceTest {
         @Test
         @DisplayName("Test booking delete with empty data")
         void testDeleteBookingEmpty() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.put(BookingDao.CLIENT, List.of(0));
-            er.put(BookingDao.ROOMID, List.of(1));
-            er.put(BookingDao.STARTDATE, List.of("2023-06-09T10:31:10.000+0000"));
-            er.put(BookingDao.ENDDATE, List.of("2023-10-09T10:31:10.000+0000"));
-
-            when(daoHelper.query(any(BookingDao.class), anyMap(), anyList())).thenReturn(er);
-
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(BookingDao.BOOKINGID, 0);
+            keyMap.put(BookingDao.BOOKINGID, "");
 
             EntityResult result = bookingService.bookingDelete(keyMap);
 

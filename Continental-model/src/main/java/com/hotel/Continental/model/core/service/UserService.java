@@ -10,7 +10,6 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.postgresql.shaded.com.ongres.scram.common.message.ServerFinalMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Lazy
@@ -96,12 +93,12 @@ public class UserService implements IUserService {
         EntityResult user = this.daoHelper.insert(this.userDao, attrMap);
 
         Map<String, Object> attrRole = new HashMap<>();
-        attrRole.put(UserRoleDao.id_rolename, idRole);
-        attrRole.put(UserRoleDao.user_, idUser);
+        attrRole.put(UserRoleDao.ID_ROLENAME, idRole);
+        attrRole.put(UserRoleDao.USER, idUser);
         //Insertamos el rol del usuario
         Map<String, Object> userRole = new HashMap<>();
-        userRole.put(UserRoleDao.user_, attrMap.get(UserDao.USER_));
-        userRole.put(UserRoleDao.id_rolename, idRole);
+        userRole.put(UserRoleDao.USER, attrMap.get(UserDao.USER_));
+        userRole.put(UserRoleDao.ID_ROLENAME, idRole);
         this.daoHelper.insert(this.userRoleDao, userRole);
 
         return user;
@@ -139,7 +136,7 @@ public class UserService implements IUserService {
         if (!keyMap.containsKey(UserDao.USER_)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
 

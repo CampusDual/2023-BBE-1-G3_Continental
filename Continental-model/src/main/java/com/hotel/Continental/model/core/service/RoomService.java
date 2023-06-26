@@ -38,6 +38,8 @@ public class RoomService implements IRoomService {
     private DefaultOntimizeDaoHelper daoHelper;
     //declara un a constante con yyyy-MM-dd
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String INITIALDATE = "initialdate";
+    private static final String FINALDATE = "finaldate";
 
     /**
      * Metodo que devuelve un EntityResult con los datos de la habitacion
@@ -83,7 +85,7 @@ public class RoomService implements IRoomService {
             filterHotel.put(HotelDao.ID, attrMap.get(RoomDao.IDHOTEL));
             EntityResult hotel = this.daoHelper.query(this.hotelDao, filterHotel, Arrays.asList(HotelDao.ID));
 
-            if (hotel.calculateRecordNumber() == 0) {
+            if (hotel == null || hotel.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
@@ -179,8 +181,8 @@ public class RoomService implements IRoomService {
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
         //Copiamos el mapa de claves para no modificar el original
         Map<String, Object> keyMapCopy = new HashMap<>(keyMap);
-        String initialDateString = keyMapCopy.remove("initialdate").toString();
-        String finalDateString = keyMapCopy.remove("finaldate").toString();
+        String initialDateString = keyMapCopy.remove(INITIALDATE).toString();
+        String finalDateString = keyMapCopy.remove(FINALDATE).toString();
         Date initialDate = null;
         Date finalDate = null;
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
@@ -188,10 +190,10 @@ public class RoomService implements IRoomService {
         try {
             initialDate = formatter.parse(initialDateString);
             finalDate = formatter.parse(finalDateString);
-            keyMap.remove("initialdate");
-            keyMap.remove("finaldate");
-            keyMap.put("initialdate", initialDate);
-            keyMap.put("finaldate", finalDate);
+            keyMap.remove(INITIALDATE);
+            keyMap.remove(FINALDATE);
+            keyMap.put(INITIALDATE, initialDate);
+            keyMap.put(FINALDATE, finalDate);
         } catch (ParseException e) {
             EntityResult er= new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

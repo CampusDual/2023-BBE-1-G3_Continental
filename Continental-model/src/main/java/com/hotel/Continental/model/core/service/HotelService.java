@@ -56,7 +56,8 @@ public class HotelService implements IHotelService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelInsert(Map<?, ?> attrMap) {
-        if (!attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
+        if (attrMap.get(HotelDao.NAME) == null || attrMap.get(HotelDao.ADDRESS) == null ||
+                !attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

@@ -1,7 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.ClientDao;
-import com.hotel.continental.model.core.service.ClientService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -27,6 +26,9 @@ public class ClientServiceTest {
     @InjectMocks
     ClientService clientService;
 
+    @Mock
+    ClientDao clientDao;
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class ClienteServiceInsert{
@@ -47,6 +49,7 @@ public class ClientServiceTest {
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(0, result.getCode());
         }
+
         @Test
         @DisplayName("Test client insert with empty data")
         void testClientInsertEmptyData() {
@@ -58,6 +61,8 @@ public class ClientServiceTest {
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
         }
+
+
         @Test
         @DisplayName("Test client insert with null data")
         void testClientInsertNullData() {
@@ -137,6 +142,7 @@ public class ClientServiceTest {
             EntityResult result = clientService.clientUpdate(clientToUpdate,clientToFilter);
             Assertions.assertEquals(0, result.getCode());
         }
+
 
         @Test
         @DisplayName("Test client update bad client")
@@ -255,7 +261,7 @@ public class ClientServiceTest {
     }
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class ClientServiceQuery {
+    class ClientServiceQuery {
         @Test
         @DisplayName("Test good query client")
         void testQueryGood() {
@@ -296,11 +302,15 @@ public class ClientServiceTest {
         @Test
         @DisplayName("Test query with null data")
         void testQueryNullData() {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(ClientDao.CLIENTID, null);
+
             List<String> columns = new ArrayList<>();
             columns.add(ClientDao.CLIENTID);
-            //No hace falta mockear porque lanza error antes
+
             EntityResult result = clientService.clientQuery(keyMap, columns);
             Assertions.assertEquals(1, result.getCode());
         }

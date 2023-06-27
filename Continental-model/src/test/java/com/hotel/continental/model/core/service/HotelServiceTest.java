@@ -7,6 +7,8 @@ import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -70,12 +72,13 @@ public class HotelServiceTest {
         }
 
 
-        @Test
+        @ParameterizedTest
+        @NullSource
         @DisplayName("Test insert null data hotel")
-        void testInsertHotelNull() {
+        void testInsertHotelNull(String nullParameter) {
             Map<String, Object> hotelToInsert = new HashMap<>();
-            hotelToInsert.put(HotelDao.NAME, null);
-            hotelToInsert.put(HotelDao.ADDRESS, null);
+            hotelToInsert.put(HotelDao.NAME, nullParameter);
+            hotelToInsert.put(HotelDao.ADDRESS, nullParameter);
 
             //No hace falta mockear nada porque lanza error antes
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
@@ -178,15 +181,16 @@ public class HotelServiceTest {
         }
 
 
-        @Test
+        @ParameterizedTest
+        @NullSource
         @DisplayName("Test update hotel with null data")
-        void testUpdateHotelNull() {
+        void testUpdateHotelNull(String nullParameter) {
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(HotelDao.ID, null);
+            keyMap.put(HotelDao.ID, nullParameter);
 
             Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put(HotelDao.NAME, null);
-            attrMap.put(HotelDao.ADDRESS, null);
+            attrMap.put(HotelDao.NAME, nullParameter);
+            attrMap.put(HotelDao.ADDRESS, nullParameter);
 
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
 

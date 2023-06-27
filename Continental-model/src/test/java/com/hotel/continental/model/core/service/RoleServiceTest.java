@@ -1,13 +1,15 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoleDao;
-import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,8 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,18 +34,20 @@ public class RoleServiceTest {
 
     @Mock
     RoleDao roleDao;
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleQuery {
-        @Test
+        @ParameterizedTest()
+        @ValueSource(strings = "admin")
         @DisplayName("Test role query good")
-        void testRoleQueryGood() {
+        void testRoleQueryGood(String admin) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            er.put(RoleDao.ROLENAME, List.of("admin"));
+            er.put(RoleDao.ROLENAME, List.of(admin));
 
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ROLENAME,"admin");
+            keyMap.put(RoleDao.ROLENAME, admin);
 
             List<Object> attr = new ArrayList<>();
             attr.add(RoleDao.ID_ROLENAME);
@@ -112,27 +118,17 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test role insert null data ")
-        void testRoleInsertNullData() {
-            Map<String, Object> attr = new HashMap<>();
+        @ParameterizedTest
+        @ArgumentsSource(hashMapsNullAndEmpty.class)
+        @DisplayName("Test role insert null data & empty data")
+        void testRoleInsertNullData(HashMap<String, Object> attr) {
             //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleInsert(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
-        @Test
-        @DisplayName("Test role insert empty data")
-        void testRoleInsertEmptyData() {
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"");
-            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleInsert(attr);
 
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
-        }
         @Test
         @DisplayName("Test role insert duplicated data")
         void testRoleInsertDuplicatedData() {
@@ -152,6 +148,7 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
     }
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleDelete {
@@ -290,6 +287,18 @@ public class RoleServiceTest {
             //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
             EntityResult result = roleService.roleInsert(attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+    }
+
+
+    public static class hashMapsNullAndEmpty implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(null, null);
+            }},new HashMap<String, Object>() {{
+                put("", "");
+            }}).map(Arguments::of);
         }
     }
 }

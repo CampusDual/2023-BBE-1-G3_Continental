@@ -6,6 +6,9 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,13 +53,14 @@ public class ClientServiceTest {
             Assertions.assertEquals(0, result.getCode());
         }
 
-        @Test
+        @ParameterizedTest
+        @EmptySource
         @DisplayName("Test client insert with empty data")
-        void testClientInsertEmptyData() {
+        void testClientInsertEmptyData(String emptyParameter) {
             Map<String,Object> clientToInsert = new HashMap<>();
-            clientToInsert.put(ClientDao.DOCUMENT, "");
-            clientToInsert.put(ClientDao.NAME, "");
-            clientToInsert.put(ClientDao.COUNTRYCODE, "");
+            clientToInsert.put(ClientDao.DOCUMENT, emptyParameter);
+            clientToInsert.put(ClientDao.NAME, emptyParameter);
+            clientToInsert.put(ClientDao.COUNTRYCODE, emptyParameter);
 
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
@@ -144,16 +148,17 @@ public class ClientServiceTest {
         }
 
 
-        @Test
+        @ParameterizedTest
+        @NullSource
         @DisplayName("Test client update bad client")
-        void testClientUpdateNullData() {
+        void testClientUpdateNullData(String nullParameter) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(0);
 
             Map<String, Object> clientToUpdate = new HashMap<>();
-            clientToUpdate.put(ClientDao.DOCUMENT, null);
-            clientToUpdate.put(ClientDao.NAME, null);
-            clientToUpdate.put(ClientDao.COUNTRYCODE, null);
+            clientToUpdate.put(ClientDao.DOCUMENT, nullParameter);
+            clientToUpdate.put(ClientDao.NAME, nullParameter);
+            clientToUpdate.put(ClientDao.COUNTRYCODE, nullParameter);
             Map<String, Object> filter = new HashMap<>();
             filter.put(ClientDao.CLIENTID, "9");
 

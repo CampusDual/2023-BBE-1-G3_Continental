@@ -16,7 +16,7 @@ public class ErrorMessages {
     public static final String BOOKING_ALREADY_CHECKED_OUT = "M_BOOKING_ALREADY_CHECKED_OUT";
     public static final String BOOKING_NOT_CHECKED_IN = "M_BOOKING_NOT_CHECKED_IN";
     public static final String MORE_THAN_ONE_BOOKING = "M_MORE_THAN_ONE_BOOKING";
-    public static final String BOOKING_CHECKIN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
+    public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
     public static final String BOOKING_CHECK_OUT_SUCCESS = "M_BOOKING_CHECK_OUT_SUCCESS";
 
     //Fechas

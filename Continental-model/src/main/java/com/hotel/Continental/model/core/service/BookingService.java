@@ -203,4 +203,12 @@ public class BookingService implements IBookingService {
         }
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
+
+    @Override
+    public EntityResult bookingCheckin(Map<String, Object> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.setMessage("FUnciona");
+        return er;
+    }
 }

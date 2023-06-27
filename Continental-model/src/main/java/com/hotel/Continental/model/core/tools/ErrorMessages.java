@@ -18,7 +18,7 @@ public class ErrorMessages {
     public static final String MORE_THAN_ONE_BOOKING = "M_MORE_THAN_ONE_BOOKING";
     public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
     public static final String BOOKING_CHECK_OUT_SUCCESS = "M_BOOKING_CHECK_OUT_SUCCESS";
-
+    public static final String BOOKING_DOESNT_BELONG_CLIENT = "M_BOOKING_DOESNT_BELONG_CLIENT";
     //Fechas
     public static final String DATE_FORMAT_ERROR = "M_DATE_FORMAT_ERROR";
     public static final String FINAL_DATE_BEFORE_INITIAL_DATE = "M_FINAL_DATE_BEFORE_INITIAL_DATE";

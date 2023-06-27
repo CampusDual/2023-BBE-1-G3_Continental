@@ -146,6 +146,7 @@ public class BookingService implements IBookingService {
      */
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
+
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos que se ha introducido el id de la reserva
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -208,6 +209,7 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckin(Map<String, Object> attrMap) {
         //Comprobamos que se ha introducido el id de la reserva
         //Si se introduce id de reserva se usa id de reserva, si se introduce id de cliente,o se usa el id de cliente

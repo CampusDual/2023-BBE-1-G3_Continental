@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,8 @@ public class GeneradorPermisos {
     private static final String ROLE_PERMISSION_TABLE_NAME = "trole_server_permission";
 
     public static void main(String[] args) {
-        String path = "C:\\Users\\artai\\Documents\\GitHub\\2023-BBE-1-G3\\continental-api\\src\\main\\java\\com\\hotel\\continental\\api\\core\\service";
+        String path = ".\\Continental-api\\src\\main\\java\\com\\hotel\\continental\\api\\core\\service";
+        System.out.println(new File(path).getAbsolutePath());
         List<Class<?>> interfaceList = listarInterfaces(new File(path).listFiles());
         String role = "client";
 
@@ -104,4 +107,6 @@ public class GeneradorPermisos {
         sb.append(");");
         return sb.toString();
     }
+
 }
+

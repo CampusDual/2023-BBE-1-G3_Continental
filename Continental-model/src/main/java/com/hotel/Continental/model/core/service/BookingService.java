@@ -277,7 +277,7 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKIN_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        er.setMessage(ErrorMessages.BOOKING_CHECKIN_SUCCESS);
+        er.setMessage(ErrorMessages.BOOKING_CHECK_IN_SUCCESS);
         return er;
     }
 }

@@ -2,13 +2,18 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -157,28 +163,13 @@ public class BookingServiceTest {
             assertEquals(0, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test booking update with empty data")
-        void testUpdateBookingEmpty() {
-            //No hace falta mockear nada porque lanza error antes
-            EntityResult result = bookingService.bookingUpdate(new HashMap<>(), new HashMap<>());
-            assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
-
         @ParameterizedTest
-        @NullSource
-        @DisplayName("Test booking update with null data")
-        void testUpdateBookingNullData(String nullParameter) {
-            Map<String,Object> bookingToUpdate = new HashMap<>();
-            bookingToUpdate.put(BookingDao.BOOKINGID, nullParameter);
-            bookingToUpdate.put(BookingDao.CLIENT, nullParameter);
-            bookingToUpdate.put(BookingDao.ROOMID, nullParameter);
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(BookingDao.BOOKINGID, 0);
-
+        @ArgumentsSource(testUpdateBookingNullAndEmptyData.class)
+        @DisplayName("Test booking update with null and empty data")
+        void testUpdateBookingNullAndEmptyData(HashMap<String, Object> bookingToUpdate, HashMap<String, Object> keyMap, String errorMessage) {
             EntityResult result = bookingService.bookingUpdate(bookingToUpdate, keyMap);
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+            assertEquals(errorMessage, result.getMessage());
         }
     }
 
@@ -209,28 +200,47 @@ public class BookingServiceTest {
             assertEquals(0, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test booking delete with empty data")
-        void testDeleteBookingEmpty() {
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(BookingDao.BOOKINGID, "");
-
-            EntityResult result = bookingService.bookingDelete(keyMap);
-
-            assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
-
         @ParameterizedTest
-        @NullSource
+        @ArgumentsSource(testDeleteBookingNullAndEmptyData.class)
         @DisplayName("Test booking delete with null data")
-        void testDeleteBookingNull(String nullParameter) {
-            Map<String,Object> bookingToDelete = new HashMap<>();
-            bookingToDelete.put(BookingDao.BOOKINGID, nullParameter);
-            bookingToDelete.put(BookingDao.CLIENT, nullParameter);
-            bookingToDelete.put(BookingDao.ROOMID, nullParameter);
-
+        void testDeleteBookingNull(HashMap<String, Object> bookingToDelete, String errorMessage) {
             EntityResult result = bookingService.bookingDelete(bookingToDelete);
             assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+            assertEquals(errorMessage, result.getMessage());
+        }
+    }
+
+    public static class testUpdateBookingNullAndEmptyData implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(Arguments.of(new HashMap<String, Object>() {{
+                        put(BookingDao.BOOKINGID, null);
+                        put(BookingDao.CLIENT, null);
+                        put(BookingDao.ROOMID, null);
+                    }}, new HashMap<String, Object>(){{
+                        put(BookingDao.BOOKINGID, 0);
+                    }}, ErrorMessages.BOOKING_NOT_EXIST),
+                    Arguments.of(new HashMap<String, Object>(),
+                            new HashMap<String, Object>(),
+                            ErrorMessages.NECESSARY_KEY));
+        }
+    }
+
+    public static class testDeleteBookingNullAndEmptyData implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(Arguments.of(new HashMap<String, Object>() {{
+                        put(BookingDao.BOOKINGID, 1);
+                        put(BookingDao.CLIENT, null);
+                        put(BookingDao.ROOMID, null);
+                    }}, ErrorMessages.BOOKING_NOT_EXIST),
+                    Arguments.of(new HashMap<String, Object>(),
+                            ErrorMessages.NECESSARY_KEY),
+                    Arguments.of(new HashMap<String, Object>(){{
+                        put(BookingDao.BOOKINGID, null);
+                        put(BookingDao.CLIENT, null);
+                        put(BookingDao.ROOMID, null);
+                    }}, ErrorMessages.NECESSARY_KEY));
         }
     }
 }

@@ -8,13 +8,18 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -61,25 +66,11 @@ public class RoomServiceTest {
             System.out.println(result.getMessage());
             Assertions.assertEquals(0, result.getCode());
         }
-
-        @ParameterizedTest
-        @NullSource
-        @DisplayName("Test room insert null data")
-        void testRoomInsertNull(String nullParameter) {
-            Map<String, Object> roomToInsert = new HashMap<>();
-            roomToInsert.put(RoomDao.ROOMDOWNDATE, nullParameter);
-            roomToInsert.put(RoomDao.ROOMNUMBER, nullParameter);
-            roomToInsert.put(RoomDao.IDHOTEL, nullParameter);
-
-            EntityResult result = roomService.roomInsert(roomToInsert);
-            Assertions.assertEquals(1, result.getCode());
-        }
     
-        @Test
+        @ParameterizedTest
+        @ArgumentsSource(testInsertRoomNullAndEmptyData.class)
         @DisplayName("Test room insert no data")
-        void testRoomInsertBad() {
-            //Despues se hace una query para comprobar que la habitacion no existe
-            Map<String, Object> roomToInsert = new HashMap<>();
+        void testRoomInsertEmptyAndNullData(HashMap<String, Object> roomToInsert) {
             //No hace falta mockear nada porque falla al comprobar los datos
             EntityResult result = roomService.roomInsert(roomToInsert);
             Assertions.assertEquals(1, result.getCode());
@@ -205,6 +196,17 @@ public class RoomServiceTest {
             EntityResult result = roomService.roomDelete(keyMap);
 
             Assertions.assertEquals(1, result.getCode());
+        }
+    }
+
+    public static class testInsertRoomNullAndEmptyData implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(RoomDao.ROOMDOWNDATE, null);
+                put(RoomDao.ROOMNUMBER, null);
+                put(RoomDao.IDHOTEL, null);
+            }}, new HashMap<String, Object>()).map(Arguments::of);
         }
     }
 }

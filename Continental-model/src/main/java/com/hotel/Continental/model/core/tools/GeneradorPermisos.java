@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GeneradorPermisos {
     private static final String API_PACKAGE_PATH = "com.hotel.continental.api.core.service";
@@ -18,7 +19,7 @@ public class GeneradorPermisos {
         String path = ".\\Continental-api\\src\\main\\java\\com\\hotel\\continental\\api\\core\\service";
         System.out.println(new File(path).getAbsolutePath());
         List<Class<?>> interfaceList = listarInterfaces(new File(path).listFiles());
-        String role = "client";
+        String role = leerString();
 
         for (Class<?> interfaceClass : interfaceList) {
             generateInsertStatements(interfaceClass);
@@ -51,6 +52,11 @@ public class GeneradorPermisos {
                 }
             }
         }
+    }
+
+    private static String leerString() {
+        String role = JOptionPane.showInputDialog(null, "¿A que rol le desea asignar permisos?");
+        return role;
     }
 
     private static List<Class<?>> listarInterfaces(File[] files) {

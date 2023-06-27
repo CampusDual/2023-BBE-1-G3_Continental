@@ -280,4 +280,12 @@ public class BookingService implements IBookingService {
         er.setMessage(ErrorMessages.BOOKING_CHECKIN_SUCCESS);
         return er;
     }
+
+    @Override
+    public EntityResult bookingCheckout(Map<String, Object> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.setMessage("funca");
+        return er;
+    }
 }

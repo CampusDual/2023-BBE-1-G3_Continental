@@ -48,6 +48,14 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
+        keyMap.put(AccessCardDao.AVALIABLE, false);
+        EntityResult query = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID));
+        if (query.calculateRecordNumber()>0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
+            return er;
+        }
         keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         //Booking existe
@@ -70,14 +78,6 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.HOTEL_INCORRECT);
-            return er;
-        }
-        keyMap.put(AccessCardDao.AVALIABLE, false);
-        EntityResult query = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID));
-        if (query.calculateRecordNumber()>0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
             return er;
         }
         Map<String,Object> availablefalse = new HashMap<>();

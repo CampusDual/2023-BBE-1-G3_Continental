@@ -56,7 +56,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignment {
         }
         //Comprobamos que esa tarjeta existe,y comprobamos que esta asignada
         EntityResult query = this.daoHelper.query(this.accessCardDao, attrMap, List.of(AccessCardDao.AVALIABLE));
-        if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVALIABLE)) {
+        if ((boolean)query.getRecordValues(0).get(AccessCardDao.AVALIABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);

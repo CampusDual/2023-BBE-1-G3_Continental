@@ -1,7 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
-import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
@@ -15,9 +14,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +29,7 @@ public class BookingService implements IBookingService {
     @Autowired
     private RoomService roomService;
     @Autowired
-    private AccessCardAssignmentServiceService accessCardAssignmentService;
+    private AccessCardAssignmentService accessCardAssignmentService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 

@@ -13,14 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Lazy
 @Service("AccessCardAssignmentService")
-public class AccessCardAssignmentServiceService implements IAccessCardAssignmentService {
+public class AccessCardAssignmentService implements IAccessCardAssignmentService {
     @Autowired
     private AccessCardAssignmentDao accessCardAssignmentDao;
     @Autowired
@@ -73,7 +72,7 @@ public class AccessCardAssignmentServiceService implements IAccessCardAssignment
             er.setMessage(ErrorMessages.HOTEL_INCORRECT);
             return er;
         }
-        keyMap.put(AccessCardDao.AVAILABLE, false);
+        keyMap.put(AccessCardDao.AVALIABLE, false);
         EntityResult query = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID));
         if (query.calculateRecordNumber()>0) {
             EntityResult er = new EntityResultMapImpl();
@@ -82,7 +81,7 @@ public class AccessCardAssignmentServiceService implements IAccessCardAssignment
             return er;
         }
         Map<String,Object> availablefalse = new HashMap<>();
-        availablefalse.put(AccessCardDao.AVAILABLE, false);
+        availablefalse.put(AccessCardDao.AVALIABLE, false);
         Map<String,Object> filterCards = new HashMap<>();
         filterCards.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
         this.daoHelper.update(this.accessCardDao, availablefalse, filterCards);

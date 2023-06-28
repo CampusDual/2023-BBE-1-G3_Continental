@@ -62,6 +62,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignment {
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);
             return er;
         }
+        //Comprobamos que esta asignada a esa reserva
         //Le cambiamos el estado a la tarjeta
         Map<String, Object> attrMap2 = new HashMap<>();
         attrMap2.put(AccessCardDao.AVALIABLE, true);
@@ -72,6 +73,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignment {
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
+        update.setMessage(ErrorMessages.ACCESS_CARD_RECOVERED);
         return update;
     }
 }

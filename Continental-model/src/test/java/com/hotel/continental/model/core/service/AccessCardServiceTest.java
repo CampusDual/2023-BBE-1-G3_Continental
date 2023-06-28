@@ -31,8 +31,8 @@ public class AccessCardServiceTest {
     @Mock
     static AccessCardDao accessCardDao;
     @ParameterizedTest(name = "Test case {index} : {0}")
-    @MethodSource("bookingServiceQuery")
-    void testQueryBooking(String testCaseName, Map<?, ?> keyMap, List<?> attrList,EntityResult expectedResult,List<Supplier> mock) {
+    @MethodSource("accessCardQuery")
+    void testAccessCardQuery(String testCaseName, Map<?, ?> keyMap, List<?> attrList,EntityResult expectedResult,List<Supplier> mock) {
         //For each test case, execute the mock,to make sure the mock is called
         mock.forEach(Supplier::get);
         EntityResult result = accessCardService.accesscardQuery(keyMap, attrList);
@@ -40,7 +40,7 @@ public class AccessCardServiceTest {
         assertEquals(expectedResult.getMessage(), result.getMessage());
         assertEquals(expectedResult.getCode(), result.getCode());
     }
-    private static Stream<Arguments> bookingServiceQuery() {
+    private static Stream<Arguments> accessCardQuery() {
         return Stream.of(
                 // Test case 1: Successful query
                 Arguments.of(
@@ -79,6 +79,7 @@ public class AccessCardServiceTest {
                 )
         );
     }
+
     /**
      * Creates an EntityResult with the given code and message
      *

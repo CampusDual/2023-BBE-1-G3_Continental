@@ -18,7 +18,7 @@ import java.util.Map;
 @Service("AccessCardService")
 public class AccessCardService implements IAccessCardService {
     @Autowired
-    private AccessCardDao AccessCardDao;
+    private AccessCardDao accessCardDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
     @Override
@@ -30,7 +30,7 @@ public class AccessCardService implements IAccessCardService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        EntityResult result = this.daoHelper.query(this.AccessCardDao, keyMap, attrList);
+        EntityResult result = this.daoHelper.query(this.accessCardDao, keyMap, attrList);
         if (result == null || result.calculateRecordNumber() == 0) {
             EntityResult er;
             er = new EntityResultMapImpl();

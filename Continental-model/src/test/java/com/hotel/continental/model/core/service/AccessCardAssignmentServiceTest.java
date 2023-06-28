@@ -46,7 +46,7 @@ public class AccessCardAssignmentServiceTest {
 
     private static Stream<Arguments> accessCardCheckOut() {
         return Stream.of(
-                // Test case 1: Successful accessCardCheckout
+                //<editor-fold desc="Test case 1: Successful accessCardCheckout">
                 Arguments.of(
                         "Successful accessCardCheckout",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1,AccessCardAssignmentDao.BOOKINGID,1),//keyMap
@@ -72,21 +72,24 @@ public class AccessCardAssignmentServiceTest {
                                 }
                         )
                 ),
-                // Test case 2: Not accessCard id
+                //</editor-fold>
+                //<editor-fold desc="Test case 2: Not accessCard id">
                 Arguments.of(
                         "No accessCard id",//Nombre del test
                         Map.of( 1,AccessCardAssignmentDao.BOOKINGID),//keyMap
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),//Resultado esperado
                         List.of()
                 ),
-                // Test case 3: Not booking id
+                //</editor-fold>
+                //<editor-fold desc="Test case 3: Not booking id">
                 Arguments.of(
                         "No booking id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1),//keyMap
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),//Resultado esperado
                         List.of()
                 ),
-                // Test case 4: Not Exist accessCard id
+                //</editor-fold>
+                //<editor-fold desc="Test case 4: Not Exist accessCard id">
                 Arguments.of(
                         "No Exist accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1,AccessCardAssignmentDao.BOOKINGID,1),//keyMap
@@ -99,7 +102,8 @@ public class AccessCardAssignmentServiceTest {
                                 }
                         )
                 ),
-                // Test case 5: Not asigned accessCard id
+                //</editor-fold>
+                //<editor-fold desc="Test case 5: Not asigned accessCard id">
                 Arguments.of(
                         "Already asigned accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1,AccessCardAssignmentDao.BOOKINGID,1),//keyMap
@@ -113,7 +117,8 @@ public class AccessCardAssignmentServiceTest {
                                 }
                         )
                 ),
-                // Test case 6: Different booking on assignment and accessCard
+                //</editor-fold>
+                //<editor-fold desc="Test case 6: Different booking on assignment and accessCard">
                 Arguments.of(
                         "Different booking on assignment and accessCard",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1,AccessCardAssignmentDao.BOOKINGID,1),//keyMap
@@ -139,6 +144,7 @@ public class AccessCardAssignmentServiceTest {
                                 }
                         )
                 )
+                //</editor-fold>
 
         );
     }

@@ -10,4 +10,5 @@ public interface IBookingService {
     public EntityResult bookingInsert(Map<String, Object> attrMap);
     public EntityResult bookingDelete(Map<?,?> keyMap);
     public  EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?,?> keyMap);
+    public EntityResult bookingCheckin(Map<String, Object> attrMap);
 }

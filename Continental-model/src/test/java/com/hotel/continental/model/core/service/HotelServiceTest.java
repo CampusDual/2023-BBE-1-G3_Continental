@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -7,6 +8,12 @@ import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,29 +62,10 @@ public class HotelServiceTest {
             assertEquals(0, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test insert empty data hotel")
-        void testInsertHotelEmpty() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-            Map<String, Object> hotelToInsert = new HashMap<>();
-            hotelToInsert.put(HotelDao.NAME, "");
-            hotelToInsert.put(HotelDao.ADDRESS, "");
-
-            when(daoHelper.insert(any(HotelDao.class), anyMap())).thenReturn(er);
-
-            EntityResult result = hotelService.hotelInsert(hotelToInsert);
-            assertEquals(0, result.getCode());
-        }
-
-
-        @Test
-        @DisplayName("Test insert null data hotel")
-        void testInsertHotelNull() {
-            Map<String, Object> hotelToInsert = new HashMap<>();
-            hotelToInsert.put(HotelDao.NAME, null);
-            hotelToInsert.put(HotelDao.ADDRESS, null);
-
+        @ParameterizedTest
+        @ArgumentsSource(testInsertHotelNullAndEmptyData.class)
+        @DisplayName("Test insert hotel with null and empty data")
+        void testInsertHotelNullAndEmptyData(HashMap<String, Object> hotelToInsert) {
             //No hace falta mockear nada porque lanza error antes
             EntityResult result = hotelService.hotelInsert(hotelToInsert);
             assertEquals(1, result.getCode());
@@ -118,10 +107,8 @@ public class HotelServiceTest {
             EntityResult queryResult = hotelService.hotelQuery(new HashMap<>(), List.of());
 
             assertTrue(queryResult.isEmpty());
-
         }
     }
-
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
@@ -178,15 +165,16 @@ public class HotelServiceTest {
         }
 
 
-        @Test
+        @ParameterizedTest
+        @NullSource
         @DisplayName("Test update hotel with null data")
-        void testUpdateHotelNull() {
+        void testUpdateHotelNull(String nullParameter) {
             Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(HotelDao.ID, null);
+            keyMap.put(HotelDao.ID, nullParameter);
 
             Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put(HotelDao.NAME, null);
-            attrMap.put(HotelDao.ADDRESS, null);
+            attrMap.put(HotelDao.NAME, nullParameter);
+            attrMap.put(HotelDao.ADDRESS, nullParameter);
 
             EntityResult queryResult = hotelService.hotelUpdate(attrMap, keyMap);
 
@@ -257,6 +245,19 @@ public class HotelServiceTest {
             EntityResult queryResult = hotelService.hotelDelete(keyMap);
 
             assertEquals(EntityResult.OPERATION_WRONG, queryResult.getCode());
+        }
+    }
+
+    public static class testInsertHotelNullAndEmptyData implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(HotelDao.NAME, "");
+                put(HotelDao.ADDRESS, "");
+            }}, new HashMap<String, Object>(){{
+                put(HotelDao.NAME, null);
+                put(HotelDao.ADDRESS, null);
+            }}).map(Arguments::of);
         }
     }
 }

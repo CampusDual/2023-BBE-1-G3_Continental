@@ -7,6 +7,7 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
@@ -57,7 +58,8 @@ public class HotelService implements IHotelService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelInsert(Map<?, ?> attrMap) {
         if (attrMap.get(HotelDao.NAME) == null || attrMap.get(HotelDao.ADDRESS) == null ||
-                !attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)) {
+                !attrMap.containsKey(HotelDao.NAME) || !attrMap.containsKey(HotelDao.ADDRESS)
+        || Strings.isEmpty((String) attrMap.get(HotelDao.NAME)) || Strings.isEmpty((String) attrMap.get(HotelDao.ADDRESS))) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

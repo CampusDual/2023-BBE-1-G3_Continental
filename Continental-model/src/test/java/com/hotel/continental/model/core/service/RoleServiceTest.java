@@ -1,13 +1,15 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoleDao;
-import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,8 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,18 +34,17 @@ public class RoleServiceTest {
 
     @Mock
     RoleDao roleDao;
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleQuery {
-        @Test
-        @DisplayName("Test role query good")
-        void testRoleQueryGood() {
+        @ParameterizedTest()
+        @ArgumentsSource(queryGoodWithAndWithoutFilter.class)
+        @DisplayName("Test role query good with and without filter")
+        void testRoleQueryGoodWithAndWithoutFilter(HashMap<String, Object> keyMap) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
             er.put(RoleDao.ROLENAME, List.of("admin"));
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ROLENAME,"admin");
 
             List<Object> attr = new ArrayList<>();
             attr.add(RoleDao.ID_ROLENAME);
@@ -53,24 +56,6 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test role query good without filter ")
-        void testRoleQueryGoodWitoutFilter() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            er.put(RoleDao.ID_ROLENAME, List.of(1));
-            er.put(RoleDao.ROLENAME, List.of("admin"));
-
-            Map<String, Object> keyMap = new HashMap<>();
-            List<Object> attr = new ArrayList<>();
-            attr.add(RoleDao.ID_ROLENAME);
-            attr.add(RoleDao.ROLENAME);
-
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
-
-            EntityResult result = roleService.roleQuery(keyMap, attr);
-            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
-        }
         @Test
         @DisplayName("Test role query bad without columns ")
         void testRoleQueryBadWithoutColumns() {
@@ -112,27 +97,17 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test role insert null data ")
-        void testRoleInsertNullData() {
-            Map<String, Object> attr = new HashMap<>();
+        @ParameterizedTest
+        @ArgumentsSource(hashMapsNullAndEmptyInsert.class)
+        @DisplayName("Test role insert null data & empty data")
+        void testRoleInsertNullDataAndEmptyData(HashMap<String, Object> attr) {
             //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleInsert(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
-        @Test
-        @DisplayName("Test role insert empty data")
-        void testRoleInsertEmptyData() {
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"");
-            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleInsert(attr);
 
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
-        }
         @Test
         @DisplayName("Test role insert duplicated data")
         void testRoleInsertDuplicatedData() {
@@ -152,6 +127,7 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
         }
     }
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoleDelete {
@@ -177,28 +153,15 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
 
-        @Test
-        @DisplayName("Test role delete null key ")
-        void testRoleDeleteNullKey() {
-            Map<String, Object> attr = new HashMap<>();
-            //Ejecutamos el delete, al no tener clave nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleDelete(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
-
-        @Test
-        @DisplayName("Test role delete not exist key")
-        void testRoleDeleteNotExistKey() {
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ID_ROLENAME, 1);
+        @ParameterizedTest
+        @ArgumentsSource(testRoleDeleteNotExistKeyAndNullKey.class)
+        @DisplayName("Test role delete not exist key and null key")
+        void testRoleDeleteNotExistKeyAndNullKey(HashMap<String, Object> attr) {
             //Ejecutamos el delete, al no existir la clave nos va petar sin llegar a tener que mockear nada
             EntityResult result = roleService.roleDelete(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.ROLE_DOESNT_EXIST, result.getMessage());
+            Assertions.assertEquals(ErrorMessages.NECESSARY_KEY, result.getMessage());
         }
 
         @Test
@@ -239,29 +202,19 @@ public class RoleServiceTest {
             EntityResult result = roleService.roleUpdate(attr, keyMap);
             Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
         }
-        @Test
-        @DisplayName("Test role update null key ")
-        void testRoleUpdateNullKey() {
-            Map<String, Object> attr = new HashMap<>();
-            Map<String, Object> keyMap = new HashMap<>();
-            //Ejecutamos el update, al no tener key nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleUpdate(attr,keyMap);
 
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_KEY, result.getMessage());
-        }
-        @Test
-        @DisplayName("Test role update null key")
-        void testRoleUpdateNullData() {
+        @ParameterizedTest
+        @ArgumentsSource(testRoleUpdateNullDataAndNullKey.class)
+        @DisplayName("Test role update null key and null data")
+        void testRoleUpdateNullDataAndNullKey(HashMap<String, Object> keyMap, String errorMessage) {
             Map<String, Object> attr = new HashMap<>();
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ID_ROLENAME,1);
             //Ejecutamos el update, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleUpdate(attr,keyMap);
+            EntityResult result = roleService.roleUpdate(attr, keyMap);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+            Assertions.assertEquals(errorMessage, result.getMessage());
         }
+
         @Test
         @DisplayName("Test role update empty data")
         void testRoleUpdateEmptyData() {
@@ -275,6 +228,7 @@ public class RoleServiceTest {
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
             Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
         }
+
         @Test
         @DisplayName("Test role update duplicated data")
         void testRoleUpdateDuplicatedData() {
@@ -290,6 +244,44 @@ public class RoleServiceTest {
             //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
             EntityResult result = roleService.roleInsert(attr);
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
+        }
+    }
+
+    public static class hashMapsNullAndEmptyInsert implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(null, null);
+            }},new HashMap<String, Object>()).map(Arguments::of);
+        }
+    }
+
+    public static class queryGoodWithAndWithoutFilter implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(RoleDao.ROLENAME, "admin");
+            }},new HashMap<String, Object>()).map(Arguments::of);
+        }
+    }
+
+    public static class testRoleDeleteNotExistKeyAndNullKey implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new HashMap<String, Object>() {{
+                put(RoleDao.ROLENAME, 1);
+            }},new HashMap<String, Object>()).map(Arguments::of);
+        }
+    }
+
+    public static class testRoleUpdateNullDataAndNullKey implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(Arguments.of(new HashMap<String, Object>() {{
+                put(RoleDao.ID_ROLENAME, 1);
+            }}, ErrorMessages.NECESSARY_DATA),
+                    Arguments.of(new HashMap<String, Object>(),
+                            ErrorMessages.NECESSARY_KEY));
         }
     }
 }

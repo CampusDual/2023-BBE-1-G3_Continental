@@ -295,7 +295,7 @@ public class BookingServiceTest {
 
 
 
-    @ParameterizedTest(name = "{0}")
+    @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingCheckinTestData")
     @DisplayName("TestParametrized booking check-in")
     void testBookingCheckin(String name, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mocks) {
@@ -313,7 +313,7 @@ public class BookingServiceTest {
         return Stream.of(
                 // Test case 1: Successful check-in
                 Arguments.of(
-                        "Test case 1: Successful check-in",
+                        "Successful check-in",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.BOOKING_CHECK_IN_SUCCESS),
                         List.of(
@@ -336,7 +336,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 2: Check-in with invalid booking id
                 Arguments.of(
-                        "Test case 2: Check-in with invalid booking id",
+                        "Check-in with invalid booking id",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
                         List.of(
@@ -349,7 +349,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 3: Check-in with invalid bookingid-clientid combination
                 Arguments.of(
-                        "Test case 3: Check-in with invalid bookingid-clientid combination",
+                        "Check-in with invalid bookingid-clientid combination",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT),
                         List.of(
@@ -365,7 +365,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 4: Already checked-in
                 Arguments.of(
-                        "Test case 4: Already checked-in",
+                        "Already checked-in",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_IN),
                         List.of(
@@ -383,7 +383,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 5: Missing booking ID
                 Arguments.of(
-                        "Test case 5: Missing booking ID",
+                        "Missing booking ID",
                         Map.of(),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
                         List.of()
@@ -392,7 +392,7 @@ public class BookingServiceTest {
         );
     }
 
-    @ParameterizedTest(name = "{0}")
+    @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingCheckOutTestData")
     @DisplayName("TestParametrized booking check-out")
     void testBookingCheckout(String name, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mocks) {
@@ -410,7 +410,7 @@ public class BookingServiceTest {
         return Stream.of(
                 // Test case 1: Successful check-in
                 Arguments.of(
-                        "Test case 1: Successful check-out",
+                        "Successful check-out",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.BOOKING_CHECK_OUT_SUCCESS),
                         List.of(
@@ -434,7 +434,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 2: Check-in with invalid booking id
                 Arguments.of(
-                        "Test case 2: Check-out with invalid booking id",
+                        "Check-out with invalid booking id",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
                         List.of(
@@ -447,7 +447,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 3: Check-in with invalid bookingid-clientid combination
                 Arguments.of(
-                        "Test case 3: Check-out with invalid bookingid-clientid combination",
+                        "Check-out with invalid bookingid-clientid combination",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT),
                         List.of(
@@ -463,7 +463,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 4: Already checked-in
                 Arguments.of(
-                        "Test case 4: Already checked-out",
+                        "Already checked-out",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_OUT),
                         List.of(
@@ -482,7 +482,7 @@ public class BookingServiceTest {
                 ),
                 // Test case 5: Missing booking ID
                 Arguments.of(
-                        "Test case 5: Missing booking ID",
+                        "Missing booking ID",
                         Map.of(),
                         createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
                         List.of()

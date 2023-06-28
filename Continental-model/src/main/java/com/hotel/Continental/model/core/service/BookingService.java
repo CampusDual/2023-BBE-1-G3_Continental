@@ -1,5 +1,7 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
+import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
@@ -29,6 +31,8 @@ public class BookingService implements IBookingService {
     private BookingDao bookingDao;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private AccessCardAssignmentServiceService accessCardAssignmentService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
@@ -219,6 +223,12 @@ public class BookingService implements IBookingService {
                 er.setMessage(ErrorMessages.NECESSARY_KEY);
                 return er;
         }
+        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         //Comprobamos si la reserva existe
         Map<String, Object> filterId = new HashMap<>();
         filterId.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
@@ -247,6 +257,8 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_IN);
             return er;
         }
+        accessCardAssignmentService.accesscardassignmentInsert(attrMap);
+
         //Update de la reserva
         Map<String, Object> keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));

@@ -257,7 +257,10 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_IN);
             return er;
         }
-        accessCardAssignmentService.accesscardassignmentInsert(attrMap);
+        EntityResult card = accessCardAssignmentService.accesscardassignmentInsert(attrMap);
+        if (card.getCode()==1) {
+            return card;
+        }
 
         //Update de la reserva
         Map<String, Object> keyMap = new HashMap<>();

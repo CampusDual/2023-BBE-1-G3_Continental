@@ -47,7 +47,9 @@ public class ErrorMessages {
     //AccessCard
     public static final String ACCESS_CARD_ALREADY_GIVEN = "M_ACCESS_CARD_ALREADY_GIVEN";
     public static final String ACCESS_CARD_NOT_EXIST = "M_ACCESS_CARD_NOT_EXIST";
-    
+    public static final String ACCESS_CARD_NOT_GIVEN = "M_ACCESS_CARD_NOT_GIVEN";
+    public static final String ACCESS_CARD_RECOVERED = "M_ACCESS_CARD_RECOVERED";
+    public static final String ACCESS_CARD_NOT_RECOVERED = "M_ERROR_ACCESS_CARD_NOT_RECOVERED";
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

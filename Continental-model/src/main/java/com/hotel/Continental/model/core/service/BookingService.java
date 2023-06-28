@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
@@ -29,6 +30,8 @@ public class BookingService implements IBookingService {
     private BookingDao bookingDao;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private AccessCardAssignmentService accessCardAssignmentService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
@@ -305,7 +308,13 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
-
+        //Update de la tarjeta
+        Map<String, Object> keyMapCard = new HashMap<>();
+        keyMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
+        EntityResult erTarjeta=accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
+        if(erTarjeta.getCode()==EntityResult.OPERATION_WRONG){
+            return erTarjeta;
+        }
         //Update de la reserva
         Map<String, Object> keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));

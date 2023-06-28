@@ -392,7 +392,104 @@ public class BookingServiceTest {
         );
     }
 
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("bookingCheckOutTestData")
+    @DisplayName("TestParametrized booking check-out")
+    void testBookingCheckout(String name, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mocks) {
+        //For each mock, execute the get method, to make sure the mock is called
+        mocks.forEach(mockMap -> {
+            mockMap.get();
+        });
+        EntityResult result = bookingService.bookingCheckout(attrMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
+    }
 
+    private static Stream<Arguments> bookingCheckOutTestData() {
+        return Stream.of(
+                // Test case 1: Successful check-in
+                Arguments.of(
+                        "Test case 1: Successful check-out",
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.BOOKING_CHECK_OUT_SUCCESS),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erReserva = new EntityResultMapImpl();
+                                    erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erReserva.put(BookingDao.BOOKINGID, List.of(0));
+                                    erReserva.put(BookingDao.CHECKIN_DATETIME, List.of(LocalDateTime.now()));
+                                    EntityResult erReservaCliente = new EntityResultMapImpl();
+                                    erReservaCliente.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erReservaCliente.put(BookingDao.CLIENT, List.of(0));
+                                    return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult er = new EntityResultMapImpl();
+                                    er.setCode(0);
+                                    er.put(BookingDao.CLIENT, List.of(0));
+                                    return Mockito.when(daoHelper.update(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyMap())).thenReturn(er);
+                                }
+                        )
+                ),
+                // Test case 2: Check-in with invalid booking id
+                Arguments.of(
+                        "Test case 2: Check-out with invalid booking id",
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erReserva = new EntityResultMapImpl();
+                                    erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva);
+                                }
+                        )
+                ),
+                // Test case 3: Check-in with invalid bookingid-clientid combination
+                Arguments.of(
+                        "Test case 3: Check-out with invalid bookingid-clientid combination",
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erReserva = new EntityResultMapImpl();
+                                    erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erReserva.put(BookingDao.BOOKINGID, List.of(0));
+                                    EntityResult erReservaCliente = new EntityResultMapImpl();
+                                    erReservaCliente.setCode(EntityResult.OPERATION_WRONG);
+                                    return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
+                                }
+                        )
+                ),
+                // Test case 4: Already checked-in
+                Arguments.of(
+                        "Test case 4: Already checked-out",
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_OUT),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erReserva = new EntityResultMapImpl();
+                                    erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erReserva.put(BookingDao.BOOKINGID, List.of(0));
+                                    erReserva.put(BookingDao.CHECKIN_DATETIME, List.of(LocalDateTime.now()));
+                                    erReserva.put(BookingDao.CHECKOUT_DATETIME, List.of(LocalDateTime.now()));
+                                    EntityResult erReservaCliente = new EntityResultMapImpl();
+                                    erReservaCliente.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erReservaCliente.put(BookingDao.CLIENT, List.of(0));
+                                    return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
+                                }
+                        )
+                ),
+                // Test case 5: Missing booking ID
+                Arguments.of(
+                        "Test case 5: Missing booking ID",
+                        Map.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        List.of()
+                )
+
+        );
+    }
 
     /**
      * Creates an EntityResult with the given code and message

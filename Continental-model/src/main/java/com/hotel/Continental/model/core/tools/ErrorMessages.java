@@ -14,8 +14,10 @@ public class ErrorMessages {
     public static final String ROOM_NOT_FREE = "M_ROOM_NOT_FREE";
     public static final String BOOKING_ALREADY_CHECKED_IN = "M_BOOKING_ALREADY_CHECKED_IN";
     public static final String BOOKING_ALREADY_CHECKED_OUT = "M_BOOKING_ALREADY_CHECKED_OUT";
+    public static final String BOOKING_NOT_CHECKED_IN = "M_BOOKING_NOT_CHECKED_IN";
     public static final String MORE_THAN_ONE_BOOKING = "M_MORE_THAN_ONE_BOOKING";
-    public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECKIN_SUCCESS";
+    public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
+    public static final String BOOKING_CHECK_OUT_SUCCESS = "M_BOOKING_CHECK_OUT_SUCCESS";
     public static final String BOOKING_DOESNT_BELONG_CLIENT = "M_BOOKING_DOESNT_BELONG_CLIENT";
     //Fechas
     public static final String DATE_FORMAT_ERROR = "M_DATE_FORMAT_ERROR";
@@ -44,7 +46,8 @@ public class ErrorMessages {
     public static final String EMPLOYEE_ALREADY_INACTIVE = "M_EMPLOYEE_ALREADY_INACTIVE";
     //AccessCard
     public static final String ACCESS_CARD_ALREADY_GIVEN = "M_ACCESS_CARD_ALREADY_GIVEN";
-
+    public static final String ACCESS_CARD_NOT_EXIST = "M_ACCESS_CARD_NOT_EXIST";
+    
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

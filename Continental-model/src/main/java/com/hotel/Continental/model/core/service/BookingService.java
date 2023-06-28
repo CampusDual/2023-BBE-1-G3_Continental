@@ -256,4 +256,63 @@ public class BookingService implements IBookingService {
         er.setMessage(ErrorMessages.BOOKING_CHECK_IN_SUCCESS);
         return er;
     }
+
+    @Override
+    //@Secured({ PermissionsProviderSecured.SECURED })
+    public EntityResult bookingCheckout(Map<String, Object> attrMap) {
+        //Comprobamos que se ha introducido el id de la reserva);
+        //Si se introduce id de reserva se usa id de reserva
+        if (attrMap.get(BookingDao.BOOKINGID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobamos si la reserva existe
+        Map<String, Object> filterId = new HashMap<>();
+        filterId.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
+        EntityResult book = this.daoHelper.query(this.bookingDao, filterId, List.of(BookingDao.BOOKINGID, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME));
+        if (book.getRecordValues(0).isEmpty() || book.getCode() == EntityResult.OPERATION_WRONG) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+        
+        //Comprobamos que se haya hecho el checkin
+        if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_CHECKED_IN);
+            return er;
+        }
+        //Comprobamos que no se ha hecho el checkout
+        if (book.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
+            return er;
+        }
+
+        //Comprobamos que la reserva pertenece al cliente
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
+        filter.put(BookingDao.CLIENT, attrMap.get(BookingDao.CLIENT));
+        EntityResult bookclient = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.BOOKINGID, BookingDao.CLIENT));
+        if (bookclient.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
+            return er;
+        }
+
+        //Update de la reserva
+        Map<String, Object> keyMap = new HashMap<>();
+        keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
+        Map<String, Object> attrMapUpdate = new HashMap<>();
+        attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
+        EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
+        er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
+        return er;
+    }
 }

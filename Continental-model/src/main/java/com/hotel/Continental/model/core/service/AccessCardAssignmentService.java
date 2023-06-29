@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,16 +42,14 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         }
         Map<String,Object> keyMap = new HashMap<>();
         keyMap.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
-        EntityResult accesscard = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID));
+        EntityResult accesscard = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID, AccessCardDao.AVAILABLE, AccessCardDao.HOTELID));
         if (accesscard.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
-        keyMap.put(AccessCardDao.AVALIABLE, false);
-        EntityResult query = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.ACCESSCARDID));
-        if (query.calculateRecordNumber()>0) {
+        if (((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0)==false) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
@@ -70,10 +69,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         keyMap.put(RoomDao.IDHABITACION, booking.getRecordValues(0).get(RoomDao.IDHABITACION));
         //Queremos que el hotel sea igual al de la reserva
         EntityResult roomhotel = this.daoHelper.query(this.roomDao, keyMap, List.of(RoomDao.IDHOTEL));
-        keyMap = new HashMap<>();
-        keyMap.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
-        EntityResult cardhotel = this.daoHelper.query(this.accessCardDao, keyMap, List.of(AccessCardDao.HOTELID));
-        boolean check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == cardhotel.getRecordValues(0).get(AccessCardDao.HOTELID);
+        boolean check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);
         if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -81,7 +77,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             return er;
         }
         Map<String,Object> availablefalse = new HashMap<>();
-        availablefalse.put(AccessCardDao.AVALIABLE, false);
+        availablefalse.put(AccessCardDao.AVAILABLE, false);
         Map<String,Object> filterCards = new HashMap<>();
         filterCards.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
         this.daoHelper.update(this.accessCardDao, availablefalse, filterCards);

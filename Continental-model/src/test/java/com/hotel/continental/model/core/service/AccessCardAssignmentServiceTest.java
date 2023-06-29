@@ -63,7 +63,7 @@ class AccessCardAssignmentServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(AccessCardDao.AVALIABLE, List.of(true));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
                                     EntityResult erCardAvailable = new EntityResultMapImpl();
                                     erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     EntityResult erCardHotel = new EntityResultMapImpl();
@@ -137,10 +137,10 @@ class AccessCardAssignmentServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(AccessCardDao.AVALIABLE, List.of(false));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(false));
                                     EntityResult erCardAvailable = new EntityResultMapImpl();
                                     erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCardAvailable.put(AccessCardDao.AVALIABLE, List.of(true));
+                                    erCardAvailable.put(AccessCardDao.AVAILABLE, List.of(true));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta, erCardAvailable);
                                 }
                         )
@@ -155,7 +155,7 @@ class AccessCardAssignmentServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(AccessCardDao.AVALIABLE, List.of(true));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
                                     EntityResult erCardAvailable = new EntityResultMapImpl();
                                     erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     EntityResult erCardHotel = new EntityResultMapImpl();

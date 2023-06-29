@@ -51,6 +51,9 @@ public class ErrorMessages {
     public static final String ACCESS_CARD_RECOVERED = "M_ACCESS_CARD_RECOVERED";
     public static final String ACCESS_CARD_NOT_RECOVERED = "M_ERROR_ACCESS_CARD_NOT_RECOVERED";
     public static final String CARD_DOESNT_BELONG_BOOKING = "M_CARD_DOESNT_BELONG_BOOKING";
+
+    public static final String HOTEL_INCORRECT = "M_HOTEL_INCORRECT";
+
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

@@ -64,14 +64,9 @@ class AccessCardAssignmentServiceTest {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
-                                    EntityResult erCardAvailable = new EntityResultMapImpl();
-                                    erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    EntityResult erCardHotel = new EntityResultMapImpl();
-                                    erCardHotel.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCardHotel.put(RoomDao.IDHOTEL, List.of(1));
-                                    EntityResult eQuery = new EntityResultMapImpl();
-                                    eQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta,erCardAvailable,erCardHotel, eQuery);
+                                    erTarjeta.put(AccessCardDao.ACCESSCARDID, List.of(1));
+                                    erTarjeta.put(AccessCardDao.HOTELID, List.of(1));
+                                    return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta);
                                 },
                                 (Supplier) () -> {
                                     EntityResult erBooking = new EntityResultMapImpl();

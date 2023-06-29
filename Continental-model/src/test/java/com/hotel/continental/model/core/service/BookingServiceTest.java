@@ -1,5 +1,7 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
+import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -41,6 +43,11 @@ public class BookingServiceTest {
 
     @Mock
     BookingDao bookingDao;
+    @Mock
+    AccessCardAssignmentDao accessCardAssignmentDao;
+    @Mock
+    static AccessCardAssignmentService accessCardAssignmentService;
+
 
 
     @ParameterizedTest(name = "Test case {index} : {0}")
@@ -428,6 +435,17 @@ public class BookingServiceTest {
                                     return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
                                 },
                                 (Supplier) () -> {
+                                    EntityResult erCard = new EntityResultMapImpl();
+                                    erCard.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erCard.put(AccessCardDao.ACCESSCARDID, List.of(0));
+                                    return Mockito.when(daoHelper.query(Mockito.any(AccessCardAssignmentDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erCard);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erInsertarTarjeta = new EntityResultMapImpl();
+                                    erInsertarTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
+                                },
+                                (Supplier) () -> {
                                     EntityResult er = new EntityResultMapImpl();
                                     er.setCode(0);
                                     er.put(BookingDao.CLIENT, List.of(0));
@@ -458,6 +476,7 @@ public class BookingServiceTest {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
+                                    erReserva.put(BookingDao.CHECKIN_DATETIME, List.of(LocalDateTime.now()));
                                     EntityResult erReservaCliente = new EntityResultMapImpl();
                                     erReservaCliente.setCode(EntityResult.OPERATION_WRONG);
                                     return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);

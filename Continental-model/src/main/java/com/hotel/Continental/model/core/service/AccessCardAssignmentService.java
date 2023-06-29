@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Entity;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
 
@@ -60,12 +59,20 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         attrMapCard.put(AccessCardDao.AVALIABLE, false);
         attrMapCard.put(AccessCardDao.HOTELID, null);
         attrMapCard.put(AccessCardDao.CARDDOWNDATE, new Timestamp(System.currentTimeMillis()));
+
+        //Comprobamos si el update y el delete se hicieron correctamente
         EntityResult update = this.daoHelper.update(this.accessCardDao, attrMapCard, attrMap);
 
-        //Recogemos el id de la tabla accessCardAssigment
+        if (update.getCode() == EntityResult.OPERATION_WRONG) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            return er;
+        }
+
+        //Recogemos el id de la tabla accessCardAssigment y comprobamos que no está vacia
         EntityResult accessCardAssignment = this.daoHelper.query(this.accessCardAssignmentDao, attrMap, List.of(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
 
-        //Comprobamos si no está vacia
         if (accessCardAssignment.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -75,16 +82,8 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
 
         Map<String, Object> attrMapAssignment = new HashMap<>();
         attrMapAssignment.put(AccessCardAssignmentDao.ACCESSCARDASIGNMENT, accessCardAssignment.getRecordValues(0).get(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
-        EntityResult delete = this.daoHelper.delete(this.accessCardAssignmentDao, attrMapAssignment);
 
-        //Comprobamos si el update y el delete se hicieron correctamente
-        if (update.getCode() == EntityResult.OPERATION_WRONG || delete.getCode() == EntityResult.OPERATION_WRONG) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
-            return er;
-        }
-
+        update.setMessage(ErrorMessages.ACCESS_CARD_SUCCESSFULLY_MODIFY);
         return update;
     }
 

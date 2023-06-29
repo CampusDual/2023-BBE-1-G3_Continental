@@ -51,6 +51,7 @@ public class ErrorMessages {
     public static final String ACCESS_CARD_RECOVERED = "M_ACCESS_CARD_RECOVERED";
     public static final String ACCESS_CARD_NOT_RECOVERED = "M_ERROR_ACCESS_CARD_NOT_RECOVERED";
     public static final String ACCESS_CARD_LOST = "M_ERROR_ACCESS_CARD_LOST";
+    public static final String ACCESS_CARD_SUCCESSFULLY_MODIFY = "M_ACCESS_SUCCESSFULLY_MODIFY";
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

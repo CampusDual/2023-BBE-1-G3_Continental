@@ -72,19 +72,6 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
-
-        Map<String, Object> attrMapAssignment = new HashMap<>();
-        attrMapAssignment.put(AccessCardAssignmentDao.ACCESSCARDASIGNMENT, accessCardAssignment.get(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
-        EntityResult delete = this.daoHelper.delete(this.accessCardAssignmentDao, attrMapAssignment);
-
-        //Comprobamos si el update y el delete se hicieron correctamente
-        if (update.getCode() == EntityResult.OPERATION_WRONG || delete.getCode() == EntityResult.OPERATION_WRONG) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
-            return er;
-        }
-
         return update;
     }
 

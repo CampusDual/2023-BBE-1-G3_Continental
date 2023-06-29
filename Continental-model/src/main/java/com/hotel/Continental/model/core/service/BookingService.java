@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.BookingDao;
@@ -13,9 +14,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +28,8 @@ public class BookingService implements IBookingService {
     private BookingDao bookingDao;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private AccessCardAssignmentService accessCardAssignmentService;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
 
@@ -219,6 +220,12 @@ public class BookingService implements IBookingService {
                 er.setMessage(ErrorMessages.NECESSARY_KEY);
                 return er;
         }
+        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         //Comprobamos si la reserva existe
         Map<String, Object> filterId = new HashMap<>();
         filterId.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
@@ -247,6 +254,11 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_IN);
             return er;
         }
+        EntityResult card = accessCardAssignmentService.accesscardassignmentInsert(attrMap);
+        if (card.getCode()==1) {
+            return card;
+        }
+
         //Update de la reserva
         Map<String, Object> keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));

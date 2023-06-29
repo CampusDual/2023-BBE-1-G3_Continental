@@ -45,7 +45,10 @@ public class ErrorMessages {
     public static final String EMPLOYEE_NOT_EXIST = "M_EMPLOYEE_NOT_EXIST";
     public static final String EMPLOYEE_ALREADY_INACTIVE = "M_EMPLOYEE_ALREADY_INACTIVE";
     //AccessCard
+    public static final String ACCESS_CARD_ALREADY_GIVEN = "M_ACCESS_CARD_ALREADY_GIVEN";
     public static final String ACCESS_CARD_NOT_EXIST = "M_ACCESS_CARD_NOT_EXIST";
+    public static final String HOTEL_INCORRECT = "M_HOTEL_INCORRECT";
+    
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

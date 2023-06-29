@@ -74,7 +74,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         }
 
         Map<String, Object> attrMapAssignment = new HashMap<>();
-        attrMapAssignment.put(AccessCardAssignmentDao.ACCESSCARDASIGNMENT, accessCardAssignment.get(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
+        attrMapAssignment.put(AccessCardAssignmentDao.ACCESSCARDASIGNMENT, accessCardAssignment.getRecordValues(0).get(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
         EntityResult delete = this.daoHelper.delete(this.accessCardAssignmentDao, attrMapAssignment);
 
         //Comprobamos si el update y el delete se hicieron correctamente

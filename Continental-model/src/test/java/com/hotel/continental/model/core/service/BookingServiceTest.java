@@ -411,7 +411,6 @@ public class BookingServiceTest {
         );
     }
 
-    @Disabled
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingCheckOutTestData")
     @DisplayName("TestParametrized booking check-out")

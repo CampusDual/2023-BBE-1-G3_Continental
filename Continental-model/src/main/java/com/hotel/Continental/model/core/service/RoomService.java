@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IRoomService;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
@@ -34,6 +35,8 @@ public class RoomService implements IRoomService {
     private RoomDao roomDao;
     @Autowired
     private BookingDao bookingDao;
+    @Autowired
+    private RoomTypeDao roomTypeDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
     //declara un a constante con yyyy-MM-dd
@@ -72,7 +75,7 @@ public class RoomService implements IRoomService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
-        if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER)) {
+        if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER) || !attrMap.containsKey(RoomDao.ROOMTYPEID)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -80,17 +83,26 @@ public class RoomService implements IRoomService {
             return er;
         }
         //Comprobar que el hotel existe
+        Map<String, Object> filterHotel = new HashMap<>();
+        filterHotel.put(HotelDao.ID, attrMap.get(RoomDao.IDHOTEL));
+        EntityResult hotel = this.daoHelper.query(this.hotelDao, filterHotel, Arrays.asList(HotelDao.ID));
 
-            Map<String, Object> filterHotel = new HashMap<>();
-            filterHotel.put(HotelDao.ID, attrMap.get(RoomDao.IDHOTEL));
-            EntityResult hotel = this.daoHelper.query(this.hotelDao, filterHotel, Arrays.asList(HotelDao.ID));
+        if (hotel == null || hotel.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            return er;
+        }
 
-            if (hotel == null || hotel.calculateRecordNumber() == 0) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
-                return er;
-            }
+        Map<String,Object> filterType = new HashMap();
+        filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+        EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
+        if (types.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
+            return er;
+        }
 
         //Comprobar que la habitacion no existe
         Map<Object, Object> erQueryRoomKeyMap = new HashMap<>();
@@ -166,6 +178,25 @@ public class RoomService implements IRoomService {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
+        if (attrMap.containsKey(RoomDao.IDHOTEL)) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.COLUMN_NOT_EDITABLE);
+            return er;
+        }
+
+        if (attrMap.get(RoomDao.ROOMTYPEID) != null) {
+            Map<String,Object> filterType = new HashMap();
+            filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+            EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
+            if (types.calculateRecordNumber() == 0) {
+                EntityResult er = new EntityResultMapImpl();
+                er.setCode(1);
+                er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
+                return er;
+            }
+        }
+
         List<String> columns = new ArrayList<>();
         columns.add(RoomDao.IDHABITACION);
         //si la habitacion no existe lanzar un error

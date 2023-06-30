@@ -3,6 +3,7 @@ public class ErrorMessages {
     //Generales
     public static final String NECESSARY_KEY = "M_NECESSARY_KEY";
     public static final String NECESSARY_DATA = "M_NECESSARY_DATA";
+    public static final String COLUMN_NOT_EDITABLE = "M_COLUMN_NOT_EDITABLE";
     //CountryCode
     public static final String COUNTRY_CODE_NOT_VALID = "M_COUNTRY_CODE_NOT_VALID";
     public static final  String COUNTRY_CODE_FORMAT_ERROR = "M_COUNTRY_CODE_FORMAT_ERROR";
@@ -33,6 +34,8 @@ public class ErrorMessages {
     public static final String ROOM_NOT_EXIST = "M_ROOM_NOT_EXIST";
     public static final String ROOM_ALREADY_INACTIVE = "M_ROOM_ALREADY_INACTIVE";
     public static final String ROOM_ALREADY_EXIST = "M_ROOM_ALREADY_EXIST";
+    public static final String TYPE_NOT_EXISTENT = "M_TYPE_NOT_EXISTENT";
+
     //Roles
     public static final String ROLE_DOESNT_EXIST = "M_ROLE_DOESNT_EXIST";
     public static final String ROLE_ALREADY_EXISTS = "M_ROLE_ALREADY_EXISTS";

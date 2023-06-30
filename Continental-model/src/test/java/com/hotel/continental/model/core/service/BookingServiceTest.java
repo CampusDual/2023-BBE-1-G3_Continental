@@ -1,5 +1,7 @@
 package com.hotel.continental.model.core.service;
 
+
+import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
 import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
@@ -46,6 +48,10 @@ public class BookingServiceTest {
     static AccessCardAssignmentService accessCardAssignmentService;
     @Mock
     BookingDao bookingDao;
+    @Mock
+    AccessCardAssignmentDao accessCardAssignmentDao;
+
+
 
 
     @ParameterizedTest(name = "Test case {index} : {0}")
@@ -437,6 +443,17 @@ public class BookingServiceTest {
                                     erReservaCliente.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReservaCliente.put(BookingDao.CLIENT, List.of(0));
                                     return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erCard = new EntityResultMapImpl();
+                                    erCard.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    erCard.put(AccessCardDao.ACCESSCARDID, List.of(0));
+                                    return Mockito.when(daoHelper.query(Mockito.any(AccessCardAssignmentDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erCard);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erInsertarTarjeta = new EntityResultMapImpl();
+                                    erInsertarTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
                                 },
                                 (Supplier) () -> {
                                     EntityResult er = new EntityResultMapImpl();

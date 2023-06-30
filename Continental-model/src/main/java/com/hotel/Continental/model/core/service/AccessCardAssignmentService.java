@@ -87,8 +87,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         er.setMessage("The card " + attrMap.get(AccessCardDao.ACCESSCARDID) + " was given");
         return er;
     }
-
-    @Override
+      @Override
     public EntityResult lostCard(Map<String, Object> attrMap) {
         //Compruebo que me da el id de la tarjeta
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
@@ -132,7 +131,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
     }
 
     @Override
-    public EntityResult accessCardAssignmentRecover(Map<String, Object> attrMap) {
+    public EntityResult accesscardassignmentRecover(Map<String, Object> attrMap) {
         //Se comprueba si la tarjeta está perdida
         if(attrMap.get(AccessCardDao.CARDDOWNDATE) != null) {
             EntityResult er = new EntityResultMapImpl();

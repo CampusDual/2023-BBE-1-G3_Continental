@@ -184,7 +184,7 @@ public class AccessCardAssignmentServiceTest {
     void testaccessCardCheckOut(String testCaseName, Map<?, ?> attr, EntityResult expectedResult, List<Supplier> mock) {
         //For each test case, execute the mock,to make sure the mock is called
         mock.forEach(Supplier::get);
-        EntityResult result = accessCardAssignmentServiceService.accessCardAssignmentRecover(attr);
+        EntityResult result = accessCardAssignmentServiceService.accesscardassignmentRecover(attr);
         // Assert
         assertEquals(expectedResult.getMessage(), result.getMessage());
         assertEquals(expectedResult.getCode(), result.getCode());
@@ -292,7 +292,6 @@ public class AccessCardAssignmentServiceTest {
                         )
                 )
                 //endregion
-
         );
     }
 
@@ -377,4 +376,3 @@ public class AccessCardAssignmentServiceTest {
         er.setMessage(message);
         return er;
     }
-}

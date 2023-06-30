@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,43 +88,75 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         return er;
     }
     @Override
-    public EntityResult accesscardassignmentRecover(Map<?, ?> attrMap) {
-        //Faltaria el tener en cuenta darla por perdida
+    public EntityResult lostCard(Map<String, Object> attrMap) {
         //Compruebo que me da el id de la tarjeta
-        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null||attrMap.get(AccessCardAssignmentDao.BOOKINGID) == null) {
+        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
+
+        //Le cambiamos el estado a la tarjeta
+        Map<String, Object> attrMapCard = new HashMap<>();
+        attrMapCard.put(AccessCardDao.AVAILABLE, false);
+        attrMapCard.put(AccessCardDao.HOTELID, null);
+        attrMapCard.put(AccessCardDao.CARDDOWNDATE, new Timestamp(System.currentTimeMillis()));
+
+        //Comprobamos si el update y el delete se hicieron correctamente
+        EntityResult update = this.daoHelper.update(this.accessCardDao, attrMapCard, attrMap);
+
+        if (update.getCode() == EntityResult.OPERATION_WRONG) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            return er;
+        }
+
+        //Recogemos el id de la tabla accessCardAssigment y comprobamos que no está vacia
+        EntityResult accessCardAssignment = this.daoHelper.query(this.accessCardAssignmentDao, attrMap, List.of(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
+
+        if (accessCardAssignment.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            return er;
+        }
+
+        Map<String, Object> attrMapAssignment = new HashMap<>();
+        attrMapAssignment.put(AccessCardAssignmentDao.ACCESSCARDASIGNMENT, accessCardAssignment.getRecordValues(0).get(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
+
+        update.setMessage(ErrorMessages.ACCESS_CARD_SUCCESSFULLY_MODIFY);
+        return update;
+    }
+
+    @Override
+    public EntityResult accesscardassignmentRecover(Map<?, ?> attrMap) {
+        //Se comprueba si la tarjeta está perdida
+        if(attrMap.get(AccessCardDao.CARDDOWNDATE) != null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.ACCESS_CARD_LOST);
+            return er;
+        }
+        //Compruebo que me da el id de la tarjeta
+        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         //Comprobamos que esa tarjeta existe,y comprobamos que esta asignada
-        EntityResult query = this.daoHelper.query(this.accessCardDao, attrMap, List.of(AccessCardDao.AVALIABLE));
-        if (query.calculateRecordNumber()==0) {
+        EntityResult query = this.daoHelper.query(this.accessCardDao, attrMap, List.of(AccessCardDao.AVAILABLE));
+        if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
-            return er;
-        }
-        if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVALIABLE)) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
-            return er;
-        }
-        //Comprobamos que esta asignada a esa reserva
-        Map<String, Object> filter = new HashMap<>();
-        filter.put(AccessCardAssignmentDao.ACCESSCARDID, attrMap.get(AccessCardAssignmentDao.ACCESSCARDID));
-        filter.put(AccessCardAssignmentDao.BOOKINGID, attrMap.get(AccessCardAssignmentDao.BOOKINGID));
-        EntityResult query2 = this.daoHelper.query(this.accessCardAssignmentDao, attrMap, List.of(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
-        if (query2.calculateRecordNumber()==0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);
             return er;
         }
         //Le cambiamos el estado a la tarjeta
         Map<String, Object> attrMap2 = new HashMap<>();
-        attrMap2.put(AccessCardDao.AVALIABLE, true);
+        attrMap2.put(AccessCardDao.AVAILABLE, true);
         EntityResult update = this.daoHelper.update(this.accessCardDao, attrMap2, attrMap);
         if (update.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
@@ -132,7 +164,6 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
-        update.setMessage(ErrorMessages.ACCESS_CARD_RECOVERED);
         return update;
     }
 }

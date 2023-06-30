@@ -6,5 +6,6 @@ import java.util.Map;
 
 public interface IAccessCardAssignmentService {
     public EntityResult accesscardassignmentInsert(Map<String, Object> attrMap);
+    public EntityResult lostCard(Map<String, Object> attrMap);
     public EntityResult accesscardassignmentRecover(Map<?, ?> attrMap);
 }

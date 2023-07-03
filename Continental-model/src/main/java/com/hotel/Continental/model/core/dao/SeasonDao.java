@@ -17,5 +17,6 @@ public class SeasonDao extends OntimizeJdbcDaoSupport {
     public static final String START_MONTH = "start_month";
     public static final String END_DAY = "end_day";
     public static final String END_MONTH = "end_month";
+    public static final String GET_SEASONS= "getSeason";
 
 }

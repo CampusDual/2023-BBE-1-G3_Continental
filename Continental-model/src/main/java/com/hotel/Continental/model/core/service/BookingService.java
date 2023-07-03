@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
+import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -11,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import com.ontimize.jee.common.db.SQLStatementBuilder;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -403,12 +408,12 @@ public class BookingService implements IBookingService {
             //Comprobamos si es fin de semana
             boolean esFinde=isWeekend(currentDate);
             //Comprobamos que tipo de temporada es
-            int Temproada=whatSeason(currentDate);
+            System.out.println(whatSeason(currentDate));
             calendar.add(Calendar.DATE, 1); // Avanza al siguiente día
         }
         //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
         //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio
-        if(fechaInicio.after(Date.from(Instant.from(LocalDateTime.now().plusDays(10))))){
+        if(fechaInicio.after(Date.from(LocalDate.now().plusDays(10).atStartOfDay(ZoneId.systemDefault()).toInstant()))){
             System.out.println("Añadimos el criterio de reserva anticipada");
         }
         //Descuento por estancia larga, si la reserva es de mas de 5 dias
@@ -421,16 +426,22 @@ public class BookingService implements IBookingService {
     //Metodo que comprueba en que temporada esta la fecha
     private int whatSeason(Date date) {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        //Obtenemos las temporadas
-        EntityResult seasons = this.daoHelper.query(this.seasonDao, Map.of(), List.of(SeasonDao.CRITERIA_ID, SeasonDao.START_DAY, SeasonDao.START_MONTH, SeasonDao.END_DAY, SeasonDao.END_MONTH));
-        for (int i = 0; i < seasons.getRecordValues(0); i++) {
-            int monthStart = (int) seasons.getRecordValues(i).get(SeasonDao.START_MONTH);
-            int dayStart = (int) seasons.getRecordValues(i).get(SeasonDao.START_DAY);
-            int monthEnd = (int) seasons.getRecordValues(i).get(SeasonDao.END_MONTH);
-            int dayEnd = (int) seasons.getRecordValues(i).get(SeasonDao.END_DAY);
-            if(localDate.getMonthValue()>=monthStart && localDate.getMonthValue()<=monthEnd){
-                System.out.println("Estamos en la temporada "+seasons.getRecordValues(i).get(SeasonDao.CRITERIA_ID));
-            }
+        BasicField startDayField = new BasicField(SeasonDao.START_DAY);
+        BasicField endDayField = new BasicField(SeasonDao.END_DAY);
+        BasicField startMonthField = new BasicField(SeasonDao.START_MONTH);
+        BasicField endMonthField = new BasicField(SeasonDao.END_MONTH);
+        BasicExpression bexp1 = new BasicExpression(startDayField, BasicOperator.LESS_EQUAL_OP, localDate.getDayOfMonth());//s.start_day >=?1
+        BasicExpression bexp2 = new BasicExpression(endDayField, BasicOperator.MORE_EQUAL_OP, localDate.getDayOfMonth());//s.end_day <=?2
+        BasicExpression bexp3 = new BasicExpression(startMonthField, BasicOperator.LESS_EQUAL_OP, localDate.getMonthValue());//s.start_month>=?3
+        BasicExpression bexp4 = new BasicExpression(endMonthField, BasicOperator.MORE_EQUAL_OP, localDate.getMonthValue());//s.end_month<=?4
+        BasicExpression bexp5 = new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);//s.start_day >=?1 AND s.end_day <=?2
+        BasicExpression bexp6 = new BasicExpression(bexp3, BasicOperator.AND_OP, bexp4);//s.start_month>=?3 AND s.end_month<=?4
+        BasicExpression bexp7 = new BasicExpression(bexp5, BasicOperator.AND_OP, bexp6);//s.start_day >=?1 AND s.end_day <=?2 AND s.start_month>=?3 AND s.end_month<=?4
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp7);
+        EntityResult er = this.daoHelper.query(this.seasonDao,filter, List.of(SeasonDao.CRITERIA_ID),SeasonDao.GET_SEASONS);
+        if (er.calculateRecordNumber()>0){
+            return (int) er.getRecordValues(0).get(SeasonDao.CRITERIA_ID);
         }
         return 0;
     }

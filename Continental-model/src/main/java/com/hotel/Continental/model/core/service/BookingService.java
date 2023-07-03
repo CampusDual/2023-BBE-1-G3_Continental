@@ -394,11 +394,13 @@ public class BookingService implements IBookingService {
         //Obtener criterios de precio
         Map<String, Object> attrMapCriteria = new HashMap<>();
         EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
+        //Hacer que obtenga los multiplicadores por nombre
         double multiplierWeekend= (float) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
+        double earlyBooking= (float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
         Map<Integer,Float> multiplierSeason=new HashMap<>();
-        multiplierSeason.put((int)criteria.getRecordValues(1).get(CriteriaDao.ID),(float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
-        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(float) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
-        double multiplierLongStay= (float) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER);
+        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(float) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        double multiplierLongStay= (float) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
         //Obtener fechas de la reserva
         LocalDate start;
         LocalDate startIter;
@@ -439,7 +441,7 @@ public class BookingService implements IBookingService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.put("Precio",priceReserva);
-        er.put("Precio por dia",priceDay);
+        er.put("Precio por dia",precioHabitacion);
         return er;
     }
 

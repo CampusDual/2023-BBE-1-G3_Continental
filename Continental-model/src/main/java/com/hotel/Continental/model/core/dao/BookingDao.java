@@ -18,5 +18,6 @@ public class BookingDao extends OntimizeJdbcDaoSupport {
     public static final String CLIENT = "clientid";
     public static final String CHECKIN_DATETIME = "checkindatetime";
     public static final String CHECKOUT_DATETIME = "checkoutdatetime";
+    public static final String PRICE = "price";
     public static final String QUERY_BOOKED_ROOMS = "current_bookings";
 }

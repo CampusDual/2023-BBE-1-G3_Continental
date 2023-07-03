@@ -9,6 +9,7 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,8 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -381,6 +380,8 @@ public class BookingService implements IBookingService {
      */
     @Override
     public EntityResult bookingPrice(Map<String, Object> attrMap) {
+        double priceReserva = 0;
+        double priceDay=0;
         //Obtener tipo de habitacion
         Map<String, Object> attrMapRoom = new HashMap<>();
         attrMapRoom.put(RoomDao.IDHABITACION, attrMap.get(BookingDao.ROOMID));
@@ -388,44 +389,62 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapRoomType = new HashMap<>();
         attrMapRoomType.put(RoomTypeDao.TYPEID, habitacion.getRecordValues(0).get(RoomDao.ROOMTYPEID));
         EntityResult tipoHabitacion = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
+        //Precio de la habitacion por dia
+        double precioHabitacion = (double) tipoHabitacion.getRecordValues(0).get(RoomTypeDao.PRICE);
         //Obtener criterios de precio
         Map<String, Object> attrMapCriteria = new HashMap<>();
         EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
-        //Iteramos las fechas
-        Date fechaInicio = null;
-        Date fechaFin=null;
+        double multiplierWeekend= (float) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
+        Map<Integer,Float> multiplierSeason=new HashMap<>();
+        multiplierSeason.put((int)criteria.getRecordValues(1).get(CriteriaDao.ID),(float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(float) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        double multiplierLongStay= (float) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER);
+        //Obtener fechas de la reserva
+        LocalDate start;
+        LocalDate startIter;
+        LocalDate end;
         try {
-            fechaInicio = new SimpleDateFormat("yyyy-MM-dd").parse((String) attrMap.get(BookingDao.STARTDATE));
-            fechaFin = new SimpleDateFormat("yyyy-MM-dd").parse((String) attrMap.get(BookingDao.ENDDATE));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            start =  LocalDate.parse((String) attrMap.get(BookingDao.STARTDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            end =  LocalDate.parse((String) attrMap.get(BookingDao.ENDDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            startIter=start;
+        }catch (Exception e){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
+            return er;
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(fechaInicio);
+        while (!startIter.isAfter(end)) {
+            if(isWeekend(startIter)){
+                priceDay=precioHabitacion*multiplierWeekend;
+            }
+            priceDay=precioHabitacion*multiplierSeason.get(whatSeason(startIter));
+            priceReserva+=priceDay;
+            startIter=startIter.plusDays(1);
+            System.out.println("Precio de la reserva: "+priceReserva+"€");
+        }
 
-        while (!calendar.getTime().after(fechaFin)) {
-            Date currentDate = calendar.getTime();
-            //Comprobamos si es fin de semana
-            boolean esFinde=isWeekend(currentDate);
-            //Comprobamos que tipo de temporada es
-            System.out.println(whatSeason(currentDate));
-            calendar.add(Calendar.DATE, 1); // Avanza al siguiente día
-        }
+
+
         //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
         //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio
-        if(fechaInicio.after(Date.from(LocalDate.now().plusDays(10).atStartOfDay(ZoneId.systemDefault()).toInstant()))){
+        if(start.isAfter(LocalDate.now().plusDays(10))){
             System.out.println("Añadimos el criterio de reserva anticipada");
+            priceReserva=priceReserva*multiplierLongStay;
         }
         //Descuento por estancia larga, si la reserva es de mas de 5 dias
-        if(ChronoUnit.DAYS.between(fechaInicio.toInstant(), fechaFin.toInstant()) > 5){
+        if(ChronoUnit.DAYS.between(start,end)>5){
             System.out.println("Añadimos el criterio de estancia larga");
+            priceReserva=priceReserva*0.9;
         }
-        return null;
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.put("Precio",priceReserva);
+        er.put("Precio por dia",priceDay);
+        return er;
     }
 
     //Metodo que comprueba en que temporada esta la fecha
-    private int whatSeason(Date date) {
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    private int whatSeason(LocalDate localDate) {
         BasicField startDayField = new BasicField(SeasonDao.START_DAY);
         BasicField endDayField = new BasicField(SeasonDao.END_DAY);
         BasicField startMonthField = new BasicField(SeasonDao.START_MONTH);
@@ -446,10 +465,8 @@ public class BookingService implements IBookingService {
         return 0;
     }
     //Metodo que comprueba si la fecha es fin de semana
-    private boolean isWeekend(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+    private boolean isWeekend(LocalDate date) {
+       return date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }
 

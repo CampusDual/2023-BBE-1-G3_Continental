@@ -416,27 +416,24 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
             return er;
         }
-        double multipliedweekend = 0;
-        double multipliedseason = 0;
+
         while (!startIter.isAfter(end)) {
+            double extra = 0;
             if(isWeekend(startIter)){
-                multipliedweekend=precioHabitacion*multiplierWeekend;
+                extra+=(multiplierWeekend*precioHabitacion)-precioHabitacion;
             }
-            multipliedseason=precioHabitacion*multiplierSeason.get(whatSeason(startIter));
-            priceReserva+=priceDay;
+            extra+=(precioHabitacion*multiplierSeason.get(whatSeason(startIter))-precioHabitacion);
+            priceReserva+=precioHabitacion+extra;
             startIter=startIter.plusDays(1);
-            System.out.println("Precio de la reserva: "+priceReserva+"€");
         }
 
         //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
         //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio
         if(start.isAfter(LocalDate.now().plusDays(10))){
-            System.out.println("Añadimos el criterio de reserva anticipada");
             priceReserva=priceReserva*multiplierLongStay;
         }
         //Descuento por estancia larga, si la reserva es de mas de 5 dias
-        if(ChronoUnit.DAYS.between(start,end)>5){
-            System.out.println("Añadimos el criterio de estancia larga");
+        if(ChronoUnit.DAYS.between(start,end)>3){
             priceReserva=priceReserva*0.9;
         }
         EntityResult er = new EntityResultMapImpl();

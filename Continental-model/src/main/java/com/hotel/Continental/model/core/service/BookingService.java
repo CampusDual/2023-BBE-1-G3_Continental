@@ -1,11 +1,8 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
-import com.hotel.continental.model.core.dao.AccessCardDao;
+import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.hotel.continental.api.core.service.IBookingService;
-import com.hotel.continental.model.core.dao.BookingDao;
-import com.hotel.continental.model.core.dao.RoomDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -15,11 +12,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Lazy
 @Service("BookingService")
@@ -35,7 +36,14 @@ public class BookingService implements IBookingService {
     private AccessCardAssignmentDao accessCardAssignmentDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
-
+    @Autowired
+    private RoomTypeDao roomTypeDao;
+    @Autowired
+    private RoomDao roomDao;
+    @Autowired
+    private CriteriaDao criteriaDao;
+    @Autowired
+    private SeasonDao seasonDao;
     public static final String INITIALDATE = "initialdate";
     public static final String FINALDATE = "finaldate";
 
@@ -47,7 +55,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con las reservas o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult bookingQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult result = this.daoHelper.query(this.bookingDao, keyMap, attrList);
         if (result == null || result.calculateRecordNumber() == 0) {
@@ -67,7 +75,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva insertada o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult bookingInsert(Map<String, Object> attrMap) {
         //Comprobar que se han introducido los datos necesarios
         //Primero comprobamos que nos envian startdate, enddate y client
@@ -121,7 +129,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva borrada o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult bookingDelete(Map<?, ?> keyMap) {
         //Comprobamos si se nos envia el id
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -149,8 +157,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con la reserva actualizada o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
-
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult bookingUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos que se ha introducido el id de la reserva
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
@@ -212,16 +219,22 @@ public class BookingService implements IBookingService {
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
 
+    /**
+     * Metodo que realiza el checkin de una reserva
+     *
+     * @param attrMap
+     * @return EntityResult
+     */
     @Override
     //@Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckin(Map<String, Object> attrMap) {
         //Comprobamos que se ha introducido el id de la reserva
         if (attrMap.get(BookingDao.BOOKINGID) == null) {
             //Comprobamos que se ha introducido el id de cliente
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.NECESSARY_KEY);
-                return er;
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
         }
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
@@ -258,7 +271,7 @@ public class BookingService implements IBookingService {
             return er;
         }
         EntityResult card = accessCardAssignmentService.accesscardassignmentInsert(attrMap);
-        if (card.getCode()==1) {
+        if (card.getCode() == 1) {
             return card;
         }
 
@@ -272,6 +285,12 @@ public class BookingService implements IBookingService {
         return er;
     }
 
+    /**
+     * Metodo que realiza el checkout de una reserva
+     *
+     * @param attrMap
+     * @return EntityResult
+     */
     @Override
     //@Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckout(Map<String, Object> attrMap) {
@@ -293,7 +312,7 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
-        
+
         //Comprobamos que se haya hecho el checkin
         if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null) {
             EntityResult er = new EntityResultMapImpl();
@@ -334,8 +353,8 @@ public class BookingService implements IBookingService {
         //Update de la tarjeta
         Map<String, Object> keyMapCard = new HashMap<>();
         keyMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
-        EntityResult erTarjeta=accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
-        if(erTarjeta.getCode()==EntityResult.OPERATION_WRONG){
+        EntityResult erTarjeta = accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
+        if (erTarjeta.getCode() == EntityResult.OPERATION_WRONG) {
             return erTarjeta;
         }
         //Update de la reserva
@@ -347,4 +366,79 @@ public class BookingService implements IBookingService {
         er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
         return er;
     }
+
+    /**
+     * TODO hacer calcular para dar el precio de una reserva a la hora de insertarla
+     *      Que reciba el tipo de habitacion y las fechas y devuelva el precio
+     *
+     * @param attrMap
+     * @return
+     */
+    @Override
+    public EntityResult bookingPrice(Map<String, Object> attrMap) {
+        //Obtener tipo de habitacion
+        Map<String, Object> attrMapRoom = new HashMap<>();
+        attrMapRoom.put(RoomDao.IDHABITACION, attrMap.get(BookingDao.ROOMID));
+        EntityResult habitacion = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.IDHABITACION, RoomDao.ROOMTYPEID, RoomDao.ROOMDOWNDATE));
+        Map<String, Object> attrMapRoomType = new HashMap<>();
+        attrMapRoomType.put(RoomTypeDao.TYPEID, habitacion.getRecordValues(0).get(RoomDao.ROOMTYPEID));
+        EntityResult tipoHabitacion = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
+        //Obtener criterios de precio
+        Map<String, Object> attrMapCriteria = new HashMap<>();
+        EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
+        //Iteramos las fechas
+        Date fechaInicio = null;
+        Date fechaFin=null;
+        try {
+            fechaInicio = new SimpleDateFormat("yyyy-MM-dd").parse((String) attrMap.get(BookingDao.STARTDATE));
+            fechaFin = new SimpleDateFormat("yyyy-MM-dd").parse((String) attrMap.get(BookingDao.ENDDATE));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicio);
+
+        while (!calendar.getTime().after(fechaFin)) {
+            Date currentDate = calendar.getTime();
+            //Comprobamos si es fin de semana
+            boolean esFinde=isWeekend(currentDate);
+            //Comprobamos que tipo de temporada es
+            int Temproada=whatSeason(currentDate);
+            calendar.add(Calendar.DATE, 1); // Avanza al siguiente día
+        }
+        //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
+        //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio
+        if(fechaInicio.after(Date.from(Instant.from(LocalDateTime.now().plusDays(10))))){
+            System.out.println("Añadimos el criterio de reserva anticipada");
+        }
+        //Descuento por estancia larga, si la reserva es de mas de 5 dias
+        if(ChronoUnit.DAYS.between(fechaInicio.toInstant(), fechaFin.toInstant()) > 5){
+            System.out.println("Añadimos el criterio de estancia larga");
+        }
+        return null;
+    }
+
+    //Metodo que comprueba en que temporada esta la fecha
+    private int whatSeason(Date date) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //Obtenemos las temporadas
+        EntityResult seasons = this.daoHelper.query(this.seasonDao, Map.of(), List.of(SeasonDao.CRITERIA_ID, SeasonDao.START_DAY, SeasonDao.START_MONTH, SeasonDao.END_DAY, SeasonDao.END_MONTH));
+        for (int i = 0; i < seasons.getRecordValues(0); i++) {
+            int monthStart = (int) seasons.getRecordValues(i).get(SeasonDao.START_MONTH);
+            int dayStart = (int) seasons.getRecordValues(i).get(SeasonDao.START_DAY);
+            int monthEnd = (int) seasons.getRecordValues(i).get(SeasonDao.END_MONTH);
+            int dayEnd = (int) seasons.getRecordValues(i).get(SeasonDao.END_DAY);
+            if(localDate.getMonthValue()>=monthStart && localDate.getMonthValue()<=monthEnd){
+                System.out.println("Estamos en la temporada "+seasons.getRecordValues(i).get(SeasonDao.CRITERIA_ID));
+            }
+        }
+        return 0;
+    }
+    //Metodo que comprueba si la fecha es fin de semana
+    private boolean isWeekend(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+    }
 }
+

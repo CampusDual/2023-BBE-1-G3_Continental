@@ -26,12 +26,29 @@ public class ExtraExpensesService implements IExtraExpensesService {
     DefaultOntimizeDaoHelper daoHelper;
     @Override
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
+        //Comprobar id
+        if (attrMap.get(ExtraExpensesDao.IDEXPENSE) == null || (String.valueOf(attrMap.get(ExtraExpensesDao.IDEXPENSE))).isBlank()) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobar null data
         if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+        //Comprobar empty data
+        if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank() || ((String.valueOf(attrMap.get(ExtraExpensesDao.PRICE))).isBlank())
+                || ((String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank()))) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Comprobar booking exists
         Map<String, Object> keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(ExtraExpensesDao.BOOKINGID));
         EntityResult bookings = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
@@ -41,13 +58,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
-        if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank()) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
-            return er;
-        }
-        return this.daoHelper.insert(this.extraExpensesDao, attrMap);
 
+        return this.daoHelper.insert(this.extraExpensesDao, attrMap);
     }
 }

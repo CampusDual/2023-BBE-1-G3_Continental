@@ -398,6 +398,7 @@ public class BookingService implements IBookingService {
         double multiplierWeekend= (float) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
         double earlyBooking= (float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
         Map<Integer,Float> multiplierSeason=new HashMap<>();
+        multiplierSeason.put(0, (float) 1.0);
         multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
         multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(float) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
         double multiplierLongStay= (float) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
@@ -409,23 +410,23 @@ public class BookingService implements IBookingService {
             start =  LocalDate.parse((String) attrMap.get(BookingDao.STARTDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             end =  LocalDate.parse((String) attrMap.get(BookingDao.ENDDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             startIter=start;
-        }catch (Exception e){
+        } catch (Exception e){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
             return er;
         }
+        double multipliedweekend = 0;
+        double multipliedseason = 0;
         while (!startIter.isAfter(end)) {
             if(isWeekend(startIter)){
-                priceDay=precioHabitacion*multiplierWeekend;
+                multipliedweekend=precioHabitacion*multiplierWeekend;
             }
-            priceDay=precioHabitacion*multiplierSeason.get(whatSeason(startIter));
+            multipliedseason=precioHabitacion*multiplierSeason.get(whatSeason(startIter));
             priceReserva+=priceDay;
             startIter=startIter.plusDays(1);
             System.out.println("Precio de la reserva: "+priceReserva+"€");
         }
-
-
 
         //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
         //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio

@@ -117,6 +117,7 @@ public class BookingService implements IBookingService {
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
             attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
+            attrMap.put(BookingDao.PRICE, this.bookingPrice(attrMap).getRecordValues(0).get(BookingDao.PRICE));
             return this.daoHelper.insert(this.bookingDao, attrMap);
         }
         EntityResult er = new EntityResultMapImpl();
@@ -388,7 +389,7 @@ public class BookingService implements IBookingService {
             return er;
         }
         //Comprobamos que se ha introducido la fecha de inicio
-        if (attrMap.get(BookingDao.CHECKIN_DATETIME) == null&&attrMap.get(BookingDao.CHECKOUT_DATETIME) == null) {
+        if (attrMap.get(BookingDao.STARTDATE) == null&&attrMap.get(BookingDao.ENDDATE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_DATA);

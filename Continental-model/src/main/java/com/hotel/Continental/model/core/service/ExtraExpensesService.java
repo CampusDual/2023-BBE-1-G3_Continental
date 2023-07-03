@@ -25,7 +25,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
     @Override
-    public EntityResult extraExpensesInsert(Map<?, ?> attrMap) {
+    public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
         if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -33,6 +33,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
             return er;
         }
         Map<String, Object> keyMap = new HashMap<>();
+        keyMap.put(BookingDao.BOOKINGID, attrMap.get(ExtraExpensesDao.BOOKINGID));
         EntityResult bookings = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
         if (bookings.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
@@ -40,7 +41,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
-        if (ExtraExpensesDao.PRICE.isBlank() || ExtraExpensesDao.BOOKINGID.isBlank() || ExtraExpensesDao.CONCEPT.isBlank()) {
+        if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);

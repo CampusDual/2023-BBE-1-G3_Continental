@@ -5,5 +5,5 @@ import com.ontimize.jee.common.dto.EntityResult;
 import java.util.Map;
 
 public interface IExtraExpensesService {
-    public EntityResult extraExpensesInsert(Map<?, ?> attrMap);
+    public EntityResult extraexpensesInsert(Map<?, ?> attrMap);
 }

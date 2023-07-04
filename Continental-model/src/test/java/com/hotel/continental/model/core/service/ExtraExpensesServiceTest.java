@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class ExtraExpensesServiceTest {
+class ExtraExpensesServiceTest {
     @Mock
     static ExtraExpensesDao extraExpensesDao;
     @Mock

@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class AccessCardAssignmentServiceTest {
+class AccessCardAssignmentServiceTest {
     @Mock
     static DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks

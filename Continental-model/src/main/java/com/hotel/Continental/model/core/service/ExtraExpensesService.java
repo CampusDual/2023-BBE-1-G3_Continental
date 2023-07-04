@@ -42,7 +42,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         }
         //Comprobar empty data
         if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank() || ((String.valueOf(attrMap.get(ExtraExpensesDao.PRICE))).isBlank())
-                || ((String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank()))) {
+                || (String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank())) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);

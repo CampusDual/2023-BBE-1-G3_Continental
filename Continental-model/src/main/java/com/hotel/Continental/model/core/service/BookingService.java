@@ -9,24 +9,18 @@ import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
-import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Lazy
 @Service("BookingService")
@@ -313,7 +307,7 @@ public class BookingService implements IBookingService {
     @Override
     //@Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckout(Map<String, Object> attrMap) {
-        //Comprobamos que se ha introducido el id de la reserva);
+        //Comprobamos que se ha introducido el id de la reserva
         //Si se introduce id de reserva se usa id de reserva
         if (attrMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();

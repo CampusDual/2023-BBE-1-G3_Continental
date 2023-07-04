@@ -94,7 +94,7 @@ public class RoomService implements IRoomService {
             return er;
         }
 
-        Map<String, Object> filterType = new HashMap();
+        Map<String, Object> filterType = new HashMap<>();
         filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
         EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
         if (types.calculateRecordNumber() == 0) {
@@ -186,7 +186,7 @@ public class RoomService implements IRoomService {
         }
 
         if (attrMap.get(RoomDao.ROOMTYPEID) != null) {
-            Map<String, Object> filterType = new HashMap();
+            Map<String, Object> filterType = new HashMap<>();
             filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
             EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
             if (types.calculateRecordNumber() == 0) {

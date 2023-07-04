@@ -49,7 +49,8 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
-        if (((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0)==false) {
+        boolean check = ((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0);
+        if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
@@ -69,7 +70,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         keyMap.put(RoomDao.IDHABITACION, booking.getRecordValues(0).get(RoomDao.IDHABITACION));
         //Queremos que el hotel sea igual al de la reserva
         EntityResult roomhotel = this.daoHelper.query(this.roomDao, keyMap, List.of(RoomDao.IDHOTEL));
-        boolean check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);
+        check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);
         if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);

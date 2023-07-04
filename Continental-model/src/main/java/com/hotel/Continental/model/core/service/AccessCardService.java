@@ -2,7 +2,6 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IAccessCardService;
 import com.hotel.continental.model.core.dao.AccessCardDao;
-import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;

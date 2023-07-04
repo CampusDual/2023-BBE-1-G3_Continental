@@ -374,7 +374,7 @@ public class BookingService implements IBookingService {
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
         er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
-        er.put(BookingDao.PRICE, finalPrice.getRecordValues(0).get(BookingDao.PRICE));
+        er.put(BookingDao.PRICE, List.of(finalPrice.get(BookingDao.PRICE)));
         return er;
     }
 

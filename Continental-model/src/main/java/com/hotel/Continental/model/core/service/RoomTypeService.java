@@ -5,6 +5,7 @@ import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import com.ontimize.jee.server.dao.IOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -20,7 +21,7 @@ public class RoomTypeService implements IRoomTypeService {
     @Autowired
     RoomTypeDao roomtypeDao;
     @Autowired
-    IOntimizeDaoHelper daoHelper;
+    DefaultOntimizeDaoHelper daoHelper;
     @Override
     public EntityResult roomtypeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //Compruebo que me envian la clave
@@ -40,7 +41,13 @@ public class RoomTypeService implements IRoomTypeService {
         //Compruebo que el tipo de habitacion existe
         Map<String, Object> attrMapRoomType = new HashMap<>();
         attrMapRoomType.put(RoomTypeDao.TYPEID, keyMap.get(RoomTypeDao.TYPEID));
-        EntityResult erRoomType = this.daoHelper.query(this.roomtypeDao, attrMapRoomType, List.of());
+        EntityResult erRoomType = this.daoHelper.query(this.roomtypeDao,attrMapRoomType,List.of(RoomTypeDao.TYPEID));
+        if(erRoomType.calculateRecordNumber() == 0){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.ROOMTYPE_NOT_EXIST);
+            return er;
+        }
         return this.daoHelper.update(this.roomtypeDao, attrMap, keyMap);
     }
 }

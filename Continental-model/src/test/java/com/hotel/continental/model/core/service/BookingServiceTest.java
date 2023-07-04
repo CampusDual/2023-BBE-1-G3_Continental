@@ -54,7 +54,8 @@ public class BookingServiceTest {
     RoomTypeDao roomTypeDao;
     @Mock
     SeasonDao seasonDao;
-
+    @Mock
+    ExtraExpensesDao extraExpensesDao;
 
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingInsertTestData")
@@ -472,6 +473,11 @@ public class BookingServiceTest {
                                     EntityResult erInsertarTarjeta = new EntityResultMapImpl();
                                     erInsertarTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erExtraEspenses = new EntityResultMapImpl();
+                                    erExtraEspenses.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    return Mockito.when(daoHelper.query(Mockito.any(ExtraExpensesDao.class),Mockito.anyMap(),Mockito.anyList())).thenReturn(erExtraEspenses);
                                 },
                                 (Supplier) () -> {
                                     EntityResult er = new EntityResultMapImpl();

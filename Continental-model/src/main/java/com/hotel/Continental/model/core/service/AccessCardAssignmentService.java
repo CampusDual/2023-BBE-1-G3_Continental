@@ -147,7 +147,9 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             return er;
         }
         //Comprobamos que esa tarjeta existe,y comprobamos que esta asignada
-        EntityResult query = this.daoHelper.query(this.accessCardDao, attrMap, List.of(AccessCardDao.AVAILABLE));
+        Map<String, Object> attrMapCard = new HashMap<>();
+        attrMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
+        EntityResult query = this.daoHelper.query(this.accessCardDao, attrMapCard, List.of(AccessCardDao.AVAILABLE));
         if(query.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

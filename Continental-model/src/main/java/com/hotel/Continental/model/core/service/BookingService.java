@@ -358,20 +358,10 @@ public class BookingService implements IBookingService {
             er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
-        //Comprobamos que la tarjeta pertenece a la reserva
-        Map<String, Object> filterCard = new HashMap<>();
-        filterCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
-        filterCard.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
-        EntityResult card = this.daoHelper.query(this.accessCardAssignmentDao, filterCard, List.of(AccessCardDao.ACCESSCARDID, BookingDao.BOOKINGID));
-        if (card.calculateRecordNumber() == 0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
-            return er;
-        }
         //Update de la tarjeta
         Map<String, Object> keyMapCard = new HashMap<>();
         keyMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
+        keyMapCard.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         EntityResult erTarjeta = accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
         if (erTarjeta.getCode() == EntityResult.OPERATION_WRONG) {
             return erTarjeta;
@@ -512,10 +502,9 @@ public class BookingService implements IBookingService {
         Map<String, Object> filter = new HashMap<>();
         filter.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         EntityResult historic = this.daoHelper.query(this.extraExpensesDao, filter, List.of(ExtraExpensesDao.PRICE));
+        ArrayList<Double> extrasExpenses= (ArrayList<Double>) historic.get(ExtraExpensesDao.PRICE)!=null?(ArrayList<Double>) historic.get(ExtraExpensesDao.PRICE):new ArrayList<>();
         double finalPrice = 0;
-        Map<String, ArrayList<Double>> map = (Map<String, ArrayList<Double>>) historic;
-        ArrayList<Double> list = new ArrayList<>(map.values().iterator().next());
-        for (Double price : list) {
+        for (Double price : extrasExpenses) {
             finalPrice += price;
         }
         EntityResult bookingPrice = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.PRICE));

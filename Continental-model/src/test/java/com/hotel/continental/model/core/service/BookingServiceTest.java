@@ -534,6 +534,7 @@ public class BookingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erInsertarTarjeta = new EntityResultMapImpl();
                                     erInsertarTarjeta.setCode(EntityResult.OPERATION_WRONG);
+                                    erInsertarTarjeta.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
                                     return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
                                 }
                         )

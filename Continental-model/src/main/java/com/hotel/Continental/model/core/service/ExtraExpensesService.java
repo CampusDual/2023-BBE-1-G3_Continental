@@ -26,13 +26,6 @@ public class ExtraExpensesService implements IExtraExpensesService {
     DefaultOntimizeDaoHelper daoHelper;
     @Override
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
-        //Comprobar id
-        if (attrMap.get(ExtraExpensesDao.IDEXPENSE) == null || (String.valueOf(attrMap.get(ExtraExpensesDao.IDEXPENSE))).isBlank()) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
-            return er;
-        }
         //Comprobar null data
         if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();

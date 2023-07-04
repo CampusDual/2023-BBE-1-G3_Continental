@@ -33,5 +33,10 @@ public class BookingRestController extends ORestController<IBookingService> {
         Map<String, Object> attr = ( Map<String, Object>) req.get("data");
         return this.getService().bookingCheckout(attr);
     }
+    @PostMapping(value = "/price", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EntityResult bookingprice(@RequestBody Map<String, Object> req) {
+        Map<String, Object> attr = ( Map<String, Object>) req.get("data");
+        return this.getService().bookingPrice(attr);
+    }
 
 }

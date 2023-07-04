@@ -25,6 +25,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Lazy
 @Service("BookingService")
@@ -48,6 +49,8 @@ public class BookingService implements IBookingService {
     private CriteriaDao criteriaDao;
     @Autowired
     private SeasonDao seasonDao;
+    @Autowired
+    private ExtraExpensesDao extraExpensesDao;
     public static final String INITIALDATE = "initialdate";
     public static final String FINALDATE = "finaldate";
 
@@ -362,6 +365,7 @@ public class BookingService implements IBookingService {
         if (erTarjeta.getCode() == EntityResult.OPERATION_WRONG) {
             return erTarjeta;
         }
+        EntityResult finalPrice = obtainFinalPrice(attrMap);
         //Update de la reserva
         Map<String, Object> keyMap = new HashMap<>();
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
@@ -369,6 +373,7 @@ public class BookingService implements IBookingService {
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
         er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
+        er.put(BookingDao.PRICE, finalPrice.getRecordValues(0));
         return er;
     }
 
@@ -483,6 +488,23 @@ public class BookingService implements IBookingService {
     //Metodo que comprueba si la fecha es fin de semana
     private boolean isWeekend(LocalDate date) {
        return date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+    }
+
+    private EntityResult obtainFinalPrice(Map<String,Object> attrMap) {
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
+        EntityResult historic = this.daoHelper.query(this.extraExpensesDao, filter, List.of(ExtraExpensesDao.PRICE));
+        double finalPrice = 0;
+        Map<String, ArrayList<Double>> map = historic.getRecordValues(0);
+        for (Double price : (ArrayList<Double>) historic.getRecordValues(0)) {
+            finalPrice += price;
+        }
+        EntityResult bookingPrice = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.PRICE));
+        finalPrice += (Double)bookingPrice.getRecordValues(0).get(0);
+        EntityResult erFinalPrice = new EntityResultMapImpl();
+        erFinalPrice.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        erFinalPrice.put(BookingDao.PRICE, finalPrice);
+        return erFinalPrice;
     }
 }
 

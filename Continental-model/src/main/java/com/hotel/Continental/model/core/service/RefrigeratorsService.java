@@ -25,6 +25,7 @@ public class RefrigeratorsService implements IRefrigeratorsService {
     RoomDao roomDao;
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
+
     @Override
     public EntityResult refrigeratorsInsert(Map<?, ?> attrMap) {
         //Compruebo que me envia una capacidad y un room_id

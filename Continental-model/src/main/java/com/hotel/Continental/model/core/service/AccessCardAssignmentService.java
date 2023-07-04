@@ -143,15 +143,32 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que esa tarjeta existe,y comprobamos que esta asignada
         EntityResult query = this.daoHelper.query(this.accessCardDao, attrMap, List.of(AccessCardDao.AVAILABLE));
+        if(query.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
+            return er;
+        }
         if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);
+            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
+            return er;
+        }
+        //Comprobamos que esta asignada a esa reserva
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(AccessCardAssignmentDao.ACCESSCARDID, attrMap.get(AccessCardAssignmentDao.ACCESSCARDID));
+        filter.put(AccessCardAssignmentDao.BOOKINGID, attrMap.get(AccessCardAssignmentDao.BOOKINGID));
+        EntityResult queryAccessCardAssignment = this.daoHelper.query(this.accessCardAssignmentDao, filter, List.of(AccessCardAssignmentDao.ACCESSCARDASIGNMENT));
+        if (queryAccessCardAssignment.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
             return er;
         }
         //Le cambiamos el estado a la tarjeta

@@ -109,6 +109,9 @@ public class BookingService implements IBookingService {
         if (attrMap.get(BookingDao.ROOMID) != null) {
             roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
         }
+        if(attrMap.get(RoomDao.ROOMTYPEID)!=null){
+            roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+        }
         EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
         //Comprobar que no dio error
         if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {
@@ -121,7 +124,9 @@ public class BookingService implements IBookingService {
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
             attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
-            attrMap.put(BookingDao.PRICE, this.bookingPrice(attrMap).getRecordValues(0).get(BookingDao.PRICE));
+            //Calculamos el precio de la reserva
+            EntityResult price = bookingPrice(attrMap);
+            attrMap.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
             return this.daoHelper.insert(this.bookingDao, attrMap);
         }
         EntityResult er = new EntityResultMapImpl();
@@ -203,6 +208,9 @@ public class BookingService implements IBookingService {
             if (attrMap.get(BookingDao.ROOMID) != null) {
                 roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
             }
+            if(attrMap.get(RoomDao.ROOMTYPEID)!=null){
+                roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+            }
             EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
             //Comprobar que no dio error
             if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {
@@ -224,6 +232,8 @@ public class BookingService implements IBookingService {
             attrMap.remove(BookingDao.ENDDATE);
             attrMap.put(BookingDao.STARTDATE, roomAttrMap.get(INITIALDATE));
             attrMap.put(BookingDao.ENDDATE, roomAttrMap.get(FINALDATE));
+            EntityResult price = bookingPrice(attrMap);
+            attrMap.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
         }
         return this.daoHelper.update(this.bookingDao, attrMap, keyMap);
     }
@@ -405,6 +415,13 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapRoom = new HashMap<>();
         attrMapRoom.put(RoomDao.IDHABITACION, attrMap.get(BookingDao.ROOMID));
         EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.IDHABITACION, RoomDao.ROOMTYPEID, RoomDao.ROOMDOWNDATE));
+        //Comprobamos que la habitacion existe
+        if (room.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            return er;
+        }
         Map<String, Object> attrMapRoomType = new HashMap<>();
         attrMapRoomType.put(RoomTypeDao.TYPEID, room.getRecordValues(0).get(RoomDao.ROOMTYPEID));
         EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
@@ -416,13 +433,13 @@ public class BookingService implements IBookingService {
         EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
 
         //Hacer que obtenga los multiplicadores por nombre
-        double multiplierWeekend= (float) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
-        double earlyBooking= (float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
-        Map<Integer,Float> multiplierSeason=new HashMap<>();
-        multiplierSeason.put(0, (float) 1.0);
-        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(float) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
-        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(float) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
-        double multiplierLongStay= (float) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
+        BigDecimal multiplierWeekend= (BigDecimal) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
+        BigDecimal earlyBooking= (BigDecimal) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
+        Map<Integer,BigDecimal> multiplierSeason=new HashMap<>();
+        multiplierSeason.put(0, BigDecimal.ONE);
+        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER));
+        BigDecimal multiplierLongStay= (BigDecimal) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
 
         //Obtener fechas de la reserva
         LocalDate start;
@@ -443,9 +460,9 @@ public class BookingService implements IBookingService {
         while (!startIter.isAfter(end)) {
             double extra = 0;
             if(isWeekend(startIter)){
-                extra+=(multiplierWeekend*roomprice)-roomprice;
+                extra+=(multiplierWeekend.doubleValue()*roomprice)-roomprice;
             }
-            extra+=(roomprice*multiplierSeason.get(whatSeason(startIter))-roomprice);
+            extra+=(roomprice*multiplierSeason.get(whatSeason(startIter)).doubleValue()-roomprice);
             priceBooking+=roomprice+extra;
             startIter=startIter.plusDays(1);
         }
@@ -453,11 +470,11 @@ public class BookingService implements IBookingService {
         //Descuento por reserva anticipada, si la fecha de inicio de la reserva es en mas de 10 dias
         //Si la fecha de inicio es dentro de mas de 10 dias añadimos ese criterio
         if(start.isAfter(LocalDate.now().plusDays(10))){
-            priceBooking=priceBooking*earlyBooking;
+            priceBooking=priceBooking*earlyBooking.doubleValue();
         }
         //Descuento por estancia larga, si la reserva es de mas de 5 dias
         if(ChronoUnit.DAYS.between(start,end)>3){
-            priceBooking=priceBooking*multiplierLongStay;
+            priceBooking=priceBooking*multiplierLongStay.doubleValue();
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);

@@ -1,11 +1,11 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.api.core.service.IRoomService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
-import com.hotel.continental.api.core.service.IRoomService;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -52,7 +52,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
@@ -72,7 +72,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomInsert(Map<?, ?> attrMap) {
         //Comprobar que se envian los campos necesarios
         if (!attrMap.containsKey(RoomDao.IDHOTEL) || !attrMap.containsKey(RoomDao.ROOMNUMBER) || !attrMap.containsKey(RoomDao.ROOMTYPEID)) {
@@ -94,10 +94,10 @@ public class RoomService implements IRoomService {
             return er;
         }
 
-        Map<String,Object> filterType = new HashMap();
+        Map<String, Object> filterType = new HashMap();
         filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
         EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
-        if (types.calculateRecordNumber()==0) {
+        if (types.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
@@ -130,7 +130,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
@@ -168,7 +168,7 @@ public class RoomService implements IRoomService {
      * @return EntityResult con los datos de la habitacion o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
         if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
@@ -186,7 +186,7 @@ public class RoomService implements IRoomService {
         }
 
         if (attrMap.get(RoomDao.ROOMTYPEID) != null) {
-            Map<String,Object> filterType = new HashMap();
+            Map<String, Object> filterType = new HashMap();
             filterType.put(RoomTypeDao.TYPEID, attrMap.get(RoomDao.ROOMTYPEID));
             EntityResult types = this.daoHelper.query(this.roomTypeDao, filterType, List.of(RoomTypeDao.TYPE));
             if (types.calculateRecordNumber() == 0) {
@@ -207,8 +207,8 @@ public class RoomService implements IRoomService {
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
     }
 
-        @Override
-        @Secured({ PermissionsProviderSecured.SECURED })
+    @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult freeRoomsQuery(Map<String, Object> keyMap, List<String> attrList) throws OntimizeJEERuntimeException {
         //Copiamos el mapa de claves para no modificar el original
         Map<String, Object> keyMapCopy = new HashMap<>(keyMap);
@@ -226,21 +226,21 @@ public class RoomService implements IRoomService {
             keyMap.put(INITIALDATE, initialDate);
             keyMap.put(FINALDATE, finalDate);
         } catch (ParseException e) {
-            EntityResult er= new EntityResultMapImpl();
+            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
             return er;
         }
         //Comprobar que la fecha inicial es anterior a la final
         if (initialDate.after(finalDate)) {
-            EntityResult er= new EntityResultMapImpl();
+            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
             return er;
         }
         //Comprobar que la fecha inicial es posterior a la actual
         if (initialDate.before(new Date())) {
-            EntityResult er= new EntityResultMapImpl();
+            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.INITIAL_DATE_BEFORE_CURRENT_DATE);
             return er;
@@ -286,6 +286,13 @@ public class RoomService implements IRoomService {
         } else {
             //Se usa como filtro los ids
             filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDS);
+        }
+        //Si se especifica un id de tipo de habitacion, se obtienen las habitaciones de ese tipo
+        if (keyMapCopy.get(RoomDao.ROOMTYPEID) != null) {
+            BasicExpression bexpByRoomType = new BasicExpression(new BasicField(RoomDao.ROOMTYPEID), BasicOperator.EQUAL_OP, keyMapCopy.get(RoomDao.ROOMTYPEID));
+            BasicExpression bexpByIDSandRoomType = new BasicExpression(bexpByIDS, BasicOperator.AND_OP, bexpByRoomType);
+            //Se usa como filtro los ids+tipo de habitacion
+            filter2.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexpByIDSandRoomType);
         }
         return this.daoHelper.query(this.roomDao, filter2, attrList);
     }

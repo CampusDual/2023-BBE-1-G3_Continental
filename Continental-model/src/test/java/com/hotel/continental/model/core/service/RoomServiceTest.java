@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.service.RoomService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -34,6 +35,8 @@ public class RoomServiceTest {
     RoomDao roomDao;
     @Mock
     HotelDao hotelDao;
+    @Mock
+    RoomTypeDao roomTypeDao;
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -48,6 +51,10 @@ public class RoomServiceTest {
             //Despues se hace una query para comprobar que la habitacion no existe
             EntityResult erQueryHabitacion = new EntityResultMapImpl();
             erQueryHabitacion.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            //Se comprueba que el tipo existe
+            EntityResult erQueryTipo = new EntityResultMapImpl();
+            erQueryTipo.setCode(EntityResult.OPERATION_SUCCESSFUL);
+            erQueryTipo.put(RoomTypeDao.TYPE, List.of(1));
             //Despues se hace el insert
             EntityResult erInsert = new EntityResultMapImpl();
             erInsert.setCode(EntityResult.OPERATION_SUCCESSFUL);
@@ -55,15 +62,16 @@ public class RoomServiceTest {
             roomToInsert.put(RoomDao.ROOMDOWNDATE, null);
             roomToInsert.put(RoomDao.ROOMNUMBER, 1);
             roomToInsert.put(RoomDao.IDHOTEL, 1);
+            roomToInsert.put(RoomDao.ROOMTYPEID, 1);
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(RoomDao.IDHABITACION, 1);
 
             when(daoHelper.query(any(HotelDao.class),anyMap(), anyList())).thenReturn(erQueryHotel);
+            when(daoHelper.query(any(RoomTypeDao.class),anyMap(),anyList())).thenReturn(erQueryTipo);
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(erQueryHabitacion);
             when(daoHelper.insert(any(RoomDao.class), anyMap())).thenReturn(erInsert);
 
             EntityResult result = roomService.roomInsert(roomToInsert);
-            System.out.println(result.getMessage());
             Assertions.assertEquals(0, result.getCode());
         }
     
@@ -136,7 +144,6 @@ public class RoomServiceTest {
 
             Map<String, Object> attr = new HashMap<>();
             attr.put(RoomDao.ROOMNUMBER, 1);
-            attr.put(RoomDao.IDHOTEL, 1);
 
             when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
             when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);

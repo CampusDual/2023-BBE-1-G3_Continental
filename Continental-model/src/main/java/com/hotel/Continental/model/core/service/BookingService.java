@@ -410,6 +410,13 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapRoom = new HashMap<>();
         attrMapRoom.put(RoomDao.IDHABITACION, attrMap.get(BookingDao.ROOMID));
         EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.IDHABITACION, RoomDao.ROOMTYPEID, RoomDao.ROOMDOWNDATE));
+        //Comprobamos que la habitacion existe
+        if (room.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            return er;
+        }
         Map<String, Object> attrMapRoomType = new HashMap<>();
         attrMapRoomType.put(RoomTypeDao.TYPEID, room.getRecordValues(0).get(RoomDao.ROOMTYPEID));
         EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
@@ -425,8 +432,8 @@ public class BookingService implements IBookingService {
         BigDecimal earlyBooking= (BigDecimal) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
         Map<Integer,BigDecimal> multiplierSeason=new HashMap<>();
         multiplierSeason.put(0, BigDecimal.ONE);
-        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER));
-        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER));
         BigDecimal multiplierLongStay= (BigDecimal) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
 
         //Obtener fechas de la reserva

@@ -18,6 +18,7 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -373,7 +374,7 @@ public class BookingService implements IBookingService {
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
         er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
-        er.put(BookingDao.PRICE, finalPrice.getRecordValues(0));
+        er.put(BookingDao.PRICE, finalPrice.getRecordValues(0).get(BookingDao.PRICE));
         return er;
     }
 
@@ -495,15 +496,19 @@ public class BookingService implements IBookingService {
         filter.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         EntityResult historic = this.daoHelper.query(this.extraExpensesDao, filter, List.of(ExtraExpensesDao.PRICE));
         double finalPrice = 0;
-        Map<String, ArrayList<Double>> map = historic.getRecordValues(0);
-        for (Double price : (ArrayList<Double>) historic.getRecordValues(0)) {
+        Map<String, ArrayList<Double>> map = (Map<String, ArrayList<Double>>) historic;
+        ArrayList<Double> list = new ArrayList<>(map.values().iterator().next());
+        for (Double price : list) {
             finalPrice += price;
         }
         EntityResult bookingPrice = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.PRICE));
-        finalPrice += (Double)bookingPrice.getRecordValues(0).get(0);
+        BigDecimal bookingcost = (BigDecimal)bookingPrice.getRecordValues(0).get(BookingDao.PRICE);
+        BigDecimal doubleAsBigDecimal = BigDecimal.valueOf(finalPrice);
+        BigDecimal resultado = bookingcost.add(doubleAsBigDecimal);
+
         EntityResult erFinalPrice = new EntityResultMapImpl();
         erFinalPrice.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        erFinalPrice.put(BookingDao.PRICE, finalPrice);
+        erFinalPrice.put(BookingDao.PRICE, resultado);
         return erFinalPrice;
     }
 }

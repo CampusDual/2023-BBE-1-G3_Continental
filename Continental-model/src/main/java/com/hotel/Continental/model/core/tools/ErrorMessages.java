@@ -59,11 +59,13 @@ public class ErrorMessages {
     public static final String CARD_DOESNT_BELONG_BOOKING = "M_CARD_DOESNT_BELONG_BOOKING";
     //Criterios
     public static final String CRITERIA_NOT_EXIST = "M_CRITERIA_NOT_EXIST";
-
     //Neveras
     public static final String CAPACITY_NOT_NUMBER = "M_CAPACITY_NOT_NUMBER";
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
-    private ErrorMessages() {
+    //RoomType
+    public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
+
+  private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }
 }

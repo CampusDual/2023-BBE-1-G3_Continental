@@ -73,17 +73,49 @@ public class ProductService implements IProductsService {
             er.setMessage(ErrorMessages.PRICE_NOT_NUMBER);
             return er;
         }
-        EntityResult er = new EntityResultMapImpl();
-        e
+        EntityResult products = this.daoHelper.query(this.productsDao, keyMap, List.of(ProductsDao.PRODUCTID));
+        if (products.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.PRODUCT_NOT_EXISTS);
+            return er;
+        }
+        return this.daoHelper.update(this.productsDao, attrMap, keyMap);
     }
 
     @Override
     public EntityResult productsQuery(Map<?, ?> keyMap, List<?> attrList) {
-        return null;
+        if (attrList.isEmpty()) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        EntityResult products = this.daoHelper.query(this.productsDao, keyMap, attrList);
+        if (products.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.PRODUCT_NOT_EXISTS);
+            return er;
+        }
+        return products;
     }
 
     @Override
     public EntityResult productsDelete(Map<?, ?> keyMap) {
-        return null;
+        if (keyMap.get(ProductsDao.PRODUCTID) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        EntityResult products = this.daoHelper.query(this.productsDao, keyMap, List.of(ProductsDao.PRODUCTID));
+        if (products.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.PRODUCT_NOT_EXISTS);
+            return er;
+        }
+        return this.daoHelper.delete(this.productsDao, keyMap);
     }
 }

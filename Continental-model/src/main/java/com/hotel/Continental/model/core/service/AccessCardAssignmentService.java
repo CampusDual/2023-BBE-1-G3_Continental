@@ -162,7 +162,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
-        if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
+        if ((boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);

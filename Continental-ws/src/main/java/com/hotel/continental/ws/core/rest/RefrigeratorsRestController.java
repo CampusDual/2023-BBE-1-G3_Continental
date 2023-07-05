@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/refrigerators")
+    @RequestMapping("/refrigerators")
 public class RefrigeratorsRestController extends ORestController<IRefrigeratorsService> {
     @Autowired
     private IRefrigeratorsService refrigeratorsService;

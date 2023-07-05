@@ -67,6 +67,10 @@ public class ErrorMessages {
     public static final String PRICE_MINOR_0 = "M_PRICE_MINOR_0";
     public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
 
+    // REFRIGERATOR STOCK
+    public static final String QUANTITY_NOT_NUMBER = "M_QUANTITY_NOT_NUMBER";
+    public static final String QUANTITY_NOT_POSITIVE = "M_QUANTITY_NOT_POSITIVE";
+
   private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

@@ -64,6 +64,8 @@ public class ErrorMessages {
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
+    public static final String PRICE_MINOR_0 = "M_PRICE_MINOR_0";
+    public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
 
   private ErrorMessages() {
         throw new IllegalStateException("Utility class");

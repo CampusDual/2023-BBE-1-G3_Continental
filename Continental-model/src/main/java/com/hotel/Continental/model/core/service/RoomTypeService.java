@@ -50,4 +50,27 @@ public class RoomTypeService implements IRoomTypeService {
         }
         return this.daoHelper.update(this.roomtypeDao, attrMap, keyMap);
     }
+    @Override
+    public EntityResult roomtypeInsert(Map<String,Object>attrMap) {
+        if (attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        try {
+        if (((Integer) attrMap.get(RoomTypeDao.PRICE)) > 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.PRICE_MINOR_0);
+            return er;
+        }
+        } catch (NumberFormatException e) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.PRICE_NOT_NUMBER);
+            return er;
+        }
+        
+    }
 }

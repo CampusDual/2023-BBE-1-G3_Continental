@@ -1,0 +1,646 @@
+-- Access Card
+
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(8, 1, true, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(3, 3, true, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(6, 3, true, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(7, 4, true, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(2, 2, true, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(5, 2, true, '2023-05-07');
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(1, 1, false, NULL);
+INSERT INTO public.accesscards
+(accesscardid, hotelid, available, carddowndate)
+VALUES(4, 1, false, NULL);
+
+-- Booking
+
+INSERT INTO public.bookings
+(bookingid, roomid, initialdate, enddate, clientid, checkindatetime, checkoutdatetime, price)
+VALUES(1, 1, '2023-06-20', '2023-06-25', 1, '2023-07-04 12:48:39.750', NULL, 737.1);
+INSERT INTO public.bookings
+(bookingid, roomid, initialdate, enddate, clientid, checkindatetime, checkoutdatetime, price)
+VALUES(4, 4, '2023-06-22', '2023-06-26', 4, '2023-06-28 14:00:24.331', '2023-07-04 13:04:27.183', 737.1);
+INSERT INTO public.bookings
+(bookingid, roomid, initialdate, enddate, clientid, checkindatetime, checkoutdatetime, price)
+VALUES(31, 3, '2024-01-14', '2024-01-15', 2, NULL, NULL, NULL);
+
+-- Access Card Booking
+
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(24, 2, 4);
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(28, 4, 1);
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(29, 1, 1);
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(30, 1, 1);
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(31, 4, 1);
+INSERT INTO public.accesscard_booking
+(accesscardasignment, accesscardid, bookingid)
+VALUES(32, 2, 1);
+
+-- Client
+
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(1, '12345678A', 'John Doe', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(2, 'X1234567A', 'Jane Smith', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(3, 'Y87654321B', 'Michael Johnson', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(4, 'Z98765432B', 'Emily Davis', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(5, 'K5432109C', 'David Wilson', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(6, '12345678Z', 'cesar', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(7, 'X6643866V', 'Millan', 'ES', NULL);
+INSERT INTO public.clients
+(idclient, "document", "name", countrycode, clientdowndate)
+VALUES(8, 'H51949709', 'IMATIA', 'ES', NULL);
+
+
+-- Criteria
+
+INSERT INTO public.criteria
+(id, "name", description, multiplier)
+VALUES(5, 'Weekend Rate', 'Multiplier for weekend bookings', 1.2);
+INSERT INTO public.criteria
+(id, "name", description, multiplier)
+VALUES(6, 'Early Bird Rate', 'Multiplier for early bird bookings', 0.9);
+INSERT INTO public.criteria
+(id, "name", description, multiplier)
+VALUES(7, 'High Season', 'Multiplier for high season bookings', 1.5);
+INSERT INTO public.criteria
+(id, "name", description, multiplier)
+VALUES(8, 'Low Season', 'Multiplier for low season bookings', 0.8);
+INSERT INTO public.criteria
+(id, "name", description, multiplier)
+VALUES(9, 'Long Stay', 'Para estadias de mas de 5 dias', 0.9);
+
+-- Employees
+
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(1, '12345678X', 'John Smith', 1, NULL);
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(2, 'X87654321Y', 'Jane Johnson', 1, NULL);
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(5, 'C5432109W', 'David Taylor', 3, NULL);
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(3, '58828229W', 'Artai', 3, NULL);
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(6, '58828229W', 'Artai', 3, '2023-06-22');
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(7, '60490370W', 'nombre', 1, NULL);
+INSERT INTO public.employees
+(employeeid, "document", "name", hotelid, employeedowndate)
+VALUES(4, 'B1234567Z', 'Emily Wilson', 3, '2023-06-23');
+
+
+-- Extra Expenses
+
+INSERT INTO public.extraexpenses
+(idexpense, bookingid, concept, price)
+VALUES(3, 31, 'neverita', 2.2);
+INSERT INTO public.extraexpenses
+(idexpense, bookingid, concept, price)
+VALUES(4, 31, 'neverita', 6.6);
+INSERT INTO public.extraexpenses
+(idexpense, bookingid, concept, price)
+VALUES(2, 4, 'neverita', 2.2);
+INSERT INTO public.extraexpenses
+(idexpense, bookingid, concept, price)
+VALUES(1, 4, 'neverita', 2.2);
+INSERT INTO public.extraexpenses
+(idexpense, bookingid, concept, price)
+VALUES(6, 4, 'neverita', 2.2);
+
+-- Hotel
+
+INSERT INTO public.hotels
+(id, "name", address, hoteldowndate)
+VALUES(1, 'Hotel A', '123 Main Street', NULL);
+INSERT INTO public.hotels
+(id, "name", address, hoteldowndate)
+VALUES(2, 'Hotel B', '456 Elm Street', NULL);
+INSERT INTO public.hotels
+(id, "name", address, hoteldowndate)
+VALUES(3, 'Hotel C', '789 Oak Street', NULL);
+INSERT INTO public.hotels
+(id, "name", address, hoteldowndate)
+VALUES(4, 'Hotel D', '321 Pine Street', NULL);
+INSERT INTO public.hotels
+(id, "name", address, hoteldowndate)
+VALUES(5, 'Hotel E', '654 Maple Street', NULL);
+
+-- Rooms
+
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(2, 1, 102, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(8, 4, 165, NULL, 1);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(1, 2, 101, NULL, 1);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(9, 1, 109, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(10, 2, 203, NULL, 1);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(3, 2, 201, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(4, 2, 202, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(5, 3, 301, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(7, 3, 16, NULL, 2);
+INSERT INTO public.rooms
+(roomid, hotelid, roomnumber, roomdowndate, typeroomid)
+VALUES(6, 3, 601, NULL, 2);
+
+-- Room Type
+
+INSERT INTO public.roomtype
+(typeid, "type", price)
+VALUES(2, 'double', 175.0);
+INSERT INTO public.roomtype
+(typeid, "type", price)
+VALUES(1, 'individual', 125.0);
+
+-- Refrigerator
+
+INSERT INTO public.refrigerators
+(fridge_id, room_id, capacity)
+VALUES(1, 4, 40);
+
+-- Seasons
+
+INSERT INTO public.seasons
+(id, criteria_id, start_day, start_month, end_day, end_month)
+VALUES(2, 7, 1, 6, 31, 8);
+INSERT INTO public.seasons
+(id, criteria_id, start_day, start_month, end_day, end_month)
+VALUES(3, 8, 1, 9, 30, 11);
+
+-- TUser
+
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('client', 'client', 'client', 'client', NULL, '99999998R', NULL, NULL, NULL);
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('asdf', 'Abc123...', 'Artai', 'paz', NULL, '12345678Z', '2023-06-22 11:34:31.288', true, NULL);
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('demo', 'demouser', 'demo', 'demo', NULL, '44460713B', NULL, NULL, NULL);
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('tomas', 'NewPassword123..', 'Artai', 'paz', NULL, '12345678Z', '2023-06-22 10:51:34.485', true, '2023-06-22 11:50:11.443+02');
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('demoTest', 'Abcdñ1235:_', 'demoTest', 'demoTest', NULL, '12345678Z', '2023-06-23 09:19:33.768', true, '2023-06-23 09:21:37.244+02');
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+VALUES('noPermisions2', 'Abc123..', 'noPermisions2', 'noPermisions2', NULL, '12345678Z', '2023-07-04 13:58:22.940', true, '2023-07-04 14:00:24.396+02');
+
+-- TUser Role
+
+INSERT INTO public.tuser_role
+(id_user_role, id_rolename, user_)
+VALUES(47, 0, 'demo');
+INSERT INTO public.tuser_role
+(id_user_role, id_rolename, user_)
+VALUES(48, 0, 'asdf');
+INSERT INTO public.tuser_role
+(id_user_role, id_rolename, user_)
+VALUES(49, 20, 'demoTest');
+INSERT INTO public.tuser_role
+(id_user_role, id_rolename, user_)
+VALUES(50, 20, 'noPermisions2');
+
+-- TRole
+
+INSERT INTO public.trole
+(id_rolename, rolename, xmlclientpermission)
+VALUES(0, 'admin', '<?xml version="1.0" encoding="UTF-8"?><security></security>');
+INSERT INTO public.trole
+(id_rolename, rolename, xmlclientpermission)
+VALUES(20, 'recepcionist', '<?xml version="1.0" encoding="UTF-8"?><security></security>');
+INSERT INTO public.trole
+(id_rolename, rolename, xmlclientpermission)
+VALUES(21, 'manager', '<?xml version="1.0" encoding="UTF-8"?><security></security>');
+INSERT INTO public.trole
+(id_rolename, rolename, xmlclientpermission)
+VALUES(10, 'client', '<?xml version="1.0" encoding="UTF-8"?><security></security>');
+
+-- TServer Permission
+
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(75, 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentRecover');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(76, 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(77, 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/lostCard');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(78, 'com.hotel.continental.api.core.service.IAccessCardService/accesscardQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(79, 'com.hotel.continental.api.core.service.IBookingService/bookingQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(80, 'com.hotel.continental.api.core.service.IBookingService/bookingDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(81, 'com.hotel.continental.api.core.service.IBookingService/bookingInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(82, 'com.hotel.continental.api.core.service.IBookingService/bookingCheckin');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(83, 'com.hotel.continental.api.core.service.IBookingService/bookingCheckout');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(84, 'com.hotel.continental.api.core.service.IBookingService/bookingPrice');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(85, 'com.hotel.continental.api.core.service.IBookingService/bookingUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(86, 'com.hotel.continental.api.core.service.IClientService/clientDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(87, 'com.hotel.continental.api.core.service.IClientService/clientUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(88, 'com.hotel.continental.api.core.service.IClientService/clientInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(89, 'com.hotel.continental.api.core.service.IClientService/clientQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(90, 'com.hotel.continental.api.core.service.ICriteriaService/criteriaQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(91, 'com.hotel.continental.api.core.service.IEmployeeService/employeeQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(92, 'com.hotel.continental.api.core.service.IEmployeeService/employeeDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(93, 'com.hotel.continental.api.core.service.IEmployeeService/employeeInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(94, 'com.hotel.continental.api.core.service.IEmployeeService/employeeUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(95, 'com.hotel.continental.api.core.service.IExtraExpensesService/extraexpensesInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(96, 'com.hotel.continental.api.core.service.IHotelService/hotelUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(97, 'com.hotel.continental.api.core.service.IHotelService/hotelInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(98, 'com.hotel.continental.api.core.service.IHotelService/hotelQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(99, 'com.hotel.continental.api.core.service.IHotelService/hotelDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(100, 'com.hotel.continental.api.core.service.IRoleService/roleUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(101, 'com.hotel.continental.api.core.service.IRoleService/roleInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(102, 'com.hotel.continental.api.core.service.IRoleService/roleQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(103, 'com.hotel.continental.api.core.service.IRoleService/roleDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(104, 'com.hotel.continental.api.core.service.IRoomService/freeRoomsQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(105, 'com.hotel.continental.api.core.service.IRoomService/roomInsert');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(106, 'com.hotel.continental.api.core.service.IRoomService/roomQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(107, 'com.hotel.continental.api.core.service.IRoomService/roomUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(108, 'com.hotel.continental.api.core.service.IRoomService/roomDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(109, 'com.hotel.continental.api.core.service.IUserService/userUpdate');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(110, 'com.hotel.continental.api.core.service.IUserService/userQuery');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(111, 'com.hotel.continental.api.core.service.IUserService/userDelete');
+INSERT INTO public.tserver_permission
+(id_server_permission, permission_name)
+VALUES(112, 'com.hotel.continental.api.core.service.IUserService/userInsert');
+
+--TRole Server Permission
+
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(149, 0, 75);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(150, 0, 76);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(151, 0, 77);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(152, 0, 78);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(153, 0, 79);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(154, 0, 80);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(155, 0, 81);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(156, 0, 82);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(157, 0, 83);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(158, 0, 84);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(159, 0, 85);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(160, 0, 86);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(161, 0, 87);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(162, 0, 88);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(163, 0, 89);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(164, 0, 90);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(165, 0, 91);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(166, 0, 92);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(167, 0, 93);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(168, 0, 94);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(169, 0, 95);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(170, 0, 96);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(171, 0, 97);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(172, 0, 98);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(173, 0, 99);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(174, 0, 100);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(175, 0, 101);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(176, 0, 102);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(177, 0, 103);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(178, 0, 104);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(179, 0, 105);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(180, 0, 106);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(181, 0, 107);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(182, 0, 108);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(183, 0, 109);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(184, 0, 110);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(185, 0, 111);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(186, 0, 112);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(187, 20, 76);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(188, 20, 75);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(189, 20, 77);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(190, 20, 78);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(191, 20, 80);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(192, 20, 81);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(193, 20, 84);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(194, 20, 85);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(195, 20, 83);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(196, 20, 82);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(197, 20, 79);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(198, 20, 88);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(199, 20, 89);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(200, 20, 87);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(201, 20, 86);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(202, 20, 95);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(203, 20, 98);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(204, 20, 106);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(205, 20, 104);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(206, 21, 78);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(207, 21, 84);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(208, 21, 79);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(209, 21, 83);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(210, 21, 82);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(211, 21, 85);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(212, 21, 80);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(213, 21, 81);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(214, 21, 88);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(215, 21, 89);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(216, 21, 87);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(217, 21, 86);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(218, 21, 90);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(219, 21, 93);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(220, 21, 91);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(221, 21, 92);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(222, 21, 94);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(223, 21, 95);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(224, 21, 97);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(225, 21, 99);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(226, 21, 96);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(227, 21, 98);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(228, 21, 106);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(229, 21, 108);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(230, 21, 104);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(231, 21, 107);
+INSERT INTO public.trole_server_permission
+(id_role_server_permission, id_rolename, id_server_permission)
+VALUES(232, 21, 105);

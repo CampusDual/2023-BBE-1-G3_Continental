@@ -239,7 +239,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult
      */
     @Override
-    //@Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckin(Map<String, Object> attrMap) {
         //Comprobamos que se ha introducido el id de la reserva
         if (attrMap.get(BookingDao.BOOKINGID) == null) {
@@ -305,7 +305,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult
      */
     @Override
-    //@Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingCheckout(Map<String, Object> attrMap) {
         //Comprobamos que se ha introducido el id de la reserva
         //Si se introduce id de reserva se usa id de reserva
@@ -378,7 +378,7 @@ public class BookingService implements IBookingService {
      * @return EntityResult con el precio de la reserva
      */
     @Override
-    //@Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult bookingPrice(Map<String, Object> attrMap) {
         double priceBooking = 0;
         //Comprobamos que se ha introducido el id de la habitacion

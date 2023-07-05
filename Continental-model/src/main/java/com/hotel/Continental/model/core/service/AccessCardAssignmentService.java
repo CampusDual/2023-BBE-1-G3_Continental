@@ -8,9 +8,11 @@ import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -33,6 +35,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
     private DefaultOntimizeDaoHelper daoHelper;
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult accesscardassignmentInsert(Map<String, Object> attrMap) {
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null || attrMap.get(AccessCardAssignmentDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
@@ -89,6 +92,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         return er;
     }
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult lostCard(Map<String, Object> attrMap) {
         //Compruebo que me da el id de la tarjeta
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
@@ -132,6 +136,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
     }
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult accesscardassignmentRecover(Map<?, ?> attrMap) {
         //Se comprueba si la tarjeta está perdida
         if(attrMap.get(AccessCardDao.CARDDOWNDATE) != null) {

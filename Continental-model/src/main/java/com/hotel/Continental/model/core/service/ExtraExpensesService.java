@@ -6,9 +6,11 @@ import com.hotel.continental.model.core.dao.ExtraExpensesDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
         //Comprobar id
         if (attrMap.get(ExtraExpensesDao.IDEXPENSE) == null || (String.valueOf(attrMap.get(ExtraExpensesDao.IDEXPENSE))).isBlank()) {

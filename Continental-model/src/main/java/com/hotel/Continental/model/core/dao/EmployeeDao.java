@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class EmployeeDao extends OntimizeJdbcDaoSupport {
     public static final String EMPLOYEEID = "employeeid";
+    public static final String TUSER_NAME = "tuser_name";
+
     public static final String NAME = "name";
     public static final String DOCUMENT = "document";
     public static final String IDHOTEL = "hotelid";

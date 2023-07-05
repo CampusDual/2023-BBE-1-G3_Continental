@@ -12,8 +12,10 @@ import org.springframework.stereotype.Repository;
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class ClientDao extends OntimizeJdbcDaoSupport {
     public static final String CLIENTID = "idclient";
+    public static final String TUSER_NAME = "tuser_name";
     public static final String DOCUMENT = "document";
     public static final String NAME = "name";
     public static final String COUNTRYCODE = "countrycode";
     public static final String CLIENTDOWNDATE = "clientdowndate";
+
 }

@@ -59,13 +59,13 @@ public class RoomTypeService implements IRoomTypeService {
             return er;
         }
         try {
-        if (((Integer) attrMap.get(RoomTypeDao.PRICE)) > 0) {
+        if (((Double) attrMap.get(RoomTypeDao.PRICE)) < 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.PRICE_MINOR_0);
             return er;
         }
-        } catch (NumberFormatException e) {
+        } catch (ClassCastException e) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.PRICE_NOT_NUMBER);
@@ -75,8 +75,23 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public EntityResult roomtypeDelete(Map<String, Object> attrMap) {
-        if (attrMap.get()) {
+    public EntityResult roomtypeDelete(Map<String, Object> keyMap) {
+        if (keyMap.get(RoomTypeDao.TYPEID)==null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(RoomTypeDao.TYPEID, keyMap.get(RoomTypeDao.TYPEID));
+        EntityResult types = this.daoHelper.query(this.roomtypeDao, filter, List.of(RoomTypeDao.TYPEID));
+        if (types.calculateRecordNumber()==0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
+            return er;
+        }
+        return this.daoHelper.delete(this.roomtypeDao, keyMap);
     }
 
 

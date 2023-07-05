@@ -71,6 +71,13 @@ public class RoomTypeService implements IRoomTypeService {
             er.setMessage(ErrorMessages.PRICE_NOT_NUMBER);
             return er;
         }
-        
+        return this.daoHelper.insert(this.roomtypeDao, attrMap);
     }
+
+    @Override
+    public EntityResult roomtypeDelete(Map<String, Object> attrMap) {
+        if (attrMap.get()) {
+    }
+
+
 }

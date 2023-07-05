@@ -1,8 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
-import com.hotel.continental.model.core.dao.EmployeeDao;
-import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -27,41 +26,40 @@ public class EmployeeService implements IEmployeeService {
     HotelDao hotelDao;
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
-
+    @Autowired
+    UserService userService;
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
-        if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
+        if (!attrMap.containsKey(EmployeeDao.IDHOTEL)||!attrMap.containsKey(RoleDao.ID_ROLENAME)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-
         // Comprueba que el hotel existe
-
         Map<String, Object> filter = new HashMap<>();
         filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
         EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
-
         if (hotel.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
-        //Check que no existe el nif
-        filter = new HashMap<>();
-        filter.put(EmployeeDao.DOCUMENT, attrMap.get(EmployeeDao.DOCUMENT));
-        EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
-
-        if (nif.calculateRecordNumber() > 0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
-            return er;
+        //Crear un mapa para el usuario con un try catch?
+        //Insertamos el usuario
+        EntityResult check = userService.userInsert(attrMap);
+        if (check.getCode() == EntityResult.OPERATION_WRONG) {
+            return check;
         }
-        return this.daoHelper.insert(this.employeeDao, attrMap);
+        Map<String, Object> employeeMap = new HashMap<>();
+        employeeMap.put(EmployeeDao.TUSER_NAME, attrMap.get(UserDao.USER_));
+        employeeMap.put(EmployeeDao.IDHOTEL, attrMap.get(EmployeeDao.IDHOTEL));
+        EntityResult er = this.daoHelper.insert(this.employeeDao, employeeMap);
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.setMessage("Empleado insertado correctamente");
+        return er;
     }
 
     @Override

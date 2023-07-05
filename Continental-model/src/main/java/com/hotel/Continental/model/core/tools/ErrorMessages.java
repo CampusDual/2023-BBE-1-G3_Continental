@@ -65,6 +65,7 @@ public class ErrorMessages {
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
 
+
   private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }

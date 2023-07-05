@@ -15,10 +15,13 @@
         <Query id="default">
             <ValidColumns>
                 <Column>user_</Column>
-                <Column>email</Column>
                 <Column>password</Column>
                 <Column>name</Column>
                 <Column>surname</Column>
+                <Column>email</Column>
+                <Column>nif</Column>
+                <Column>user_down_date</Column>
+                <Column>countrycode</Column>
             </ValidColumns>
             <Sentence>
                 <![CDATA[
@@ -37,6 +40,7 @@
                 <Column>password</Column>
                 <Column>name</Column>
                 <Column>surname</Column>
+                <Column>userblocked</Column>
             </ValidColumns>
             <Sentence>
                 <![CDATA[

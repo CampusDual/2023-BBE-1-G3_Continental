@@ -72,6 +72,7 @@ public class ErrorMessages {
     //Refrigerator Stock
     public static final String QUANTITY_NOT_NUMBER = "M_QUANTITY_NOT_NUMBER";
     public static final String QUANTITY_NOT_POSITIVE = "M_QUANTITY_NOT_POSITIVE";
+    public static final String STOCK_NOT_EXIST = "M_STOCK_NOT_EXIST";
 
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");

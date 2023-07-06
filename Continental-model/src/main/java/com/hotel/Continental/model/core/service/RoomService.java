@@ -178,6 +178,13 @@ public class RoomService implements IRoomService {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
+        if(attrMap.isEmpty()){
+            EntityResult er;
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
         if (attrMap.containsKey(RoomDao.IDHOTEL)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);

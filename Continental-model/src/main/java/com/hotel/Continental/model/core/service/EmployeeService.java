@@ -1,8 +1,10 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
+import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.continental.model.core.tools.CheckDocument;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -31,9 +33,9 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
         if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
@@ -45,10 +47,16 @@ public class EmployeeService implements IEmployeeService {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
 
         if (hotel.calculateRecordNumber() == 0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
+        }
+        //Comprobamos que el documento es válido
+        if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
+            //Si el documento no es valido esta mal
+            if (!CheckDocument.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
+                er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
+                return er;
+            }
         }
         //Check que no existe el nif
         filter = new HashMap<>();
@@ -56,11 +64,10 @@ public class EmployeeService implements IEmployeeService {
         EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
 
         if (nif.calculateRecordNumber() > 0) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
+            er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_EXIST);
             return er;
         }
+
         return this.daoHelper.insert(this.employeeDao, attrMap);
     }
 
@@ -68,25 +75,30 @@ public class EmployeeService implements IEmployeeService {
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
 
         // Comprobar que los mapas no están vacios
         if (attrMap.isEmpty() || keyMap.isEmpty()) {
-            er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-
         //Comprobamos que nos envia un EmployeeId
         if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
-            er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
+        }
+        //Comprobamos que el documento es válido
+        if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
+            //Si el documento no es valido esta mal
+            if (!CheckDocument.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
+                er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
+                return er;
+            }
         }
 
         // Comprobar que el empleado exista
         EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID));
         if (employee.calculateRecordNumber() == 0) {
-            er.setCode(1);
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }

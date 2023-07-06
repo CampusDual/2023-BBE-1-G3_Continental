@@ -32,8 +32,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
     @Override
     public EntityResult refrigeratorStockInsert(Map<?, ?> attrMap) {
-        if(attrMap.get(RefrigeratorStockDao.FRIDGEID) == null || attrMap.get(RefrigeratorStockDao.QUANTITY) == null ||
-            String.valueOf(attrMap.get(RefrigeratorStockDao.FRIDGEID)).isBlank() || String.valueOf(attrMap.get(RefrigeratorStockDao.QUANTITY)).isBlank()){
+        if(attrMap.get(RefrigeratorStockDao.REFRIGERATORID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null ||
+            String.valueOf(attrMap.get(RefrigeratorStockDao.REFRIGERATORID)).isBlank() || String.valueOf(attrMap.get(RefrigeratorStockDao.STOCK)).isBlank() || attrMap.get(RefrigeratorStockDao.PRODUCTID) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
@@ -42,7 +42,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
         //Compruebo que la cantidad es númerica
         try{
-            Integer.parseInt(String.valueOf(attrMap.get(RefrigeratorStockDao.QUANTITY)));
+            Integer.parseInt(String.valueOf(attrMap.get(RefrigeratorStockDao.STOCK)));
         } catch (NumberFormatException e){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -50,7 +50,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             return er;
         }
         //Compruebo que la capacidad es mayor que 0
-        if (Integer.parseInt(attrMap.get(RefrigeratorStockDao.QUANTITY).toString()) <= 0) {
+        if (Integer.parseInt(attrMap.get(RefrigeratorStockDao.STOCK).toString()) <= 0) {
             EntityResult erError = new EntityResultMapImpl();
             erError.setCode(EntityResult.OPERATION_WRONG);
             erError.setMessage(ErrorMessages.QUANTITY_NOT_POSITIVE);
@@ -63,13 +63,19 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
     @Override
     public EntityResult refrigeratorStockQuery(Map<?, ?> keyMap, List<?> attrList) {
-        if(attrList.isEmpty() || keyMap.isEmpty()) {
+        if(attrList.isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-
-        return this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
+        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
+        if (stock.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.STOCK_NOT_EXIST);
+            return er;
+        }
+        return stock;
     }
 }

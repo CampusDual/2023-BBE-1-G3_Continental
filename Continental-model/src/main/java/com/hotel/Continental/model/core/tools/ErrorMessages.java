@@ -67,11 +67,12 @@ public class ErrorMessages {
     public static final String PRICE_MINOR_0 = "M_PRICE_MINOR_0";
     public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
     //Products
-    public static final String PRODUCT_NOT_EXISTS = "M_PRICE_NOT_EXISTS";
+    public static final String PRODUCT_NOT_EXISTS = "M_PRODUCT_NOT_EXISTS";
 
     //Refrigerator Stock
     public static final String QUANTITY_NOT_NUMBER = "M_QUANTITY_NOT_NUMBER";
     public static final String QUANTITY_NOT_POSITIVE = "M_QUANTITY_NOT_POSITIVE";
+    public static final String STOCK_NOT_EXIST = "M_STOCK_NOT_EXIST";
 
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");

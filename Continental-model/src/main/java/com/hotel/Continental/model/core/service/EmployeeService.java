@@ -41,7 +41,6 @@ public class EmployeeService implements IEmployeeService {
         }
 
         // Comprueba que el hotel existe
-
         Map<String, Object> filter = new HashMap<>();
         filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
         EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));

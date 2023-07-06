@@ -91,6 +91,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         er.setMessage("The card " + attrMap.get(AccessCardDao.ACCESSCARDID) + " was given");
         return er;
     }
+
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult lostCard(Map<String, Object> attrMap) {
@@ -108,7 +109,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         attrMapCard.put(AccessCardDao.HOTELID, null);
         attrMapCard.put(AccessCardDao.CARDDOWNDATE, new Timestamp(System.currentTimeMillis()));
 
-        //Comprobamos si el update y el delete se hicieron correctamente
+        //Comprobamos si el update se hizo correctamente
         EntityResult update = this.daoHelper.update(this.accessCardDao, attrMapCard, attrMap);
 
         if (update.getCode() == EntityResult.OPERATION_WRONG) {

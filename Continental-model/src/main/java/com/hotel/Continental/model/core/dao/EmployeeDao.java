@@ -18,5 +18,6 @@ public class EmployeeDao extends OntimizeJdbcDaoSupport {
     public static final String DOCUMENT = "document";
     public static final String IDHOTEL = "hotelid";
     public static final String EMPLOYEEDOWNDATE = "employeedowndate";
+    public static final String EMPLOYEE_INFO = "employee_info";
 
 }

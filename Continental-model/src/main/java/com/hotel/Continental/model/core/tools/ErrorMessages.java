@@ -3,6 +3,7 @@ public class ErrorMessages {
     //Generales
     public static final String NECESSARY_KEY = "M_NECESSARY_KEY";
     public static final String NECESSARY_DATA = "M_NECESSARY_DATA";
+    public static final String NECESSARY_ATTR = "M_NECESSARY_ATTR";
     public static final String COLUMN_NOT_EDITABLE = "M_COLUMN_NOT_EDITABLE";
     //CountryCode
     public static final String COUNTRY_CODE_NOT_VALID = "M_COUNTRY_CODE_NOT_VALID";
@@ -26,7 +27,7 @@ public class ErrorMessages {
     public static final String INITIAL_DATE_BEFORE_CURRENT_DATE = "M_INITIAL_DATE_BEFORE_CURRENT_DATE";
     //Clientes
     public static final String CLIENT_NOT_EXIST = "M_CLIENT_NOT_EXIST";
-    public static final String CLIENT_ALREADY_DELETED = "M_CLIENT_ALREADY_DELETED";
+    public static final String CLIENT_ALREADY_INACTIVE = "M_CLIENT_ALREADY_DELETED";
     //Hotel
     public static final String HOTEL_NOT_EXIST = "M_HOTEL_NOT_EXIST";
     public static final String HOTEL_ALREADY_INACTIVE = "M_HOTEL_ALREADY_INACTIVE";

@@ -1,7 +1,10 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
-import com.hotel.continental.model.core.dao.*;
+import com.hotel.continental.model.core.dao.EmployeeDao;
+import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.continental.model.core.dao.RoleDao;
+import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -28,10 +31,11 @@ public class EmployeeService implements IEmployeeService {
     DefaultOntimizeDaoHelper daoHelper;
     @Autowired
     UserService userService;
+
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
-        if (!attrMap.containsKey(EmployeeDao.IDHOTEL)||!attrMap.containsKey(RoleDao.ID_ROLENAME)) {
+        if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(RoleDao.ID_ROLENAME)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
@@ -96,17 +100,17 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
-        if (keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)) {
-            EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
-            if (employees.calculateRecordNumber() == 0) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
-                return er;
-            }
-            return employees;
+        EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList, EmployeeDao.EMPLOYEE_INFO);
+        if (employees.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+            return er;
         }
-        return this.daoHelper.query(this.employeeDao, keyMap, attrList);
+        //Quitamos la contraseña
+        employees.remove(UserDao.PASSWORD);
+        employees.put(UserDao.PASSWORD, Collections.nCopies(employees.calculateRecordNumber(), "Protected"));
+        return employees;
     }
 
     @Secured({PermissionsProviderSecured.SECURED})
@@ -123,7 +127,7 @@ public class EmployeeService implements IEmployeeService {
         //Si no existe, devolvemos un entityResult que representa un error
         Map<String, Object> filter = new HashMap<>();
         filter.put(EmployeeDao.EMPLOYEEID, keyMap.get(EmployeeDao.EMPLOYEEID));
-        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID, EmployeeDao.EMPLOYEEDOWNDATE));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID,EmployeeDao.TUSER_NAME));
         if (employee.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -131,18 +135,20 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
 
-        //Comprobamos que el empleado esta en activo
-        if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
+        //Comprobamos que empleado(el usuario) no esté ya dado de baja
+        Map<String, Object> filterUser = new HashMap<>();
+        filterUser.put(UserDao.USER_, employee.getRecordValues(0).get(EmployeeDao.TUSER_NAME));
+        EntityResult erUser=this.daoHelper.query(this.employeeDao,filterUser,Arrays.asList(UserDao.USERBLOCKED),EmployeeDao.EMPLOYEE_INFO);
+        if (erUser.getRecordValues(0).get(UserDao.USERBLOCKED) != null && Timestamp.valueOf(erUser.getRecordValues(0).get(UserDao.USERBLOCKED).toString()).before(new Timestamp(System.currentTimeMillis()))) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_INACTIVE);
             return er;
         }
-
-        Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos
-        attrMap.put(EmployeeDao.EMPLOYEEDOWNDATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
+        Map<Object, Object> keyMapUserDelete = new HashMap<>();//Mapa de atributos
+        keyMapUserDelete.put(UserDao.USER_, employee.getRecordValues(0).get(EmployeeDao.TUSER_NAME));//Añadimos el nombre de usuario
         //Devolvemos un entityResult que representa el éxito de la operación
-        er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);//Actualizamos el empleado
+        er = userService.userDelete(keyMapUserDelete);//Actualizamos el empleado
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.setMessage("Employee terminated: " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;

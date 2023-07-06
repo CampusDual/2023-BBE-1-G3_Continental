@@ -31,13 +31,15 @@
 			<Sentence>
 					<![CDATA[
 					select
-						#COLUMNS#
-					from
-						${mainschema}.tuser tu
-						JOIN ${mainschema}.TUSER_ROLE tur ON tu.user_ = tur.user_
-						JOIN ${mainschema}.TROLE tr ON tur.id_rolename  = tr.id_rolename
-					#WHERE#
-					#ORDER#
+                    #COLUMNS#
+                    from
+                       ${mainschema}.tuser tu
+                       JOIN ${mainschema}.TUSER_ROLE tur ON tu.user_ = tur.user_
+                       JOIN ${mainschema}.TROLE tr ON tur.id_rolename  = tr.id_rolename
+                    where
+                       tu.userblocked IS NULL OR tu.userblocked > current_timestamp
+                    #WHERE_CONCAT#
+                    #ORDER#
 					]]>
 			</Sentence>
 		</Query>

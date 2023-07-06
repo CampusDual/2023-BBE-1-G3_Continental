@@ -63,7 +63,7 @@ public class UserService implements IUserService {
         }
         //Insertamos el usuario
         EntityResult user = this.daoHelper.insert(this.userDao, attrMap);
-        //Si tiene roll lo insertamos
+        //Si tiene rol lo insertamos
         if(attrMap.containsKey(RoleDao.ID_ROLENAME)) {
             Map<String, Object> attrRole = new HashMap<>();
             attrRole.put(UserRoleDao.ID_ROLENAME, attrMap.get(RoleDao.ID_ROLENAME));
@@ -123,7 +123,7 @@ public class UserService implements IUserService {
         }
 
         Map<Object, Object> attrMap = new HashMap<>();
-        attrMap.put("user_down_date", new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        attrMap.put(UserDao.USERBLOCKED, new Timestamp(Calendar.getInstance().getTimeInMillis()));
         return this.daoHelper.update(this.userDao, attrMap, keyMap);
     }
 
@@ -257,7 +257,7 @@ public class UserService implements IUserService {
 
     private boolean isCanceled(Map<?, ?> keyMap) {
         List<Object> attrList = new ArrayList<>();
-        attrList.add(UserDao.DOWN_DATE);
+        attrList.add(UserDao.USERBLOCKED);
         EntityResult er = this.daoHelper.query(this.userDao, keyMap, attrList);
         return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE) != null;
     }

@@ -13,6 +13,21 @@
     </UpdateKeys>
     <GeneratedKey>employeeid</GeneratedKey>
     <Queries>
+            <Query id="employee_info">
+                <Sentence>
+                    <![CDATA[
+                    SELECT
+                        #COLUMNS#
+                    FROM
+                        ${mainschema}.tuser
+                    INNER JOIN
+                        ${mainschema}.employees
+                    ON
+                        ${mainschema}.tuser.user_ = ${mainschema}.employees.tuser_name
 
-    </Queries>
+                    #WHERE#
+                ]]>
+                </Sentence>
+            </Query>
+        </Queries>
 </JdbcEntitySetup>

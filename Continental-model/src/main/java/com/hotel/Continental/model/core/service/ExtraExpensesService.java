@@ -29,8 +29,15 @@ public class ExtraExpensesService implements IExtraExpensesService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
+        //Comprobar null key
+        if(attrMap.get(ExtraExpensesDao.BOOKINGID) == null){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
         //Comprobar null data
-        if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
+        if (attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);

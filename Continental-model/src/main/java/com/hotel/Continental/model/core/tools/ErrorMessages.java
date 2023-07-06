@@ -60,7 +60,9 @@ public class ErrorMessages {
     //Criterios
     public static final String CRITERIA_NOT_EXIST = "M_CRITERIA_NOT_EXIST";
     //Neveras
+
     public static final String CAPACITY_NOT_NUMBER = "M_CAPACITY_NOT_NUMBER";
+    public static final String FRIDGE_NOT_EXISTS = "M_FRIDGE_NOT_EXISTS";
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
@@ -73,6 +75,8 @@ public class ErrorMessages {
     public static final String QUANTITY_NOT_NUMBER = "M_QUANTITY_NOT_NUMBER";
     public static final String QUANTITY_NOT_POSITIVE = "M_QUANTITY_NOT_POSITIVE";
     public static final String STOCK_NOT_EXIST = "M_STOCK_NOT_EXIST";
+    public static final String REFRIGERATOR_BLOCKED = "M_REFRIGERATOR_BLOCKED";
+    public static final String PRODUCT_NOT_ON_DEFAULT_STOCK = "PRODUCT_NOT_ON_DEFAULT_STOCK";
 
     private ErrorMessages() {
         throw new IllegalStateException("Utility class");

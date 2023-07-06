@@ -85,12 +85,6 @@ public class ProductService implements IProductsService {
 
     @Override
     public EntityResult productsQuery(Map<?, ?> keyMap, List<?> attrList) {
-        if (attrList.isEmpty()) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
-            return er;
-        }
         EntityResult products = this.daoHelper.query(this.productsDao, keyMap, attrList);
         if (products.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();

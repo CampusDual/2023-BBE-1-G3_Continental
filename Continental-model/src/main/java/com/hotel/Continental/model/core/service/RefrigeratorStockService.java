@@ -133,7 +133,6 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.PRODUCT_NOT_ON_DEFAULT_STOCK);
             return er;
         }
-        this.
         return null;
     }
 

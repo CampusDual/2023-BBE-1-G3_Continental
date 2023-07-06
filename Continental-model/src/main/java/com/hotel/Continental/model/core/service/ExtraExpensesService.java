@@ -6,9 +6,11 @@ import com.hotel.continental.model.core.dao.ExtraExpensesDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,9 +27,10 @@ public class ExtraExpensesService implements IExtraExpensesService {
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
         //Comprobar null data
-        if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
+        if (attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
@@ -35,7 +38,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         }
         //Comprobar empty data
         if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank() || ((String.valueOf(attrMap.get(ExtraExpensesDao.PRICE))).isBlank())
-                || ((String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank()))) {
+                || (String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank())) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
@@ -49,6 +52,14 @@ public class ExtraExpensesService implements IExtraExpensesService {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+        //Comprobar data repeat
+        EntityResult queryExtraExpenses = this.daoHelper.query(this.extraExpensesDao, attrMap, List.of(ExtraExpensesDao.IDEXPENSE));
+        if(queryExtraExpenses.calculateRecordNumber() > 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.EXTRA_EXPENSE_ALREADY_EXIST);
             return er;
         }
 

@@ -6,9 +6,11 @@ import com.hotel.continental.model.core.dao.CriteriaDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -30,6 +32,7 @@ public class CriteriaService implements ICriteriaService {
      * @return EntityResult con los datos del criterio o un mensaje de error
      */
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult criteriaQuery(Map<?, ?> keyMap, List<String> attrList) {
         //si el attr tiene 1 asterisco devolver todos los atributos
         if (attrList.size() == 1 && attrList.get(0).equals("*")) {

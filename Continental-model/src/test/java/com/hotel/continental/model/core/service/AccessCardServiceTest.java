@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AccessCardServiceTest {
+class AccessCardServiceTest {
     @Mock
     static DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks

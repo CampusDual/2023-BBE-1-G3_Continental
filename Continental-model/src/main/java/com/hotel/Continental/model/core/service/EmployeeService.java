@@ -29,6 +29,7 @@ public class EmployeeService implements IEmployeeService {
     DefaultOntimizeDaoHelper daoHelper;
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
         if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
             EntityResult er = new EntityResultMapImpl();
@@ -64,6 +65,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
 
@@ -94,6 +96,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
         if (keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)) {
             EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);

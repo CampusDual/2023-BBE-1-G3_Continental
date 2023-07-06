@@ -96,6 +96,7 @@ public class RoleService implements IRoleService {
         return er;
     }
 
+    @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
         //Comprobamos que nos manda la clave primaria o que no es nula o vacia

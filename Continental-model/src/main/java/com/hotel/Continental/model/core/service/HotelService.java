@@ -37,6 +37,14 @@ public class HotelService implements IHotelService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
+        //Comprobar null key
+        if(!keyMap.containsKey(HotelDao.ID)){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobar hotel que el hotel existe
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
             EntityResult er;
@@ -78,6 +86,13 @@ public class HotelService implements IHotelService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
+        //Comprobamos mull key
+        if(keyMap.containsKey(HotelDao.ID)){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
         EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
@@ -104,7 +119,7 @@ public class HotelService implements IHotelService {
         if (!keyMap.containsKey(HotelDao.ID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el hotel existe

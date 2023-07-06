@@ -8,9 +8,11 @@ import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -33,6 +35,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
     private DefaultOntimizeDaoHelper daoHelper;
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult accesscardassignmentInsert(Map<String, Object> attrMap) {
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null || attrMap.get(AccessCardAssignmentDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
@@ -49,7 +52,8 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
-        if (((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0)==false) {
+        boolean check = ((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0);
+        if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
@@ -69,7 +73,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         keyMap.put(RoomDao.IDHABITACION, booking.getRecordValues(0).get(RoomDao.IDHABITACION));
         //Queremos que el hotel sea igual al de la reserva
         EntityResult roomhotel = this.daoHelper.query(this.roomDao, keyMap, List.of(RoomDao.IDHOTEL));
-        boolean check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);
+        check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);
         if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -88,6 +92,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         return er;
     }
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult lostCard(Map<String, Object> attrMap) {
         //Compruebo que me da el id de la tarjeta
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
@@ -131,6 +136,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
     }
 
     @Override
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult accesscardassignmentRecover(Map<?, ?> attrMap) {
         //Se comprueba si la tarjeta está perdida
         if(attrMap.get(AccessCardDao.CARDDOWNDATE) != null) {
@@ -156,7 +162,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
-        if (!(boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
+        if ((boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);

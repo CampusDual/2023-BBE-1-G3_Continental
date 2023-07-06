@@ -1,7 +1,6 @@
 package com.hotel.continental.ws.core.rest;
 
 import com.hotel.continental.api.core.service.IAccessCardAssignmentService;
-import com.hotel.continental.api.core.service.IBookingService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.server.rest.ORestController;
 import org.springframework.beans.factory.annotation.Autowired;

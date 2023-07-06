@@ -4,11 +4,8 @@ import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class GeneradorPermisos {
     private static final String API_PACKAGE_PATH = "com.hotel.continental.api.core.service";
@@ -55,8 +52,7 @@ public class GeneradorPermisos {
     }
 
     private static String leerString() {
-        String role = JOptionPane.showInputDialog(null, "¿A que rol le desea asignar permisos?");
-        return role;
+        return JOptionPane.showInputDialog(null, "¿A que rol le desea asignar permisos?");
     }
 
     private static List<Class<?>> listarInterfaces(File[] files) {

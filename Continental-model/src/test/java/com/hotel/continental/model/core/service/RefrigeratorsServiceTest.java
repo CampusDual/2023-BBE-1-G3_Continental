@@ -113,5 +113,4 @@ public class RefrigeratorsServiceTest {
         er.setMessage(message);
         return er;
     }
-
 }

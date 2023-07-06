@@ -86,7 +86,7 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-
+        //Comprobamos que nos envia la clave
         if(!keyMap.containsKey(UserDao.USER_)){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
@@ -101,7 +101,12 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.USER_DOESNT_EXIST);
             return er;
         }
-
+        //comprobamos los datos
+        EntityResult check=checkUpdate((Map<String, Object>) attrMap);
+        if(check.getCode()==EntityResult.OPERATION_WRONG){
+            return check;
+        }
+        //Actualizamos el usuario
         return this.daoHelper.update(this.userDao, attrMap, keyMap);
     }
     @Override

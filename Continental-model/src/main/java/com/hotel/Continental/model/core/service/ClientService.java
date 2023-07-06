@@ -2,7 +2,6 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
-import com.hotel.continental.model.core.dao.CriteriaDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -10,13 +9,11 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import com.ontimize.jee.server.dao.IOntimizeDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,31 +39,31 @@ public class ClientService implements IClientService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
-        /*
+        EntityResult er = new EntityResultMapImpl();
         //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
         if (keyMap.get(ClientDao.CLIENTID) == null) {
-            EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
-        //Si el id del cliente no existe en la base de datos esta mal
-        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.CLIENT_NOT_EXIST);
+        // Comprobar que el cliente exista
+        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID, EmployeeDao.TUSER_NAME), ClientDao.CLIENT_INFO);
+        if (client.calculateRecordNumber() == 0) {
+            er.setCode(1);
+            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }
-        //El check update hace las comprobaciones de los datos a insertar
-        EntityResult checkDatos = checkUpdate(attrMap);
-        if (checkDatos.getCode() == EntityResult.OPERATION_WRONG) {
-            return checkDatos;
+        //Updateamos el usuario
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(UserDao.USER_, client.getRecordValues(0).get(EmployeeDao.TUSER_NAME));
+        EntityResult check = userService.userUpdate(attrMap, filter);
+        if (check.getCode() == EntityResult.OPERATION_WRONG) {
+            return check;
         }
-        EntityResult er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
-        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        //Updateamos el empleado
+        er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
+        er.setMessage("Client updated succesfully");
         return er;
-         */
-        return null;
     }
 
     @Override
@@ -82,7 +79,7 @@ public class ClientService implements IClientService {
         //Si el id del cliente no existe en la base de datos esta mal
         Map<String, Object> filter = new HashMap<>();
         filter.put(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID));
-        EntityResult client = this.daoHelper.query(this.clientDao, filter, Arrays.asList(ClientDao.CLIENTID,ClientDao.TUSER_NAME));
+        EntityResult client = this.daoHelper.query(this.clientDao, filter, Arrays.asList(ClientDao.CLIENTID, ClientDao.TUSER_NAME));
         if (client.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -93,7 +90,7 @@ public class ClientService implements IClientService {
         //Comprobamos que empleado(el usuario) no esté ya dado de baja
         Map<String, Object> filterUser = new HashMap<>();
         filterUser.put(UserDao.USER_, client.getRecordValues(0).get(ClientDao.TUSER_NAME));
-        EntityResult erUser=this.daoHelper.query(this.clientDao,filterUser,Arrays.asList(UserDao.USERBLOCKED),ClientDao.CLIENT_INFO);
+        EntityResult erUser = this.daoHelper.query(this.clientDao, filterUser, Arrays.asList(UserDao.USERBLOCKED), ClientDao.CLIENT_INFO);
         if (erUser.getRecordValues(0).get(UserDao.USERBLOCKED) != null && Timestamp.valueOf(erUser.getRecordValues(0).get(UserDao.USERBLOCKED).toString()).before(new Timestamp(System.currentTimeMillis()))) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -138,7 +135,7 @@ public class ClientService implements IClientService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult clientQuery(Map<String, Object> keyMap, List<String> attrList) {
-        if(attrList== null || attrList.isEmpty()){
+        if (attrList == null || attrList.isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_ATTR);

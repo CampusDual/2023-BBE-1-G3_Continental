@@ -85,13 +85,22 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
 
+
         // Comprobar que el empleado exista
-        EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID,EmployeeDao.TUSER_NAME),EmployeeDao.EMPLOYEE_INFO);
         if (employee.calculateRecordNumber() == 0) {
             er.setCode(1);
             er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
             return er;
         }
+        //Updateamos el usuario
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(UserDao.USER_, employee.getRecordValues(0).get(EmployeeDao.TUSER_NAME));
+        EntityResult check = userService.userUpdate(attrMap, filter);
+        if (check.getCode() == EntityResult.OPERATION_WRONG) {
+            return check;
+        }
+        //Updateamos el empleado
         er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);
         er.setMessage("Employee updated succesfully");
         return er;

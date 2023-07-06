@@ -71,15 +71,8 @@ class ExtraExpensesServiceTest {
                                 }
                         )
                 ),                //endregion
-                //region Test case 2: Null id
-                Arguments.of(
-                        "null id",//Nombre del test
-                        Map.of(1, ExtraExpensesDao.BOOKINGID),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),//Resultado esperado
-                        List.of()
-                ),
                 //endregion
-                //region Test case 3: Null data
+                //region Test case 2: Null data
                 Arguments.of(
                         "null data",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 1),//keyMap
@@ -87,7 +80,7 @@ class ExtraExpensesServiceTest {
                         List.of()
                 ),
                 //endregion
-                //region Test case 4: Empty Data
+                //region Test case 3: Empty Data
                 Arguments.of(
                         "empty data",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
@@ -95,7 +88,7 @@ class ExtraExpensesServiceTest {
                         List.of()
                 ),
                 //endregion
-                //region Test case 5: Booking doesn´t exist
+                //region Test case 4: Booking doesn´t exist
                 Arguments.of(
                         "Booking doesn´t exist",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 3,

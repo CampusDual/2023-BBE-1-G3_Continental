@@ -111,7 +111,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
     @Override
     public EntityResult refillStock(Map<?, ?> keyMap) {
-        //attrMap = refrigeratorid, productid, quantity
+        //attrMap = refrigeratorid, productid
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (keyMap.get(RefrigeratorStockDao.REFRIGERATORID) == null || keyMap.get(RefrigeratorStockDao.PRODUCTID) == null ||
@@ -119,9 +119,12 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        EntityResult stock = this.daoHelper.query(this.refrigeratorsDao, keyMap, List.of(RefrigeratorsDao.FRIDGE_ID));
+        Map<String, Object> refrigeratorFilter = new HashMap<>();
+        refrigeratorFilter.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+        refrigeratorFilter.put(RefrigeratorStockDao.REFRIGERATORID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID))
+        EntityResult stock = this.daoHelper.query(this.refrigeratorsDao, refrigeratorFilter, List.of(RefrigeratorsDao.FRIDGE_ID));
         if (stock.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.FRIDGE_NOT_EXISTS);
+            er.setMessage(ErrorMessages.STOCK_NOT_EXIST);
             return er;
         }
         //Sacar diferencia stock default
@@ -133,7 +136,20 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.PRODUCT_NOT_ON_DEFAULT_STOCK);
             return er;
         }
-        return null;
+        EntityResult stockProduct = this.daoHelper.query(this.refrigeratorStockDao, refrigeratorFilter, List.of(RefrigeratorStockDao.STOCK));
+        int stockRefrigerator = (Integer)stockProduct.get(RefrigeratorStockDao.STOCK);
+        int stockRefrigeratorDefault =  (Integer)stockDefault.get(RefrigeratorStockDao.STOCK);
+        int difference = stockRefrigeratorDefault - stockRefrigerator;
+
+        Map<String, Object> data = new HashMap<>();
+        data.put(RefrigeratorStockDao.STOCK, stockRefrigeratorDefault);
+        Map<String, Object> filterUpdate = new HashMap<>();
+        filterUpdate.put(RefrigeratorStockDao.REFRIGERATORID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
+        filterUpdate.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+        EntityResult result = this.daoHelper.update(this.refrigeratorStockDao, data, filterUpdate);
+        result.put("Result", difference + "has been added");
+
+        return result;
     }
 
     @Override

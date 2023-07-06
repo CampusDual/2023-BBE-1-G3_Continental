@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
+import com.hotel.continental.model.core.tools.CheckDocument;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -147,7 +148,7 @@ public class ClientService implements IClientService {
         }
         if (attrMap.get(ClientDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (!checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
+            if (!CheckDocument.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
@@ -157,49 +158,13 @@ public class ClientService implements IClientService {
             if (existsKeymap(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.DOCUMENT_ALREADY_EXIST);
+                er.setMessage(ErrorMessages.CLIENT_ALREADY_EXIST);
                 return er;
             }
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         return er;
-    }
-
-    /**
-     * Metodo que comprueba si el documento es valido
-     *
-     * @param document    Documento
-     * @param countryCode Codigo de pais
-     * @return true si es valido, false si no lo es
-     */
-    private boolean checkDocument(String document, String countryCode) {
-        if (countryCode.equals("ES")) {
-            String dniRegex = "^\\d{8}[A-HJ-NP-TV-Z]$";
-            String nieRegex = "^[XYZ]\\d{7}[A-Z]$";
-            String cifRegex = "^([ABCDEFGHJKLMNPQRSUVW])(\\d{7})([0-9A-J])$";
-            if (document.matches(dniRegex)) {
-                String dniNumbers = document.substring(0, 8);
-                String dniLetter = document.substring(8).toUpperCase();
-
-                String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
-                int dniMod = Integer.parseInt(dniNumbers) % 23;
-                char calculatedLetter = validLetters.charAt(dniMod);
-                return dniLetter.charAt(0) == calculatedLetter;
-            }
-            String firstLetter = document.substring(0,1);
-            if ((firstLetter.equals("Z") || firstLetter.equals("X") || firstLetter.equals("Y")) && document.matches(nieRegex)) {
-                    String nieNumbers = document.substring(1, 8);
-                    String validLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
-                    String lastLetter = document.substring(8);
-                    int nieMod = Integer.parseInt(nieNumbers) % 23;
-                    char calculatedLetter = validLetters.charAt(nieMod);
-                    return lastLetter.charAt(0) == calculatedLetter;
-
-            }
-            return document.matches(cifRegex);
-        }
-        return true;
     }
 
     /**

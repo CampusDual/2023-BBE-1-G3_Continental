@@ -22,6 +22,17 @@ public class RoomTypeService implements IRoomTypeService {
     RoomTypeDao roomtypeDao;
     @Autowired
     DefaultOntimizeDaoHelper daoHelper;
+
+    @Override
+    public EntityResult roomTypeInsert(Map<?, ?> attrMap) {
+        if(attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null){
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+        }
+        return this.daoHelper.insert(this.roomtypeDao, attrMap);
+    }
+
     @Override
     public EntityResult roomtypeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //Compruebo que me envian la clave

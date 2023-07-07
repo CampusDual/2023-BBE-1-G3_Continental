@@ -67,6 +67,10 @@ public class ErrorMessages {
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
     //Extra Expenses
     public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
+    //Parking
+    public static final String PARKING_ALREADY_EXIST = "M_PARKING_ALREADY_EXIST";
+    public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
+    public static final String PARKING_FULL = "M_PARKING_FULL";
 
   private ErrorMessages() {
         throw new IllegalStateException("Utility class");

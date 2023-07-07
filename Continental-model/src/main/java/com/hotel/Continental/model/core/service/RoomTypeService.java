@@ -24,11 +24,12 @@ public class RoomTypeService implements IRoomTypeService {
     DefaultOntimizeDaoHelper daoHelper;
 
     @Override
-    public EntityResult roomTypeInsert(Map<?, ?> attrMap) {
+    public EntityResult roomtypeInsert(Map<?, ?> attrMap) {
         if(attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
         }
         return this.daoHelper.insert(this.roomtypeDao, attrMap);
     }

@@ -30,7 +30,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult extraexpensesInsert(Map<?, ?> attrMap) {
         //Comprobar null data
-        if (attrMap.get(ExtraExpensesDao.BOOKINGID) == null || attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
+        if (attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
@@ -52,6 +52,14 @@ public class ExtraExpensesService implements IExtraExpensesService {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+        //Comprobar data repeat
+        EntityResult queryExtraExpenses = this.daoHelper.query(this.extraExpensesDao, attrMap, List.of(ExtraExpensesDao.IDEXPENSE));
+        if(queryExtraExpenses.calculateRecordNumber() > 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.EXTRA_EXPENSE_ALREADY_EXIST);
             return er;
         }
 

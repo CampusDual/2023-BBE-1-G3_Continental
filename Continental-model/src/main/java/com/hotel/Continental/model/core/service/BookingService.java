@@ -121,7 +121,9 @@ public class BookingService implements IBookingService {
             //Calculamos el precio de la reserva
             EntityResult price = bookingPrice(attrMap);
             attrMap.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
-            return this.daoHelper.insert(this.bookingDao, attrMap);
+            EntityResult erResultlado= this.daoHelper.insert(this.bookingDao, attrMap);
+            erResultlado.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
+            return erResultlado;
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);

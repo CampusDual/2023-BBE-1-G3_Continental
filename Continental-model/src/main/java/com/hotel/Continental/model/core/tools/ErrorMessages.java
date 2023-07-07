@@ -9,7 +9,6 @@ public class ErrorMessages {
     public static final  String COUNTRY_CODE_FORMAT_ERROR = "M_COUNTRY_CODE_FORMAT_ERROR";
     //Document
     public static final String DOCUMENT_NOT_VALID = "M_DOCUMENT_NOT_VALID";
-    public static final String DOCUMENT_ALREADY_EXIST = "M_DOCUMENT_ALREADY_EXIST";
     //Reservas
     public static final String BOOKING_NOT_EXIST = "M_BOOKING_NOT_EXIST";
     public static final String ROOM_NOT_FREE = "M_ROOM_NOT_FREE";
@@ -26,6 +25,7 @@ public class ErrorMessages {
     public static final String INITIAL_DATE_BEFORE_CURRENT_DATE = "M_INITIAL_DATE_BEFORE_CURRENT_DATE";
     //Clientes
     public static final String CLIENT_NOT_EXIST = "M_CLIENT_NOT_EXIST";
+    public static final String CLIENT_ALREADY_EXIST = "M_CLIENT_ALREADY_EXIST";
     public static final String CLIENT_ALREADY_DELETED = "M_CLIENT_ALREADY_DELETED";
     //Hotel
     public static final String HOTEL_NOT_EXIST = "M_HOTEL_NOT_EXIST";
@@ -46,6 +46,7 @@ public class ErrorMessages {
     public static final String USER_DOESNT_EXIST = "M_USER_DOESNT_EXIST";
     //Empleados
     public static final String EMPLOYEE_NOT_EXIST = "M_EMPLOYEE_NOT_EXIST";
+    public static final String EMPLOYEE_ALREADY_EXIST = "M_EMPLOYEE_ALREADY_EXIST";
     public static final String EMPLOYEE_ALREADY_INACTIVE = "M_EMPLOYEE_ALREADY_INACTIVE";
     //AccessCard
     public static final String ACCESS_CARD_ALREADY_GIVEN = "M_ACCESS_CARD_ALREADY_GIVEN";
@@ -54,7 +55,7 @@ public class ErrorMessages {
     public static final String ACCESS_CARD_RECOVERED = "M_ACCESS_CARD_RECOVERED";
     public static final String ACCESS_CARD_NOT_RECOVERED = "M_ERROR_ACCESS_CARD_NOT_RECOVERED";
     public static final String ACCESS_CARD_LOST = "M_ERROR_ACCESS_CARD_LOST";
-    public static final String ACCESS_CARD_SUCCESSFULLY_MODIFY = "M_ACCESS_SUCCESSFULLY_MODIFY";
+    public static final String ACCESS_CARD_SUCCESSFULLY_MODIFY = "M_ACCESS_CARD_SUCCESSFULLY_MODIFY";
     public static final String HOTEL_INCORRECT = "M_HOTEL_INCORRECT";
     public static final String CARD_DOESNT_BELONG_BOOKING = "M_CARD_DOESNT_BELONG_BOOKING";
     //Criterios
@@ -66,11 +67,13 @@ public class ErrorMessages {
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
+
     public static final String PRICE_MINOR_0 = "M_PRICE_MINOR_0";
     public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
     //Products
     public static final String PRODUCT_NOT_EXISTS = "M_PRODUCT_NOT_EXISTS";
-
+    //Extra Expenses
+    public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
     //Refrigerator Stock
     public static final String QUANTITY_NOT_NUMBER = "M_QUANTITY_NOT_NUMBER";
     public static final String QUANTITY_NOT_POSITIVE = "M_QUANTITY_NOT_POSITIVE";

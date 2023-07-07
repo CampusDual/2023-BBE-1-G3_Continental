@@ -17,6 +17,7 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -464,7 +465,7 @@ public class BookingService implements IBookingService {
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        er.put(BookingDao.PRICE,priceBooking);
+        er.put(BookingDao.PRICE, BigDecimal.valueOf(priceBooking).setScale(2, RoundingMode.FLOOR));
         return er;
     }
 

@@ -140,17 +140,17 @@ public class UserService implements IUserService {
      */
     private EntityResult checkUpdate(Map<String, Object> attrMap) {
         //Hago esto para asegurarme de que el codigo de pais esta en mayusculas y que no sea nulo
-        if (attrMap.get(ClientDao.COUNTRYCODE) != null) {
-            attrMap.put(ClientDao.COUNTRYCODE, ((String) attrMap.remove(ClientDao.COUNTRYCODE)).toUpperCase());
+        if (attrMap.get(UserDao.COUNTRYCODE) != null) {
+            attrMap.put(UserDao.COUNTRYCODE, ((String) attrMap.remove(UserDao.COUNTRYCODE)).toUpperCase());
             //Si el country code no mide 2 Caracteres esta mal
-            if (((String) attrMap.get(ClientDao.COUNTRYCODE)).length() != 2) {
+            if (((String) attrMap.get(UserDao.COUNTRYCODE)).length() != 2) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.COUNTRY_CODE_FORMAT_ERROR);
                 return er;
             }
             //Si el country code no es un codigo de pais valido esta mal
-            if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
+            if (!checkCountryCode(((String) attrMap.get(UserDao.COUNTRYCODE)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.COUNTRY_CODE_NOT_VALID);
@@ -159,7 +159,7 @@ public class UserService implements IUserService {
         }
         if (attrMap.get(UserDao.NIF) != null) {
             //Si el documento no es valido esta mal
-            if (!checkDocument((String) attrMap.get(UserDao.NIF), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
+            if (!checkDocument((String) attrMap.get(UserDao.NIF), (String) attrMap.get(UserDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
@@ -260,10 +260,4 @@ public class UserService implements IUserService {
         return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0;
     }
 
-    private boolean isCanceled(Map<?, ?> keyMap) {
-        List<Object> attrList = new ArrayList<>();
-        attrList.add(UserDao.USERBLOCKED);
-        EntityResult er = this.daoHelper.query(this.userDao, keyMap, attrList);
-        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE) != null;
-    }
 }

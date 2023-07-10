@@ -29,33 +29,26 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
     
     @Override
     public EntityResult refrigeratorDefaultUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
-//attrMap = productid, stock
+        //attrMap = productid, stock
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (keyMap.get(RefrigeratorStockDao.PRODUCTID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null) {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
-        Map<String, Object> filter = new HashMap<>();
-        filter.put(RefrigeratorStockDao.REFRIGERATORID, -1);
-        filter.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+        Map<String, Object> filterProduct = new HashMap<>();
+        filterProduct.put(RefrigeratorStockDao.REFRIGERATORID, -1);
+        filterProduct.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
         //Obtenemos si ya existe ese producto en la nevera default, si no lo añadimos
-        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, filter, List.of(RefrigeratorStockDao.STOCKID));
+        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCKID));
         if (stock.calculateRecordNumber() == 0) {
-            Map<String, Object> filter2 = new HashMap<>();
-            filter2.put(RefrigeratorStockDao.REFRIGERATORID, -1);
-            filter2.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
-            return this.daoHelper.insert(this.refrigeratorStockDao, filter2);
+            filterProduct.put(RefrigeratorStockDao.STOCK, attrMap.get(RefrigeratorStockDao.STOCK));
+            return this.daoHelper.insert(this.refrigeratorStockDao, filterProduct);
         }
-        Map<String, Object> keyMapAux = new HashMap<>();
-        keyMapAux.put(RefrigeratorStockDao.REFRIGERATORID, -1);
-        keyMapAux.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
-        EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, keyMapAux, List.of(RefrigeratorStockDao.STOCKID));
-        keyMapAux = new HashMap<>();
-        //Hay que recuperar el stockid
-        keyMapAux.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
-        Map<String, Object> data = new HashMap<>();
-        data.put(RefrigeratorStockDao.STOCK, attrMap.get(RefrigeratorStockDao.STOCK));
-        return this.daoHelper.update(this.refrigeratorStockDao, data, keyMapAux);
+        EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCKID));
+        Map<String, Object> mapStockid = new HashMap<>();
+        mapStockid.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+
+        return this.daoHelper.update(this.refrigeratorStockDao, attrMap, mapStockid);
     }
 }

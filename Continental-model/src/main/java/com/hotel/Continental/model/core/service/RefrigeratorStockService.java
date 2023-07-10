@@ -45,9 +45,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             filterProduct.put(RefrigeratorStockDao.STOCK, attrMap.get(RefrigeratorStockDao.STOCK));
             return this.daoHelper.insert(this.refrigeratorStockDao, filterProduct);
         }
-        EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCKID));
         Map<String, Object> mapStockid = new HashMap<>();
-        mapStockid.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+        mapStockid.put(RefrigeratorStockDao.STOCKID, stock.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
 
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, mapStockid);
     }

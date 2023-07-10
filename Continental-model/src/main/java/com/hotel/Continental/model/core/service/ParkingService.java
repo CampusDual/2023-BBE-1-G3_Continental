@@ -63,6 +63,14 @@ public class ParkingService implements IParkingService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
+        //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva
+        Date startDate = (Date) erBooking.getRecordValues(0).get(BookingDao.STARTDATE);
+        Date currentDate = new Date();
+        if(startDate.compareTo(currentDate) > 0){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_STARTED);
+            return er;
+        }
         //Comprobar que la reserva esta activa,que hizo checkin y que no ha hecho checkout
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -72,14 +80,6 @@ public class ParkingService implements IParkingService {
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
-            return er;
-        }
-        //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva
-        Date startDate = (Date) erBooking.getRecordValues(0).get(BookingDao.STARTDATE);
-        Date currentDate = new Date();
-        if(startDate.compareTo(currentDate) > 0){
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_STARTED);
             return er;
         }
 

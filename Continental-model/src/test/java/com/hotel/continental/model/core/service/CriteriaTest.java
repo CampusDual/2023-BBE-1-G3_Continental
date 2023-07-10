@@ -1,8 +1,6 @@
 package com.hotel.continental.model.core.service;
 
 
-import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
-import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.CriteriaDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -17,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -180,7 +177,7 @@ class CriteriaTest {
                         Map.of(CriteriaDao.DESCRIPTION, "description",
                                 CriteriaDao.NAME, "criteriaUpdate",
                                 CriteriaDao.MULTIPLIER, -1),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.MULTIPLIER_NOT_CORRECT_FORMAT),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.MULTIPLIER_NOT_POSITIVE),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteriaQuery = new EntityResultMapImpl();

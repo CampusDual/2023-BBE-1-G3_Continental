@@ -4,6 +4,7 @@ import com.hotel.continental.api.core.service.IParkingService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ParkingDao;
 import com.hotel.continental.model.core.dao.ParkingHistoryDao;
+import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -31,6 +32,8 @@ public class ParkingService implements IParkingService {
     private BookingDao bookingDao;
     @Autowired
     private ParkingHistoryService parkingHistoryService;
+    @Autowired
+    private RoomDao roomDao;
 
 
     @Override
@@ -44,13 +47,13 @@ public class ParkingService implements IParkingService {
         }
         //Comprobar que hay sitio en el parking indicado
         Map<String, Object> attrMapParking = Map.of(ParkingDao.ID_PARKING, attrMap.get(ParkingDao.ID_PARKING));
-        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY,ParkingDao.TOTAL_CAPACITY));
-
+        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY,ParkingDao.TOTAL_CAPACITY,ParkingDao.ID_HOTEL));
         if(erParking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
             return er;
         }
+
         int occupiedCapacity = (int)erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
         if(occupiedCapacity == (int)erParking.getRecordValues(0).get(ParkingDao.TOTAL_CAPACITY)){
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -59,10 +62,18 @@ public class ParkingService implements IParkingService {
         }
         //Comprobar que la reserva existe
         Map<String, Object> attrMapBooking = Map.of(BookingDao.BOOKINGID, attrMap.get(ParkingHistoryDao.ID_BOOKING));
-        EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME));
+        EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME,BookingDao.ROOMID));
         if(erBooking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+        //Pillo el id de la habitacion y el id del hotel del parking, para comprobar que la habitacion de la reserva esta en el mismo hotel del parking
+        Map<String, Object> attrMapRoom = Map.of(RoomDao.IDHABITACION, erBooking.getRecordValues(0).get(BookingDao.ROOMID),RoomDao.IDHOTEL,erParking.getRecordValues(0).get(ParkingDao.ID_HOTEL));
+        EntityResult erRoom = this.daoHelper.query(roomDao, attrMapRoom, List.of(BookingDao.ROOMID,RoomDao.IDHOTEL));
+        if(erRoom.calculateRecordNumber() == 0){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_SAME_HOTEL_AS_PARKING);
             return er;
         }
         //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva

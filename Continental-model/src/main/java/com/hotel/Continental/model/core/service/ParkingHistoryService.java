@@ -33,4 +33,15 @@ public class ParkingHistoryService implements IParkingHistoryService {
         return this.daoHelper.insert(parkingHistoryDao, attrMap);
     }
 
+    /**
+     * Actualizacion de un registro en la tabla parking_history
+     * @param attrMap
+     * @param keyMap
+     * @return
+     */
+    public EntityResult parkingHistoryExit(Map<String, Object> attrMap, Map<String, Object> keyMap) {
+        attrMap.put(ParkingHistoryDao.EXIT_DATE, new java.sql.Date(System.currentTimeMillis()));
+        return this.daoHelper.update(parkingHistoryDao, attrMap, keyMap);
+    }
+
 }

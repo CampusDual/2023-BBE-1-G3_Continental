@@ -100,7 +100,7 @@ public class ParkingService implements IParkingService {
         //Obtener todos los parking_history de la reserva
         Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
         EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
-        //Comprobar que no hay ningun parking_history que tenga fecha de entrada pero no de salida
+        //No puedo entrar en el parking si alguna de las fechas de salida es null(Estaria dentro)
         boolean notExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().anyMatch(date -> date == null);
         if(notExitDate){
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -117,4 +117,50 @@ public class ParkingService implements IParkingService {
         EntityResult erUpdate = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
         return erUpdate;
     }
+
+    @Override
+    public EntityResult parkingExit(Map<?, ?> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
+        if(attrMap.get(ParkingHistoryDao.ID_BOOKING) == null || attrMap.get(ParkingDao.ID_PARKING) == null){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Comprobar existe parking indicado
+        Map<String, Object> attrMapParking = Map.of(ParkingDao.ID_PARKING, attrMap.get(ParkingDao.ID_PARKING));
+        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.ID_HOTEL));
+        if(erParking.calculateRecordNumber() == 0){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
+            return er;
+        }
+        //Comprobar que la reserva existe
+        Map<String, Object> attrMapBooking = Map.of(BookingDao.BOOKINGID, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME,BookingDao.ROOMID));
+        if(erBooking.calculateRecordNumber() == 0){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+        //Comprobar que la reserva esta activa,que no ha hecho checkout
+        if(erBooking.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
+            return er;
+        }
+        //Comprobar que la reserva ha entrado pero no salio (es decir tiene fecha de entrada pero no de salida)
+        //Obtener todos los parking_history de la reserva
+        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        //No puedo salir del parking si no hay 1 que tenga fecha de entrada pero no de salida
+        boolean alreadyExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().noneMatch(date -> date == null);
+        if(alreadyExitDate){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_NOT_IN_PARKING);
+            return er;
+        }
+        return er;
+    }
+
 }

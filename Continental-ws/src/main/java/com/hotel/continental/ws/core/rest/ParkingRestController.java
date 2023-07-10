@@ -24,5 +24,9 @@ public class ParkingRestController extends ORestController<IParkingService> {
     public EntityResult parkingEnter(@RequestBody Map<String, Object> req) {
         Map<String, Object> attr = ( Map<String, Object>) req.get("data");
         return this.getService().parkingEnter(attr);
+    }@PostMapping(value = "/parkingExit", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EntityResult parkingExit(@RequestBody Map<String, Object> req) {
+        Map<String, Object> attr = ( Map<String, Object>) req.get("data");
+        return this.getService().parkingExit(attr);
     }
 }

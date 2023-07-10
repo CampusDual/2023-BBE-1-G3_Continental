@@ -84,23 +84,24 @@ public class ParkingService implements IParkingService {
         }
 
         //Comprobar que la reserva no ha entrado ya en el parking (es decir tiene fecha de entrada pero no de salida)
-        Map<String, Object> attrMapParkingHistory = new HashMap<>();
-        attrMapParkingHistory.put(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
-        attrMapParkingHistory.put(ParkingHistoryDao.EXIT_DATE, "");
-        EntityResult erParkingHistory = this.daoHelper.query(this.parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
-        if(erParkingHistory.calculateRecordNumber() > 0){
+        //Obtener todos los parking_history de la reserva
+        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        //Comprobar que no hay ningun parking_history que tenga fecha de entrada pero no de salida
+        boolean notExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().anyMatch(date -> date == null);
+        if(notExitDate){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_ALREADY_IN_PARKING);
             return er;
         }
         //Insertar en la tabla parking_history
-        Map<String,Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ENTRY_DATE,currentDate);
+        Map<String,Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.ID_PARKING,attrMap.get(ParkingHistoryDao.ID_PARKING),ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ENTRY_DATE,currentDate);
         EntityResult erInsert = this.daoHelper.insert(parkingHistoryDao, attrMapParkingHistoryInsert);
         //Actualizar tabla parking para sumar 1 a los coches que hay en el parking
         occupiedCapacity++;
         Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.ID_PARKING,attrMap.get(ParkingDao.ID_PARKING));
         Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
-        EntityResult erUpdate = this.daoHelper.update(parkingDao,keyMapParkingUpdate,attrMapParkingUpdate);
-        return null;
+        EntityResult erUpdate = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
+        return erUpdate;
     }
 }

@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface IParkingHistoryService {
-    public EntityResult parkingInsert(Map<String, Object> attrMap);
+    public EntityResult parkingHistoryInsert(Map<String, Object> attrMap);
 }

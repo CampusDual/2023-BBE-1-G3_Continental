@@ -12,6 +12,10 @@ import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
+import com.ontimize.jee.common.db.SQLStatementBuilder.ExtendedSQLConditionValuesProcessor;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -98,11 +102,14 @@ public class ParkingService implements IParkingService {
 
         //Comprobar que la reserva no ha entrado ya en el parking (es decir tiene fecha de entrada pero no de salida)
         //Obtener todos los parking_history de la reserva
-        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        Map<String, Object> attrMapParkingHistory = new HashMap<>();
+        attrMapParkingHistory.put(ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        BasicField field = new BasicField(ParkingHistoryDao.EXIT_DATE);
+        BasicExpression bexp = new BasicExpression(field,BasicOperator.NULL_OP,null);
+        attrMapParkingHistory.put(ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexp);
         EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
-        //No puedo entrar en el parking si alguna de las fechas de salida es null(Estaria dentro)
-        boolean notExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().anyMatch(date -> date == null);
-        if(notExitDate){
+        //Comprobar que no hay ningun parking_history que tenga fecha de entrada pero no de salida
+        if(erParkingHistory.calculateRecordNumber() > 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_ALREADY_IN_PARKING);
             return er;

@@ -36,6 +36,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+
         //Compruebo que el stock es un número y es positivo
         try {
             int stock = Integer.parseInt(attrMap.get(RefrigeratorStockDao.STOCK).toString());
@@ -47,6 +48,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.STOCK_NOT_NUMBER);
             return er;
         }
+
         //Compruebo que el producto existe
         Map<String, Object> filterProduct = new HashMap<>();
         filterProduct.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
@@ -55,7 +57,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.PRODUCT_NOT_EXIST);
             return er;
         }
-        //Hago un map para filtrar por el producto
+
         filterProduct.put(RefrigeratorStockDao.REFRIGERATORID, -1);
         //Obtenemos si ya existe ese producto en la nevera default, si no lo añadimos
         EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCKID));
@@ -63,6 +65,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             filterProduct.put(RefrigeratorStockDao.STOCK, attrMap.get(RefrigeratorStockDao.STOCK));
             return this.daoHelper.insert(this.refrigeratorStockDao, filterProduct);
         }
+
         Map<String, Object> mapStockid = new HashMap<>();
         mapStockid.put(RefrigeratorStockDao.STOCKID, stock.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
 

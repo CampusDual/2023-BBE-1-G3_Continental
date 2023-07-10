@@ -83,10 +83,8 @@ public class CriteriaService implements ICriteriaService {
                     return er;
                 }
             } catch (NumberFormatException e) {
-                EntityResult erError = new EntityResultMapImpl();
-                erError.setCode(EntityResult.OPERATION_WRONG);
-                erError.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
-                return erError;
+                er.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
+                return er;
             }
         }
 

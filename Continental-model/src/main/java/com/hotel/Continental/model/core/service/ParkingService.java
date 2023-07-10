@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,8 +84,10 @@ public class ParkingService implements IParkingService {
         }
 
         //Comprobar que la reserva no ha entrado ya en el parking (es decir tiene fecha de entrada pero no de salida)
-        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.EXIT_DATE,"");
-        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        Map<String, Object> attrMapParkingHistory = new HashMap<>();
+        attrMapParkingHistory.put(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        attrMapParkingHistory.put(ParkingHistoryDao.EXIT_DATE, "");
+        EntityResult erParkingHistory = this.daoHelper.query(this.parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
         if(erParkingHistory.calculateRecordNumber() > 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_ALREADY_IN_PARKING);

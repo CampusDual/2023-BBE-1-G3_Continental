@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository;
 @Lazy
 @Repository(value = "ParkingHistory")
 @ConfigurationFile(
-        configurationFile = "dao/ParkingHistory.xml",
+        configurationFile = "dao/ParkingHistoryDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class ParkingHistoryDao extends OntimizeJdbcDaoSupport {
+    public static final String ID = "id";
     public static final String ID_PARKING = "id_parking";
     public static final String ID_BOOKING = "id_booking";
     public static final String ENTRY_DATE = "entry_date";

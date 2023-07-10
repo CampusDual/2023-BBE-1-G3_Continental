@@ -29,6 +29,8 @@ public class ParkingService implements IParkingService {
     private ParkingHistoryDao parkingHistoryDao;
     @Autowired
     private BookingDao bookingDao;
+    @Autowired
+    private ParkingHistoryService parkingHistoryService;
 
 
     @Override
@@ -96,7 +98,7 @@ public class ParkingService implements IParkingService {
         }
         //Insertar en la tabla parking_history
         Map<String,Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.ID_PARKING,attrMap.get(ParkingHistoryDao.ID_PARKING),ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ENTRY_DATE,currentDate);
-        EntityResult erInsert = this.daoHelper.insert(parkingHistoryDao, attrMapParkingHistoryInsert);
+        EntityResult erInsert = parkingHistoryService.parkingHistoryInsert(attrMapParkingHistoryInsert);
         //Actualizar tabla parking para sumar 1 a los coches que hay en el parking
         occupiedCapacity++;
         Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.ID_PARKING,attrMap.get(ParkingDao.ID_PARKING));

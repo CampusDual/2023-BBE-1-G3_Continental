@@ -36,6 +36,8 @@ public class ParkingServiceTest {
     @InjectMocks
     private ParkingService parkingService;
     @Mock
+    private static ParkingHistoryService parkingHistoryService;
+    @Mock
     private static ParkingDao parkingDao;
     @Mock
     private ParkingHistoryDao parkingHistoryDao;
@@ -98,7 +100,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erParkingHistory = new EntityResultMapImpl();
                                     erParkingHistory.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    return Mockito.when(daoHelper.insert(Mockito.any(ParkingHistoryDao.class), anyMap())).thenReturn(erParkingHistory);
+                                    return Mockito.when(parkingHistoryService.parkingHistoryInsert(anyMap())).thenReturn(erParkingHistory);
                                 },
                                 // Mock  update parkingDao
                                 (Supplier) () -> {

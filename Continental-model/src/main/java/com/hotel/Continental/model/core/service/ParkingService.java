@@ -136,7 +136,7 @@ public class ParkingService implements IParkingService {
         }
         //Comprobar existe parking indicado
         Map<String, Object> attrMapParking = Map.of(ParkingDao.ID_PARKING, attrMap.get(ParkingDao.ID_PARKING));
-        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.ID_HOTEL));
+        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.ID_HOTEL,ParkingDao.OCCUPIED_CAPACITY));
         if(erParking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
@@ -158,16 +158,30 @@ public class ParkingService implements IParkingService {
         }
         //Comprobar que la reserva ha entrado pero no salio (es decir tiene fecha de entrada pero no de salida)
         //Obtener todos los parking_history de la reserva
-        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
-        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
-        //No puedo salir del parking si no hay 1 que tenga fecha de entrada pero no de salida
-        boolean alreadyExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().noneMatch(date -> date == null);
-        if(alreadyExitDate){
+        Map<String, Object> attrMapParkingHistory = new HashMap<>();
+        attrMapParkingHistory.put(ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        BasicField field = new BasicField(ParkingHistoryDao.EXIT_DATE);
+        BasicExpression bexp = new BasicExpression(field,BasicOperator.NULL_OP,null);
+        attrMapParkingHistory.put(ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexp);
+        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        //Compruebo que hay 1 y solo 1 parking_history que tenga fecha de entrada pero no de salida
+        if(erParkingHistory.calculateRecordNumber() != 1){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_NOT_IN_PARKING);
             return er;
         }
+        //Actualizar tabla parking_history
+        int idParkingHistory = (int) erParkingHistory.getRecordValues(0).get(ParkingHistoryDao.ID);
+        Map<String,Object> keyMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.ID,idParkingHistory);
+        Date currentDate = new Date();
+        Map<String,Object> attrMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.EXIT_DATE,currentDate);
+        EntityResult erUpdate = this.daoHelper.update(parkingHistoryDao,attrMapParkingHistoryUpdate,keyMapParkingHistoryUpdate);
+        //Actualizar tabla parking para restar 1 a los coches que hay en el parking
+        int occupiedCapacity = (int) erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
+        occupiedCapacity--;
+        Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.ID_PARKING,attrMap.get(ParkingDao.ID_PARKING));
+        Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
+        EntityResult erUpdateParking = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
         return er;
     }
-
 }

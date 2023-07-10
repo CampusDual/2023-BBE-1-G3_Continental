@@ -24,33 +24,39 @@ public class ParkingService implements IParkingService {
     private DefaultOntimizeDaoHelper daoHelper;
     @Autowired
     private ParkingDao parkingDao;
+    @Autowired
+    private ParkingHistoryDao parkingHistoryDao;
+    @Autowired
+    private BookingDao bookingDao;
 
 
     @Override
     public EntityResult parkingEnter(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
-        if(attrMap.get("id_booking") == null || attrMap.get("id_parking") == null){
+        if(attrMap.get(ParkingHistoryDao.ID_BOOKING) == null || attrMap.get(ParkingDao.ID_PARKING) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
         //Comprobar que hay sitio en el parking indicado
         Map<String, Object> attrMapParking = Map.of(ParkingDao.ID_PARKING, attrMap.get(ParkingDao.ID_PARKING));
-        EntityResult erParking = this.daoHelper.query(parkingDao, attrMap, List.of(ParkingDao.OCCUPIED_CAPACITY,ParkingDao.TOTAL_CAPACITY));
+        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY,ParkingDao.TOTAL_CAPACITY));
+
         if(erParking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
             return er;
         }
-        if((int)erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY) == (int)erParking.getRecordValues(0).get(ParkingDao.TOTAL_CAPACITY)){
+        int occupiedCapacity = (int)erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
+        if(occupiedCapacity == (int)erParking.getRecordValues(0).get(ParkingDao.TOTAL_CAPACITY)){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.PARKING_FULL);
             return er;
         }
         //Comprobar que la reserva existe
-        Map<String, Object> attrMapBooking = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
-        EntityResult erBooking = this.daoHelper.query(parkingDao, attrMap, List.of(ParkingHistoryDao.ID_BOOKING, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME));
+        Map<String, Object> attrMapBooking = Map.of(BookingDao.BOOKINGID, attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME));
         if(erBooking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
@@ -76,11 +82,22 @@ public class ParkingService implements IParkingService {
             return er;
         }
 
-        //Comprobar que la reserva no ha entrado ya en el parking
-        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING));
-        
+        //Comprobar que la reserva no ha entrado ya en el parking (es decir tiene fecha de entrada pero no de salida)
+        Map<String, Object> attrMapParkingHistory = Map.of(ParkingHistoryDao.ID_BOOKING, attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.EXIT_DATE,"");
+        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        if(erParkingHistory.calculateRecordNumber() > 0){
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(ErrorMessages.BOOKING_ALREADY_IN_PARKING);
+            return er;
+        }
         //Insertar en la tabla parking_history
+        Map<String,Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING),ParkingHistoryDao.ENTRY_DATE,currentDate);
+        EntityResult erInsert = this.daoHelper.insert(parkingHistoryDao, attrMapParkingHistoryInsert);
         //Actualizar tabla parking para sumar 1 a los coches que hay en el parking
+        occupiedCapacity++;
+        Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.ID_PARKING,attrMap.get(ParkingDao.ID_PARKING));
+        Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
+        EntityResult erUpdate = this.daoHelper.update(parkingDao,keyMapParkingUpdate,attrMapParkingUpdate);
         return null;
     }
 }

@@ -19,6 +19,8 @@ public class ErrorMessages {
     public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
     public static final String BOOKING_CHECK_OUT_SUCCESS = "M_BOOKING_CHECK_OUT_SUCCESS";
     public static final String BOOKING_DOESNT_BELONG_CLIENT = "M_BOOKING_DOESNT_BELONG_CLIENT";
+    public static final String BOOKING_NOT_STARTED = "M_BOOKING_NOT_STARTED";
+    public static final String BOOKING_ALREADY_IN_PARKING = "M_BOOKING_ALREADY_IN_PARKING";
     //Fechas
     public static final String DATE_FORMAT_ERROR = "M_DATE_FORMAT_ERROR";
     public static final String FINAL_DATE_BEFORE_INITIAL_DATE = "M_FINAL_DATE_BEFORE_INITIAL_DATE";
@@ -71,6 +73,7 @@ public class ErrorMessages {
     public static final String PARKING_ALREADY_EXIST = "M_PARKING_ALREADY_EXIST";
     public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
     public static final String PARKING_FULL = "M_PARKING_FULL";
+
 
   private ErrorMessages() {
         throw new IllegalStateException("Utility class");

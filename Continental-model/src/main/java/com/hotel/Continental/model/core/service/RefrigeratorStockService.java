@@ -34,6 +34,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         er.setCode(1);
         if (attrMap.get(RefrigeratorStockDao.PRODUCTID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null) {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
         }
         Map<String, Object> filter = new HashMap<>();
         filter.put(RefrigeratorStockDao.REFRIGERATORID, -1);

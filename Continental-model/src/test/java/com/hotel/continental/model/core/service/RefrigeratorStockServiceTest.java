@@ -2,7 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RefrigeratorStockServiceTest {
@@ -115,7 +114,7 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDefault with null data",
                         Map.of(),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -124,7 +123,7 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDafault product not exist",
                         Map.of(RefrigeratorStockDao.STOCK, 2),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.PRODUCT_NOT_EXIST),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
@@ -139,14 +138,14 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDafault with bad stock(not number)",
                         Map.of(RefrigeratorStockDao.STOCK, "a"),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.STOCK_NOT_NUMBER),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_NUMBER),
                         List.of()
                 ),
                 Arguments.of(
                         "Update RefrigeratorDafault with bad stock(not positive)",
                         Map.of(RefrigeratorStockDao.STOCK, -1),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.STOCK_NOT_POSITIVE),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_POSITIVE),
                         List.of()
                 )
                 //endregion

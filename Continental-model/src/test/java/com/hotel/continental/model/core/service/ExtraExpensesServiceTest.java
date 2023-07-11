@@ -1,10 +1,8 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
-import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ExtraExpensesDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -78,7 +76,7 @@ class ExtraExpensesServiceTest {
                 Arguments.of(
                         "null data",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -86,7 +84,7 @@ class ExtraExpensesServiceTest {
                 Arguments.of(
                         "empty data",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -95,7 +93,7 @@ class ExtraExpensesServiceTest {
                         "Booking doesn´t exist",//Nombre del test
                         Map.of(ExtraExpensesDao.BOOKINGID, 3,
                                 ExtraExpensesDao.CONCEPT, "concepto", ExtraExpensesDao.PRICE, 12),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erBooking = new EntityResultMapImpl();

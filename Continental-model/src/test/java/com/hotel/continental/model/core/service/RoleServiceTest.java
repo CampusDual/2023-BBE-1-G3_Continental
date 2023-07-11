@@ -1,7 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoleDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -105,7 +105,7 @@ public class RoleServiceTest {
             EntityResult result = roleService.roleInsert(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+            Assertions.assertEquals(Messages.NECESSARY_DATA, result.getMessage());
         }
 
         @Test
@@ -161,7 +161,7 @@ public class RoleServiceTest {
             EntityResult result = roleService.roleDelete(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_KEY, result.getMessage());
+            Assertions.assertEquals(Messages.NECESSARY_KEY, result.getMessage());
         }
 
         @Test
@@ -226,7 +226,7 @@ public class RoleServiceTest {
             EntityResult result = roleService.roleInsert(attr);
 
             Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+            Assertions.assertEquals(Messages.NECESSARY_DATA, result.getMessage());
         }
 
         @Test
@@ -279,9 +279,9 @@ public class RoleServiceTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(Arguments.of(new HashMap<String, Object>() {{
                 put(RoleDao.ID_ROLENAME, 1);
-            }}, ErrorMessages.NECESSARY_DATA),
+            }}, Messages.NECESSARY_DATA),
                     Arguments.of(new HashMap<String, Object>(),
-                            ErrorMessages.NECESSARY_KEY));
+                            Messages.NECESSARY_KEY));
         }
     }
 }

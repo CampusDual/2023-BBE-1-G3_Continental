@@ -3,7 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IEmployeeService;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -35,7 +35,7 @@ public class EmployeeService implements IEmployeeService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
@@ -45,14 +45,14 @@ public class EmployeeService implements IEmployeeService {
         EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
 
         if (hotel.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
         //Comprobamos que el documento es válido
         if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
             if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
-                er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
+                er.setMessage(Messages.DOCUMENT_NOT_VALID);
                 return er;
             }
         }
@@ -62,7 +62,7 @@ public class EmployeeService implements IEmployeeService {
         EntityResult nif = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.DOCUMENT));
 
         if (nif.calculateRecordNumber() > 0) {
-            er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_EXIST);
+            er.setMessage(Messages.EMPLOYEE_ALREADY_EXIST);
             return er;
         }
 
@@ -77,19 +77,19 @@ public class EmployeeService implements IEmployeeService {
 
         // Comprobar que los mapas no están vacios
         if (attrMap.isEmpty() || keyMap.isEmpty()) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobamos que nos envia un EmployeeId
         if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el documento es válido
         if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
             if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
-                er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
+                er.setMessage(Messages.DOCUMENT_NOT_VALID);
                 return er;
             }
         }
@@ -97,7 +97,7 @@ public class EmployeeService implements IEmployeeService {
         // Comprobar que el empleado exista
         EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID));
         if (employee.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+            er.setMessage(Messages.EMPLOYEE_NOT_EXIST);
             return er;
         }
         er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);
@@ -113,7 +113,7 @@ public class EmployeeService implements IEmployeeService {
             if (employees.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+                er.setMessage(Messages.EMPLOYEE_NOT_EXIST);
                 return er;
             }
             return employees;
@@ -128,7 +128,7 @@ public class EmployeeService implements IEmployeeService {
         if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el empleado existe
@@ -139,7 +139,7 @@ public class EmployeeService implements IEmployeeService {
         if (employee.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.EMPLOYEE_NOT_EXIST);
+            er.setMessage(Messages.EMPLOYEE_NOT_EXIST);
             return er;
         }
 
@@ -147,7 +147,7 @@ public class EmployeeService implements IEmployeeService {
         if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.EMPLOYEE_ALREADY_INACTIVE);
+            er.setMessage(Messages.EMPLOYEE_ALREADY_INACTIVE);
             return er;
         }
 

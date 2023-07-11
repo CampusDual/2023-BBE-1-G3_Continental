@@ -42,20 +42,20 @@ public class Validation {
         return true;
     }
 
-    public static EntityResult checkNumber(String param) {
+    public static EntityResult checkNumber(String param, String messageNotPositive, String messageNotNumber) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
 
         try {
             double multiplier = Double.parseDouble(param);
             if(multiplier <= 0) {
-                er.setMessage(ErrorMessages.MULTIPLIER_NOT_CORRECT_FORMAT);
+                er.setMessage(messageNotPositive);
                 return er;
             }
         } catch (NumberFormatException e) {
             EntityResult erError = new EntityResultMapImpl();
             erError.setCode(EntityResult.OPERATION_WRONG);
-            erError.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
+            erError.setMessage(messageNotNumber);
             return erError;
         }
 

@@ -4,7 +4,7 @@ import com.hotel.continental.api.core.service.IRefrigeratorStockService;
 import com.hotel.continental.model.core.dao.ProductsDao;
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -34,7 +34,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (keyMap.get(RefrigeratorStockDao.PRODUCTID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
@@ -42,11 +42,11 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         try {
             int stock = Integer.parseInt(attrMap.get(RefrigeratorStockDao.STOCK).toString());
             if(stock <= 0) {
-                er.setMessage(ErrorMessages.STOCK_NOT_POSITIVE);
+                er.setMessage(Messages.STOCK_NOT_POSITIVE);
                 return er;
             }
         } catch (NumberFormatException e) {
-            er.setMessage(ErrorMessages.STOCK_NOT_NUMBER);
+            er.setMessage(Messages.STOCK_NOT_NUMBER);
             return er;
         }
 
@@ -55,7 +55,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         filterProduct.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
         EntityResult product = this.daoHelper.query(this.productDao, filterProduct, List.of(RefrigeratorStockDao.PRODUCTID));
         if(product.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.PRODUCT_NOT_EXIST);
+            er.setMessage(Messages.PRODUCT_NOT_EXIST);
             return er;
         }
 

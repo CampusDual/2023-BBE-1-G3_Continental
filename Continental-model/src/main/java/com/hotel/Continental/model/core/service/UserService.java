@@ -5,7 +5,7 @@ import com.hotel.continental.api.core.service.IUserService;
 import com.hotel.continental.model.core.dao.RoleDao;
 import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.dao.UserRoleDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -52,7 +52,7 @@ public class UserService implements IUserService {
                 !attrMap.containsKey(UserDao.SURNAME)|| !attrMap.containsKey(UserDao.NIF)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
@@ -67,7 +67,7 @@ public class UserService implements IUserService {
         if (query.calculateRecordNumber() > 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(1);
-                er.setMessage(ErrorMessages.USER_ALREADY_EXIST);
+                er.setMessage(Messages.USER_ALREADY_EXIST);
                 return er;
         }
 
@@ -79,14 +79,14 @@ public class UserService implements IUserService {
         if (roles.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.ROLE_DOESNT_EXIST);
+            er.setMessage(Messages.ROLE_DOESNT_EXIST);
             return er;
         }
 
         if (!attrMap.get(UserDao.PASSWORD).toString().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.INCORRECT_PASSWORD);
+            er.setMessage(Messages.INCORRECT_PASSWORD);
             return er;
         }
 
@@ -109,14 +109,14 @@ public class UserService implements IUserService {
         if(attrMap == null || attrMap.isEmpty()){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
         if(!keyMap.containsKey(UserDao.USER_)){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
 
@@ -124,7 +124,7 @@ public class UserService implements IUserService {
         if(queryUser.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.USER_DOESNT_EXIST);
+            er.setMessage(Messages.USER_DOESNT_EXIST);
             return er;
         }
 
@@ -136,7 +136,7 @@ public class UserService implements IUserService {
         if (!keyMap.containsKey(UserDao.USER_)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
 
@@ -144,7 +144,7 @@ public class UserService implements IUserService {
         if (query.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.USER_DOESNT_EXIST);
+            er.setMessage(Messages.USER_DOESNT_EXIST);
             return er;
         }
 

@@ -1,7 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.*;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -65,7 +65,7 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         return result;
@@ -88,7 +88,7 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
@@ -128,7 +128,7 @@ public class BookingService implements IBookingService {
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
-        er.setMessage(ErrorMessages.ROOM_NOT_FREE);
+        er.setMessage(Messages.ROOM_NOT_FREE);
         return er;
 
     }
@@ -146,7 +146,7 @@ public class BookingService implements IBookingService {
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -154,7 +154,7 @@ public class BookingService implements IBookingService {
         if (book == null || book.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         return this.daoHelper.delete(this.bookingDao, keyMap);
@@ -174,7 +174,7 @@ public class BookingService implements IBookingService {
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -182,7 +182,7 @@ public class BookingService implements IBookingService {
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Si se envia alguna fecha comprobamos que se envian ambas
@@ -190,7 +190,7 @@ public class BookingService implements IBookingService {
             if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.NECESSARY_DATA);
+                er.setMessage(Messages.NECESSARY_DATA);
                 return er;
             }
             //Comprobamos si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
@@ -219,7 +219,7 @@ public class BookingService implements IBookingService {
             if (habitacionesLibres.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.ROOM_NOT_FREE);
+                er.setMessage(Messages.ROOM_NOT_FREE);
                 return er;
             }
             //Buscamos si la habitacion esta libre en esas fechas
@@ -249,13 +249,13 @@ public class BookingService implements IBookingService {
             //Comprobamos que se ha introducido el id de cliente
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -265,7 +265,7 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).isEmpty() || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Comprobamos que la reserva pertenece al cliente
@@ -276,14 +276,14 @@ public class BookingService implements IBookingService {
         if (bookclient.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
+            er.setMessage(Messages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
         //Comprobamos que no se ha hecho el checkin
         if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) != null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_IN);
+            er.setMessage(Messages.BOOKING_ALREADY_CHECKED_IN);
             return er;
         }
         EntityResult card = accessCardAssignmentService.accesscardassignmentInsert(attrMap);
@@ -297,7 +297,7 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKIN_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        er.setMessage(ErrorMessages.BOOKING_CHECK_IN_SUCCESS);
+        er.setMessage(Messages.BOOKING_CHECK_IN_SUCCESS);
         return er;
     }
 
@@ -315,7 +315,7 @@ public class BookingService implements IBookingService {
         if (attrMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -325,7 +325,7 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).isEmpty() || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
 
@@ -333,14 +333,14 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_CHECKED_IN);
+            er.setMessage(Messages.BOOKING_NOT_CHECKED_IN);
             return er;
         }
         //Comprobamos que no se ha hecho el checkout
         if (book.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
+            er.setMessage(Messages.BOOKING_ALREADY_CHECKED_OUT);
             return er;
         }
 
@@ -352,7 +352,7 @@ public class BookingService implements IBookingService {
         if (bookclient.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
+            er.setMessage(Messages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
         //Update de la tarjeta
@@ -370,7 +370,7 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
+        er.setMessage(Messages.BOOKING_CHECK_OUT_SUCCESS);
         er.put(BookingDao.PRICE, List.of(finalPrice.get(BookingDao.PRICE)));
         return er;
     }
@@ -388,14 +388,14 @@ public class BookingService implements IBookingService {
         if (attrMap.get(BookingDao.ROOMID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que se ha introducido la fecha de inicio
         if (attrMap.get(BookingDao.STARTDATE) == null&&attrMap.get(BookingDao.ENDDATE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Obtener tipo de habitacion
@@ -406,7 +406,7 @@ public class BookingService implements IBookingService {
         if (room.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            er.setMessage(Messages.ROOM_NOT_EXIST);
             return er;
         }
         Map<String, Object> attrMapRoomType = new HashMap<>();
@@ -439,7 +439,7 @@ public class BookingService implements IBookingService {
         } catch (Exception e){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
+            er.setMessage(Messages.DATE_FORMAT_ERROR);
             return er;
         }
 

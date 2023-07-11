@@ -1,8 +1,7 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ClientDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -62,7 +61,7 @@ public class ClientServiceTest {
         void testClientInsertNullData(HashMap<String, Object> clientToInsert) {
             EntityResult result = clientService.clientInsert(clientToInsert);
             Assertions.assertEquals(1, result.getCode());
-            Assertions.assertEquals(ErrorMessages.NECESSARY_DATA, result.getMessage());
+            Assertions.assertEquals(Messages.NECESSARY_DATA, result.getMessage());
         }
 
         @Test

@@ -3,7 +3,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.ICriteriaService;
 import com.hotel.continental.model.core.dao.CriteriaDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -48,7 +48,7 @@ public class CriteriaService implements ICriteriaService {
         if (!keyMap.isEmpty() && er.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.CRITERIA_NOT_EXIST);
+            er.setMessage(Messages.CRITERIA_NOT_EXIST);
         }
         return er;
     }
@@ -60,24 +60,24 @@ public class CriteriaService implements ICriteriaService {
 
         //Compruebo que tenga la clave
         if(keyMap.isEmpty() || keyMap.get(CriteriaDao.ID) == null) {
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Compruebo que el attrMap no este vacio
         if(attrMap.isEmpty()) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Compruebo que el criterio exista
         EntityResult criteriaQuery = this.daoHelper.query(this.criteriaDao, keyMap, List.of(CriteriaDao.ID));
         if(criteriaQuery.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.CRITERIA_NOT_EXIST);
+            er.setMessage(Messages.CRITERIA_NOT_EXIST);
             return er;
         }
 
         //Comprobar formato correcto en multiplicador
         if(attrMap.get(CriteriaDao.MULTIPLIER) != null) {
-            EntityResult checkNumber = Validation.checkNumber(attrMap.get(CriteriaDao.MULTIPLIER).toString());
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(CriteriaDao.MULTIPLIER).toString(), Messages.MULTIPLIER_NOT_POSITIVE, Messages.MULTIPLIER_NOT_NUMBER);
             if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
                 return checkNumber;
             }

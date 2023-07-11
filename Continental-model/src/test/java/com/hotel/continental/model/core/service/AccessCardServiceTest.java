@@ -1,7 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.AccessCardDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -61,7 +61,7 @@ class AccessCardServiceTest {
                         "No columns to query",//Nombre del test
                         Map.of(),//keyMap
                         List.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()//Mocks
                 ),
                 // Test case 3: No access card found
@@ -69,7 +69,7 @@ class AccessCardServiceTest {
                         "No access card found",//Nombre del test
                         Map.of(AccessCardDao.ACCESSCARDID,1),//keyMap
                         List.of(AccessCardDao.ACCESSCARDID),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier)() ->{
                                     EntityResult erQuery = new EntityResultMapImpl();

@@ -4,7 +4,7 @@ import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
 import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -95,7 +95,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No accessCard id",//Nombre del test
                         Map.of(1, AccessCardAssignmentDao.BOOKINGID),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -103,7 +103,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No booking id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -111,7 +111,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No Exist accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -125,7 +125,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Already asigned accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_ALREADY_GIVEN),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_ALREADY_GIVEN),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -143,7 +143,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Different booking on assignment and accessCard",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.HOTEL_INCORRECT),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_INCORRECT),//Resultado esperado
                         List.of(
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -221,7 +221,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No accessCard id",//Nombre del test
                         Map.of(1, AccessCardAssignmentDao.BOOKINGID),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -229,7 +229,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No Exist accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -243,7 +243,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Already asigned accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_GIVEN),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_GIVEN),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -258,7 +258,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Different booking on assignment and accessCard",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1, AccessCardAssignmentDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.CARD_DOESNT_BELONG_BOOKING),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.CARD_DOESNT_BELONG_BOOKING),//Resultado esperado
                         List.of(
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -294,7 +294,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Successful lostCard",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.ACCESS_CARD_SUCCESSFULLY_MODIFY),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, Messages.ACCESS_CARD_SUCCESSFULLY_MODIFY),//Resultado esperado
                         List.of(
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
@@ -321,7 +321,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No accessCard id",//Nombre del test
                         Map.of(1, AccessCardAssignmentDao.BOOKINGID),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -329,7 +329,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "No Exist accessCard id",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_RECOVERED),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_RECOVERED),//Resultado esperado
                         List.of(
                                 () -> {
                                     EntityResult erTarjetaUpdate = new EntityResultMapImpl();
@@ -355,7 +355,7 @@ class AccessCardAssignmentServiceTest {
                 Arguments.of(
                         "Accesscardassignment relation not found",//Nombre del test
                         Map.of(AccessCardAssignmentDao.ACCESSCARDID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_RECOVERED),//Resultado esperado
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_RECOVERED),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();

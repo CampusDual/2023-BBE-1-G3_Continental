@@ -2,12 +2,11 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRoomTypeService;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import com.ontimize.jee.server.dao.IOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class RoomTypeService implements IRoomTypeService {
         if(attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
@@ -50,14 +49,14 @@ public class RoomTypeService implements IRoomTypeService {
         if (keyMap.get(RoomTypeDao.TYPEID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Compruebo que me envian los atributos a modificar
         if (attrMap.isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Compruebo que el tipo de habitacion existe
@@ -67,7 +66,7 @@ public class RoomTypeService implements IRoomTypeService {
         if(erRoomType.calculateRecordNumber() == 0){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.ROOMTYPE_NOT_EXIST);
+            er.setMessage(Messages.ROOMTYPE_NOT_EXIST);
             return er;
         }
 

@@ -3,12 +3,11 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IRefrigeratorsService;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import com.ontimize.jee.server.dao.IOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class RefrigeratorsService implements IRefrigeratorsService {
         if (attrMap.get(RefrigeratorsDao.ROOM_ID) == null || attrMap.get(RefrigeratorsDao.CAPACITY) == null) {
             EntityResult erError = new EntityResultMapImpl();
             erError.setCode(EntityResult.OPERATION_WRONG);
-            erError.setMessage(ErrorMessages.NECESSARY_DATA);
+            erError.setMessage(Messages.NECESSARY_DATA);
             return erError;
         }
         //Compruebo que la capacidad es un numero y es positiva
@@ -52,7 +51,7 @@ public class RefrigeratorsService implements IRefrigeratorsService {
         if (rooms.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            er.setMessage(Messages.ROOM_NOT_EXIST);
             return er;
         }
 

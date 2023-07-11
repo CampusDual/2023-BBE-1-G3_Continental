@@ -3,7 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IExtraExpensesService;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ExtraExpensesDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -33,7 +33,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         if (attrMap.get(ExtraExpensesDao.CONCEPT) == null || attrMap.get(ExtraExpensesDao.PRICE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar empty data
@@ -41,7 +41,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
                 || (String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank())) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar booking exists
@@ -51,7 +51,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         if (bookings.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Comprobar data repeat
@@ -59,7 +59,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         if(queryExtraExpenses.calculateRecordNumber() > 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.EXTRA_EXPENSE_ALREADY_EXIST);
+            er.setMessage(Messages.EXTRA_EXPENSE_ALREADY_EXIST);
             return er;
         }
 

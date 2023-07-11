@@ -1,6 +1,6 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.api.core.service.IHotelService;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -41,7 +41,7 @@ public class HotelService implements IHotelService {
         if(!keyMap.containsKey(HotelDao.ID)){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobar hotel que el hotel existe
@@ -50,7 +50,7 @@ public class HotelService implements IHotelService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
         return hotel;
@@ -71,7 +71,7 @@ public class HotelService implements IHotelService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         return this.daoHelper.insert(hotelDao, attrMap);
@@ -90,7 +90,7 @@ public class HotelService implements IHotelService {
         if(keyMap.get(HotelDao.ID) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el hotel existe
@@ -119,7 +119,7 @@ public class HotelService implements IHotelService {
         if (!keyMap.containsKey(HotelDao.ID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el hotel existe
@@ -132,7 +132,7 @@ public class HotelService implements IHotelService {
         if (hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_ALREADY_INACTIVE);
+            er.setMessage(Messages.HOTEL_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos

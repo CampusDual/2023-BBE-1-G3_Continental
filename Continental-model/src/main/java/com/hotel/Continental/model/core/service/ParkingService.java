@@ -5,7 +5,7 @@ import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ParkingDao;
 import com.hotel.continental.model.core.dao.ParkingHistoryDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class ParkingService implements IParkingService {
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
         if(attrMap.get(ParkingHistoryDao.ID_BOOKING) == null || attrMap.get(ParkingDao.ID_PARKING) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar que hay sitio en el parking indicado
@@ -50,14 +49,14 @@ public class ParkingService implements IParkingService {
         EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY,ParkingDao.TOTAL_CAPACITY,ParkingDao.ID_HOTEL));
         if(erParking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
+            er.setMessage(Messages.PARKING_NOT_FOUND);
             return er;
         }
 
         int occupiedCapacity = (int)erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
         if(occupiedCapacity == (int)erParking.getRecordValues(0).get(ParkingDao.TOTAL_CAPACITY)){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.PARKING_FULL);
+            er.setMessage(Messages.PARKING_FULL);
             return er;
         }
         //Comprobar que la reserva existe
@@ -65,7 +64,7 @@ public class ParkingService implements IParkingService {
         EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME,BookingDao.ROOMID));
         if(erBooking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Pillo el id de la habitacion y el id del hotel del parking, para comprobar que la habitacion de la reserva esta en el mismo hotel del parking
@@ -73,7 +72,7 @@ public class ParkingService implements IParkingService {
         EntityResult erRoom = this.daoHelper.query(roomDao, attrMapRoom, List.of(BookingDao.ROOMID,RoomDao.IDHOTEL));
         if(erRoom.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_SAME_HOTEL_AS_PARKING);
+            er.setMessage(Messages.BOOKING_NOT_SAME_HOTEL_AS_PARKING);
             return er;
         }
         //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva
@@ -81,18 +80,18 @@ public class ParkingService implements IParkingService {
         Date currentDate = new Date();
         if(startDate.compareTo(currentDate) > 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_STARTED);
+            er.setMessage(Messages.BOOKING_NOT_STARTED);
             return er;
         }
         //Comprobar que la reserva esta activa,que hizo checkin y que no ha hecho checkout
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_CHECKED_IN);
+            er.setMessage(Messages.BOOKING_NOT_CHECKED_IN);
             return er;
         }
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
+            er.setMessage(Messages.BOOKING_ALREADY_CHECKED_OUT);
             return er;
         }
 
@@ -104,7 +103,7 @@ public class ParkingService implements IParkingService {
         boolean notExitDate=((List<Date>)erParkingHistory.get(ParkingHistoryDao.EXIT_DATE)).stream().anyMatch(date -> date == null);
         if(notExitDate){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_IN_PARKING);
+            er.setMessage(Messages.BOOKING_ALREADY_IN_PARKING);
             return er;
         }
         //Insertar en la tabla parking_history

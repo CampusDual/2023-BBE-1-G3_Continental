@@ -4,7 +4,7 @@ import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ParkingDao;
 import com.hotel.continental.model.core.dao.ParkingHistoryDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,7 +131,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.PARKING_NOT_FOUND
+                                Messages.PARKING_NOT_FOUND
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -150,7 +149,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.PARKING_FULL
+                                Messages.PARKING_FULL
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -170,7 +169,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_EXIST
+                                Messages.BOOKING_NOT_EXIST
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -197,7 +196,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_CHECKED_IN
+                                Messages.BOOKING_NOT_CHECKED_IN
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -234,7 +233,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_ALREADY_CHECKED_OUT
+                                Messages.BOOKING_ALREADY_CHECKED_OUT
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -273,7 +272,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_STARTED
+                                Messages.BOOKING_NOT_STARTED
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -311,7 +310,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_ALREADY_IN_PARKING
+                                Messages.BOOKING_ALREADY_IN_PARKING
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -361,7 +360,7 @@ public class ParkingServiceTest {
                         Map.of("id_booking", 1, "id_parking", 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_SAME_HOTEL_AS_PARKING
+                                Messages.BOOKING_NOT_SAME_HOTEL_AS_PARKING
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -399,7 +398,7 @@ public class ParkingServiceTest {
                         Map.of(),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.NECESSARY_DATA
+                                Messages.NECESSARY_DATA
                         ),
                         List.of()
                 )

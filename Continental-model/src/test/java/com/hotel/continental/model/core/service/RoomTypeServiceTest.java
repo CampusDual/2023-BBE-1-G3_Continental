@@ -1,7 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoomTypeDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -70,7 +70,7 @@ class RoomTypeServiceTest {
                         "Update roomtype with null data",
                         Map.of(),
                         Map.of(RoomTypeDao.TYPEID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -79,7 +79,7 @@ class RoomTypeServiceTest {
                         "Update roomtype with null key",
                         Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 ),
                 //endregion
@@ -88,7 +88,7 @@ class RoomTypeServiceTest {
                         "Update roomtype with no existing key",
                         Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(RoomTypeDao.TYPEID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ROOMTYPE_NOT_EXIST),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOMTYPE_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -132,7 +132,7 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Insert roomtype with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 )
                 //endregion

@@ -5,7 +5,7 @@ import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
 import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -40,7 +40,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null || attrMap.get(AccessCardAssignmentDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         Map<String,Object> keyMap = new HashMap<>();
@@ -49,14 +49,14 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (accesscard.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
+            er.setMessage(Messages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
         boolean check = ((List<Boolean>) accesscard.get(AccessCardDao.AVAILABLE)).get(0);
         if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
+            er.setMessage(Messages.ACCESS_CARD_ALREADY_GIVEN);
             return er;
         }
         keyMap = new HashMap<>();
@@ -66,7 +66,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (booking.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         keyMap = new HashMap<>();
@@ -77,7 +77,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (!check) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.HOTEL_INCORRECT);
+            er.setMessage(Messages.HOTEL_INCORRECT);
             return er;
         }
         Map<String,Object> availablefalse = new HashMap<>();
@@ -99,7 +99,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
 
@@ -115,7 +115,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (accessCardAssignment.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            er.setMessage(Messages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
 
@@ -129,11 +129,11 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (update.getCode() == EntityResult.OPERATION_WRONG || delete.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            er.setMessage(Messages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
 
-        update.setMessage(ErrorMessages.ACCESS_CARD_SUCCESSFULLY_MODIFY);
+        update.setMessage(Messages.ACCESS_CARD_SUCCESSFULLY_MODIFY);
         return update;
     }
 
@@ -144,14 +144,14 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if(attrMap.get(AccessCardDao.CARDDOWNDATE) != null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.ACCESS_CARD_LOST);
+            er.setMessage(Messages.ACCESS_CARD_LOST);
             return er;
         }
         //Compruebo que me da el id de la tarjeta
         if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que esa tarjeta existe,y comprobamos que esta asignada
@@ -161,13 +161,13 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if(query.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
+            er.setMessage(Messages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
         if ((boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);
+            er.setMessage(Messages.ACCESS_CARD_NOT_GIVEN);
             return er;
         }
         //Comprobamos que esta asignada a esa reserva
@@ -178,7 +178,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (queryAccessCardAssignment.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
+            er.setMessage(Messages.CARD_DOESNT_BELONG_BOOKING);
             return er;
         }
         //Le cambiamos el estado a la tarjeta
@@ -188,7 +188,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if (update.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_RECOVERED);
+            er.setMessage(Messages.ACCESS_CARD_NOT_RECOVERED);
             return er;
         }
         return update;

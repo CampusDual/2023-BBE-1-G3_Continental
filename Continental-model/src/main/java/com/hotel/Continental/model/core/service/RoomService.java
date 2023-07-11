@@ -5,7 +5,7 @@ import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -59,7 +59,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            er.setMessage(Messages.ROOM_NOT_EXIST);
             return er;
         }
         return this.daoHelper.query(roomDao, keyMap, attrList);
@@ -79,7 +79,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar que el hotel existe
@@ -90,7 +90,7 @@ public class RoomService implements IRoomService {
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
 
@@ -100,7 +100,7 @@ public class RoomService implements IRoomService {
         if (types.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
+            er.setMessage(Messages.TYPE_NOT_EXISTENT);
             return er;
         }
 
@@ -114,7 +114,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_ALREADY_EXIST);
+            er.setMessage(Messages.ROOM_ALREADY_EXIST);
             return er;
         }
 
@@ -137,7 +137,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //si la habitacion no existe lanzar un error
@@ -150,7 +150,7 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_ALREADY_INACTIVE);
+            er.setMessage(Messages.ROOM_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();
@@ -175,20 +175,20 @@ public class RoomService implements IRoomService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         if(attrMap.isEmpty()){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         if (attrMap.containsKey(RoomDao.IDHOTEL)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.COLUMN_NOT_EDITABLE);
+            er.setMessage(Messages.COLUMN_NOT_EDITABLE);
             return er;
         }
 
@@ -199,7 +199,7 @@ public class RoomService implements IRoomService {
             if (types.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(1);
-                er.setMessage(ErrorMessages.TYPE_NOT_EXISTENT);
+                er.setMessage(Messages.TYPE_NOT_EXISTENT);
                 return er;
             }
         }
@@ -235,21 +235,21 @@ public class RoomService implements IRoomService {
         } catch (ParseException e) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
+            er.setMessage(Messages.DATE_FORMAT_ERROR);
             return er;
         }
         //Comprobar que la fecha inicial es anterior a la final
         if (initialDate.after(finalDate)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.FINAL_DATE_BEFORE_INITIAL_DATE);
+            er.setMessage(Messages.FINAL_DATE_BEFORE_INITIAL_DATE);
             return er;
         }
         //Comprobar que la fecha inicial es posterior a la actual
         if (initialDate.before(new Date())) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.INITIAL_DATE_BEFORE_CURRENT_DATE);
+            er.setMessage(Messages.INITIAL_DATE_BEFORE_CURRENT_DATE);
             return er;
         }
         BasicField startDateField = new BasicField(BookingDao.STARTDATE);

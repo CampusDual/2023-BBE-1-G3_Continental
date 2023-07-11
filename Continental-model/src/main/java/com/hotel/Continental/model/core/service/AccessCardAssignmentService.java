@@ -70,7 +70,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
             return er;
         }
         keyMap = new HashMap<>();
-        keyMap.put(RoomDao.IDHABITACION, booking.getRecordValues(0).get(RoomDao.IDHABITACION));
+        keyMap.put(RoomDao.IDROOM, booking.getRecordValues(0).get(RoomDao.IDROOM));
         //Queremos que el hotel sea igual al de la reserva
         EntityResult roomhotel = this.daoHelper.query(this.roomDao, keyMap, List.of(RoomDao.IDHOTEL));
         check = roomhotel.getRecordValues(0).get(RoomDao.IDHOTEL) == accesscard.getRecordValues(0).get(AccessCardDao.HOTELID);

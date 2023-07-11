@@ -3,7 +3,6 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
-import com.hotel.continental.model.core.service.RoomService;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -18,8 +17,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.logging.SimpleFormatter;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,53 +41,6 @@ public class RoomServiceTest {
     @Mock
     RoomTypeDao roomTypeDao;
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoomInsert {
-        @Test
-        @DisplayName("Test room insert good")
-        void testRoomInsertGood() {
-            //Primero se hace una query para comprobar que el hotel existe
-            EntityResult erQueryHotel = new EntityResultMapImpl();
-            erQueryHotel.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            erQueryHotel.put(HotelDao.ID, List.of(1));
-            //Despues se hace una query para comprobar que la habitacion no existe
-            EntityResult erQueryHabitacion = new EntityResultMapImpl();
-            erQueryHabitacion.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            //Se comprueba que el tipo existe
-            EntityResult erQueryTipo = new EntityResultMapImpl();
-            erQueryTipo.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            erQueryTipo.put(RoomTypeDao.TYPE, List.of(1));
-            //Despues se hace el insert
-            EntityResult erInsert = new EntityResultMapImpl();
-            erInsert.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            Map<String, Object> roomToInsert = new HashMap<>();
-            roomToInsert.put(RoomDao.ROOMDOWNDATE, null);
-            roomToInsert.put(RoomDao.ROOMNUMBER, 1);
-            roomToInsert.put(RoomDao.IDHOTEL, 1);
-            roomToInsert.put(RoomDao.ROOMTYPEID, 1);
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, 1);
-
-            when(daoHelper.query(any(HotelDao.class),anyMap(), anyList())).thenReturn(erQueryHotel);
-            when(daoHelper.query(any(RoomTypeDao.class),anyMap(),anyList())).thenReturn(erQueryTipo);
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(erQueryHabitacion);
-            when(daoHelper.insert(any(RoomDao.class), anyMap())).thenReturn(erInsert);
-
-            EntityResult result = roomService.roomInsert(roomToInsert);
-            Assertions.assertEquals(0, result.getCode());
-        }
-    
-        @ParameterizedTest
-        @ArgumentsSource(testInsertRoomNullAndEmptyData.class)
-        @DisplayName("Test room insert no data")
-        void testRoomInsertEmptyAndNullData(HashMap<String, Object> roomToInsert) {
-            //No hace falta mockear nada porque falla al comprobar los datos
-            EntityResult result = roomService.roomInsert(roomToInsert);
-            Assertions.assertEquals(1, result.getCode());
-        }
-    }
-
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("hotelInsert")
     void testHotelInsert(String testCaseName, Map<String, Object> keyMap, EntityResult expectedResult, List<Supplier> mock) {
@@ -100,184 +54,372 @@ public class RoomServiceTest {
 
     private static Stream<Arguments> hotelInsert() {
         return Stream.of(
-                //region Test Case 1 - Insert room with correct data with filter
+                //region Test Case 1 - Insert room with correct data
                 Arguments.of(
                         "Insert room with correct data",
-                        Map.of(HotelDao.ADDRESS, "adress",HotelDao.NAME, "name"),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de alta con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
                         List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDHOTEL, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(HotelDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
+
+                                    return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
                                 (Supplier) () -> {
                                     EntityResult erInsert = new EntityResultMapImpl();
-                                    erInsert.put(HotelDao.ID, List.of(1));
-                                    erInsert.put(HotelDao.ADDRESS, List.of("address"));
-                                    erInsert.put(HotelDao.NAME, List.of("name"));
+                                    erInsert.put(RoomDao.IDHOTEL, List.of(1));
+                                    erInsert.put(RoomDao.ROOMNUMBER, List.of(112));
+                                    erInsert.put(RoomDao.ROOMTYPEID, List.of(2));
 
-                                    return when(daoHelper.insert(Mockito.any(HotelDao.class), Mockito.anyMap())).thenReturn(erInsert);
+                                    return when(daoHelper.insert(Mockito.any(RoomDao.class), Mockito.anyMap())).thenReturn(erInsert);
                                 }
                         )
                 ),
                 //endRegion
-                //region Test Case 2 - Insert hotel with correct data without filter
+                //region Test Case 2 - Insert room with null data
                 Arguments.of(
-                        "Insert room with correct data",
+                        "Insert room with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 3 - Insert room hotel not exist
+                Arguments.of(
+                        "Insert room hotel not exist",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(HotelDao.ID, List.of(1));
-                                    erQuery.put(HotelDao.ADDRESS, List.of("address"));
-                                    erQuery.put(HotelDao.NAME, List.of("name"));
-                                    erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
 
                                     return when(daoHelper.query(Mockito.any(HotelDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
                                 }
                         )
                 ),
                 //endregion
-                //region Test Case 3 - Query hotel with null data
+                //region Test Case 4 - Insert type room hotel not exist
                 Arguments.of(
-                        "Query hotel with null data",
-                        Map.of(),
-                        List.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
-                        List.of()
+                        "Insert room type room not exist",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(HotelDao.ID, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(HotelDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 5 - Insert room already exist
+                Arguments.of(
+                        "Insert room already exist",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_EXIST),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(HotelDao.ID, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(HotelDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
+
+                                    return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
                 )
                 //endregion
         );
     }
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoomQuery {
-        @Test
-        @DisplayName("Test room query good")
-        void testRoomQueryGood() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-            er.put("ROOMNUMBER", List.of(1));
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, 1);
-
-            List<Object> attr = new ArrayList<>();
-            attr.add(RoomDao.ROOMNUMBER);
-
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(er);
-            EntityResult result = roomService.roomQuery(keyMap, attr);
-
-            Assertions.assertEquals(0, result.getCode());
-        }
-
-        @Test
-        @DisplayName("Test room query bad")
-        void testRoomQueryBad() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, 1);
-
-            List<Object> attr = new ArrayList<>();
-            attr.add(RoomDao.ROOMNUMBER);
-
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(er);
-            EntityResult result = roomService.roomQuery(keyMap, attr);
-
-            Assertions.assertEquals(1, result.getCode());
-        }
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("hotelQuery")
+    void testHotelQuery(String testCaseName, Map<String, Object> keyMap, List<String> attrList, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roomService.roomQuery(keyMap, attrList);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoomUpdate {
-        @Test
-        @DisplayName("Test room update good")
-        void testRoomUpdateGood() {
-            EntityResult query = new EntityResultMapImpl();
-            query.setCode(0);
-            query.put("ROOMNUMBER", List.of(1));
+    private static Stream<Arguments> hotelQuery() {
+        return Stream.of(
+                //region Test Case 1 - Query room with correct data with filter
+                Arguments.of(
+                        "Query room with correct data",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        List.of(RoomDao.IDROOM),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+                                    erQuery.put(RoomDao.IDHOTEL, List.of(1));
+                                    erQuery.put(RoomDao.ROOMNUMBER, List.of(112));
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
 
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-            er.put("ROOMNUMBER", List.of(1));
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Query room with correct data without filter
+                Arguments.of(
+                        "Query room with correct data",
+                        Map.of(),
+                        List.of(RoomDao.IDROOM),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+                                    erQuery.put(RoomDao.IDHOTEL, List.of(1));
+                                    erQuery.put(RoomDao.ROOMNUMBER, List.of(112));
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
 
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, 1);
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 3 - Query room with null data
+                Arguments.of(
+                        "Insert room with null data",
+                        Map.of(),
+                        List.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                ),
+                //endRegion
+                //region Test Case 4 - Query room with room not exist
+                Arguments.of(
+                        "Insert room with null data",
+                        Map.of(),
+                        List.of(RoomDao.IDROOM),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        List.of(
+                            (Supplier) () -> {
+                                EntityResult erQuery = new EntityResultMapImpl();
 
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoomDao.ROOMNUMBER, 1);
-
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
-            when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);
-
-            EntityResult result = roomService.roomUpdate(attr, keyMap);
-            System.out.println(result.getMessage());
-            Assertions.assertEquals(0, result.getCode());
-        }
-
-        @Test
-        @DisplayName("Test room update bad")
-        void testRoomUpdateBad() {
-            Map<String, Object> keyMap = new HashMap<>();
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoomDao.ROOMNUMBER, 1);
-            attr.put(RoomDao.IDHOTEL, 1);
-
-            EntityResult result = roomService.roomUpdate(keyMap, attr);
-            Assertions.assertEquals(1, result.getCode());
-        }
+                                return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                            }
+                        )
+                )
+                //endregion
+        );
     }
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoomDelete {
-        @Test
-        @DisplayName("Test room delete good")
-        void testRoomDeleteGood() {
-            EntityResult query = new EntityResultMapImpl();
-            query.setCode(0);
-            query.put("ROOMNUMBER", List.of(1));
-
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(0);
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, 1);
-
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(query);
-            when(daoHelper.update(any(RoomDao.class), anyMap(), anyMap())).thenReturn(er);
-
-            EntityResult result = roomService.roomDelete(keyMap);
-            Assertions.assertEquals(0, result.getCode());
-        }
-
-        @Test
-        @DisplayName("Test wrong room delete")
-        void testRoomDeleteWrong() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(1);
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoomDao.IDHABITACION, null);
-
-            when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(er);
-
-            EntityResult result = roomService.roomDelete(keyMap);
-
-            Assertions.assertEquals(1, result.getCode());
-        }
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("hotelUpdate")
+    void testHotelUpdate(String testCaseName, Map<?, ?> keyMap, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roomService.roomUpdate(keyMap, attrMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    public static class testInsertRoomNullAndEmptyData implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(new HashMap<String, Object>() {{
-                put(RoomDao.ROOMDOWNDATE, null);
-                put(RoomDao.ROOMNUMBER, null);
-                put(RoomDao.IDHOTEL, null);
-            }}, new HashMap<String, Object>()).map(Arguments::of);
-        }
+    private static Stream<Arguments> hotelUpdate() {
+        return Stream.of(
+                //region Test Case 1 - Update room with correct data
+                Arguments.of(
+                        "Update room with correct data",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
+
+                                    return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erUpdate = new EntityResultMapImpl();
+                                    erUpdate.put(RoomDao.ROOMNUMBER, List.of(112));
+                                    erUpdate.put(RoomDao.ROOMTYPEID, List.of(2));
+
+                                    return when(daoHelper.update(Mockito.any(RoomDao.class), Mockito.anyMap(), anyMap())).thenReturn(erUpdate);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Update room with null key
+                Arguments.of(
+                        "Update room with null key",
+                        Map.of(),
+                        Map.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        List.of()
+                ),
+                //endRegion
+                //region Test Case 3 - Update room with null data
+                Arguments.of(
+                        "Update room with null data",
+                        Map.of(),
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 4 - Update room hotel not exist
+                Arguments.of(
+                        "Update room hotel not exist",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.ROOMTYPEID, List.of(2));
+
+                                    return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 5 - Update room hotel not exist
+                Arguments.of(
+                        "Update room column not editable",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.COLUMN_NOT_EDITABLE),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 6 - Update room typeroom not exist
+                Arguments.of(
+                        "Update room typeroom not exist",
+                        Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
+                        List.of(
+                            (Supplier) () -> {
+                            EntityResult erQuery = new EntityResultMapImpl();
+
+                            return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                        })
+                )
+                //endregion
+        );
+    }
+
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("hotelDelete")
+    void testHotelDelete(String testCaseName, Map<?, ?> keyMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roomService.roomDelete(keyMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
+    }
+
+    private static Stream<Arguments> hotelDelete() {
+        return Stream.of(
+                //region Test Case 1 - Delete room with correct data
+                Arguments.of(
+                        "Delete room with correct data",
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erUpdate = new EntityResultMapImpl();
+                                    erUpdate.put(RoomDao.ROOMNUMBER, List.of(112));
+                                    erUpdate.put(RoomDao.ROOMTYPEID, List.of(2));
+                                    erUpdate.put(RoomDao.ROOMDOWNDATE, List.of(new SimpleDateFormat("yyyy-MM-dd").format(new Date())));
+
+                                    return when(daoHelper.update(Mockito.any(RoomDao.class), Mockito.anyMap(), anyMap())).thenReturn(erUpdate);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Delete room with null key
+                Arguments.of(
+                        "Delete room with null key",
+                        Map.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        List.of()
+                ),
+                //endRegion
+                //region Test Case 3 - Delete room doesn´t exist
+                Arguments.of(
+                        "Delete room doesnt exist",
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 4 - Delete room already inactive
+                Arguments.of(
+                        "Delete room already inactive",
+                        Map.of(RoomDao.IDROOM, 1),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_INACTIVE),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoomDao.IDROOM, List.of(1));
+                                    erQuery.put(RoomDao.ROOMDOWNDATE, List.of(new Date()));
+
+                                    return when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                )
+                //endregion
+        );
     }
 
     private static EntityResult createEntityResult(int code, String message) {

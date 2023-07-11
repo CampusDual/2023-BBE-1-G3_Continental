@@ -87,7 +87,7 @@ class BookingServiceTest {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erRoom.put(RoomDao.IDHOTEL, List.of(0));
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(2));
+                                    erRoom.put(RoomDao.IDROOM, List.of(2));
                                     erRoom.put(RoomDao.ROOMNUMBER, List.of(10));
                                     return Mockito.when(roomService.freeRoomsQuery(Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
                                 },
@@ -608,13 +608,13 @@ class BookingServiceTest {
                 //region Test case 1: Successful price
                 Arguments.of(
                         "Successful price",
-                        Map.of(RoomDao.IDHABITACION, 1, BookingDao.STARTDATE, LocalDate.now().plusDays(20).format(formatter), BookingDao.ENDDATE, LocalDate.now().plusDays(30).format(formatter)),
+                        Map.of(RoomDao.IDROOM, 1, BookingDao.STARTDATE, LocalDate.now().plusDays(20).format(formatter), BookingDao.ENDDATE, LocalDate.now().plusDays(30).format(formatter)),
                         createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(0));
+                                    erRoom.put(RoomDao.IDROOM, List.of(0));
                                     erRoom.put(RoomDao.ROOMTYPEID, List.of(1));
                                     erRoom.put(RoomDao.ROOMDOWNDATE, List.of(LocalDate.now().plusDays(10)));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
@@ -654,7 +654,7 @@ class BookingServiceTest {
                 //region Test case 3: Missing start date/ end date
                 Arguments.of(
                         "Missing start date/ end date",
-                        Map.of(RoomDao.IDHABITACION, 1),
+                        Map.of(RoomDao.IDROOM, 1),
                         createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
@@ -676,13 +676,13 @@ class BookingServiceTest {
                 //region Test case 5: Wrong start date/ end date
                 Arguments.of(
                         "Successful price",
-                        Map.of(RoomDao.IDHABITACION, 1, BookingDao.STARTDATE, LocalDate.now(), BookingDao.ENDDATE, LocalDate.now()),
+                        Map.of(RoomDao.IDROOM, 1, BookingDao.STARTDATE, LocalDate.now(), BookingDao.ENDDATE, LocalDate.now()),
                         createEntityResult(EntityResult.OPERATION_WRONG, Messages.DATE_FORMAT_ERROR),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(0));
+                                    erRoom.put(RoomDao.IDROOM, List.of(0));
                                     erRoom.put(RoomDao.ROOMTYPEID, List.of(1));
                                     erRoom.put(RoomDao.ROOMDOWNDATE, List.of(LocalDate.now().plusDays(10)));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);

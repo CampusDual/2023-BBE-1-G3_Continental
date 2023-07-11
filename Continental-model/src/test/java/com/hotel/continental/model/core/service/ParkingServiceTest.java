@@ -96,7 +96,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDHABITACION, List.of(1));
+                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
                                     erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 },
@@ -220,7 +220,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDHABITACION, List.of(1));
+                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
                                     erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
@@ -259,7 +259,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDHABITACION, List.of(1));
+                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
                                     erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
@@ -297,7 +297,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDHABITACION, List.of(1));
+                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
                                     erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
@@ -346,7 +346,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDHABITACION, List.of(1));
+                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
                                     erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }

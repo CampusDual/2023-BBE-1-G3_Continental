@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/RoomDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class RoomDao extends OntimizeJdbcDaoSupport {
-    public static final String IDHABITACION = "roomid";
+    public static final String IDROOM = "roomid";
     public static final String IDHOTEL = "hotelid";
     public static final String ROOMNUMBER = "roomnumber";
     public static final String ROOMDOWNDATE = "roomdowndate";

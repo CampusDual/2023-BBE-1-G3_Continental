@@ -68,7 +68,7 @@ public class ParkingService implements IParkingService {
             return er;
         }
         //Pillo el id de la habitacion y el id del hotel del parking, para comprobar que la habitacion de la reserva esta en el mismo hotel del parking
-        Map<String, Object> attrMapRoom = Map.of(RoomDao.IDHABITACION, erBooking.getRecordValues(0).get(BookingDao.ROOMID),RoomDao.IDHOTEL,erParking.getRecordValues(0).get(ParkingDao.ID_HOTEL));
+        Map<String, Object> attrMapRoom = Map.of(RoomDao.IDROOM, erBooking.getRecordValues(0).get(BookingDao.ROOMID),RoomDao.IDHOTEL,erParking.getRecordValues(0).get(ParkingDao.ID_HOTEL));
         EntityResult erRoom = this.daoHelper.query(roomDao, attrMapRoom, List.of(BookingDao.ROOMID,RoomDao.IDHOTEL));
         if(erRoom.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);

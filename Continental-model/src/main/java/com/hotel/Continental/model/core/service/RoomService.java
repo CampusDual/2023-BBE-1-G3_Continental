@@ -54,11 +54,17 @@ public class RoomService implements IRoomService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomQuery(Map<?, ?> keyMap, List<?> attrList) {
+        EntityResult er;
+        er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
+            return er;
+        }
+
         EntityResult room = this.daoHelper.query(this.roomDao, keyMap, attrList);
         if (room.calculateRecordNumber() == 0) {
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.ROOM_NOT_EXIST);
             return er;
         }
@@ -133,7 +139,7 @@ public class RoomService implements IRoomService {
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomDelete(Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
-        if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
+        if (!keyMap.containsKey(RoomDao.IDROOM)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -141,8 +147,9 @@ public class RoomService implements IRoomService {
             return er;
         }
         //si la habitacion no existe lanzar un error
-        EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDHABITACION, RoomDao.ROOMDOWNDATE));
+        EntityResult room = roomQuery(keyMap, Arrays.asList(RoomDao.IDROOM, RoomDao.ROOMDOWNDATE));
         if (room.getCode() == EntityResult.OPERATION_WRONG) {
+            room.setMessage(Messages.ROOM_NOT_EXIST);
             return room;
         }
         //Si la habitacion existe y esta dada de baja lanzar un error
@@ -171,7 +178,7 @@ public class RoomService implements IRoomService {
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult roomUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //comprobar que se envian los campos necesarios
-        if (!keyMap.containsKey(RoomDao.IDHABITACION)) {
+        if (!keyMap.containsKey(RoomDao.IDROOM)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -205,10 +212,11 @@ public class RoomService implements IRoomService {
         }
 
         List<String> columns = new ArrayList<>();
-        columns.add(RoomDao.IDHABITACION);
+        columns.add(RoomDao.IDROOM);
         //si la habitacion no existe lanzar un error
         EntityResult room = roomQuery(keyMap, columns);
         if (room.getCode() == EntityResult.OPERATION_WRONG) {
+            room.setMessage(Messages.ROOM_NOT_EXIST);
             return room;
         }
         return this.daoHelper.update(this.roomDao, attrMap, keyMap);
@@ -281,7 +289,7 @@ public class RoomService implements IRoomService {
         //Si hay habitaciones reservadas para esas fechas, se obtienen las habitaciones que no estén en la lista de habitaciones reservadas
         Map<String, Object> filter2 = new HashMap<>();
         //Se filtran por las habitaciones reservadas
-        BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDHABITACION), BasicOperator.NOT_IN_OP, bookedRooms.get(BookingDao.ROOMID));
+        BasicExpression bexpByIDS = new BasicExpression(new BasicField(RoomDao.IDROOM), BasicOperator.NOT_IN_OP, bookedRooms.get(BookingDao.ROOMID));
 
         //Si se especifica un id de hotel, se obtienen las habitaciones de ese hotel
         if (keyMapCopy.get(RoomDao.IDHOTEL) != null) {

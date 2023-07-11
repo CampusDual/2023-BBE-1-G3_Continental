@@ -8,13 +8,13 @@ import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
+import org.apache.commons.math3.stat.descriptive.summary.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Lazy
 @Service("RefrigeratorStockService")
@@ -141,9 +141,32 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
             return er;
         }
+
+        if ((Integer) attrMap.get(RefrigeratorStockDao.STOCK) < 0) {
+            Map<String, Object> ids = new HashMap<>();
+            ids.putAll(attrMap);
+            ids.putAll(keyMap);
+            addExtraExpense(ids);
+        }
+
         attrMap.put(RefrigeratorStockDao.STOCK, newStock);
         Map<String, Object> filter = new HashMap<>();
         filter.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, filter);
     }
+
+    public void addExtraExpense(Map<String, Object> map) {
+        Map<String, Object> productFilter = new HashMap<>();
+        productFilter.put(ProductsDao.PRODUCTID, map.get(RefrigeratorStockDao.PRODUCTID));
+        List<String> productColumns = new ArrayList<>();
+        productColumns.add(ProductsDao.NAME);
+        productColumns.add(ProductsDao.PRICE);
+        EntityResult product = this.daoHelper.query(this.productDao, productFilter, productColumns);
+        Date now = new Date();
+        String concept = "Fridge: " + (String) product.getRecordValues(0).get(ProductsDao.NAME) + " / " + now;
+        Double price = (Double) product.getRecordValues(0).get(ProductsDao.PRICE);
+        
+    }
+
 }

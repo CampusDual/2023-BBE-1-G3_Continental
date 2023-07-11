@@ -100,6 +100,44 @@ class RoomTypeServiceTest {
                 //endregion
         );
     }
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("roomTypeInsert")
+    void testRoomTypeInsert(String testCaseName, Map<String, Object> attrList, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roomTypeService.roomtypeInsert(attrList);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
+    }
+
+    private static Stream<Arguments> roomTypeInsert() {
+        return Stream.of(
+                //region Test Case 1 - Update roomtype with correct data
+                Arguments.of(
+                        "Insert roomtype with correct data",
+                        Map.of(RoomTypeDao.TYPE, "Suite", RoomTypeDao.PRICE, 20.2),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erInsert = new EntityResultMapImpl();
+                                    erInsert.put(RoomTypeDao.TYPEID, 1);
+                                    erInsert.setCode(EntityResult.OPERATION_SUCCESSFUL);
+                                    return when(daoHelper.insert(Mockito.any(RoomTypeDao.class), Mockito.anyMap())).thenReturn(erInsert);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 2 - Insert roomtype with null data
+                Arguments.of(
+                        "Insert roomtype with null data",
+                        Map.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        List.of()
+                )
+                //endregion
+        );
+    }
 
     private static EntityResult createEntityResult(int code, String message) {
         EntityResult er = new EntityResultMapImpl();

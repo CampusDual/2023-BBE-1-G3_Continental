@@ -74,6 +74,8 @@ public class Messages {
     public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
+    public static final String PRICE_NOT_POSITIVE = "M_PRICE_NOT_POSITIVE";
+    public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
     //Extra Expenses
     public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
     //Parking

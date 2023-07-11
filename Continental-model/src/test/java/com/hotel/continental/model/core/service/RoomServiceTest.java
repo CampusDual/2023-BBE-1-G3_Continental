@@ -4,6 +4,7 @@ import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.service.RoomService;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -11,23 +12,24 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
     @Mock
+    static
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoomService roomService;
@@ -84,6 +86,67 @@ public class RoomServiceTest {
             Assertions.assertEquals(1, result.getCode());
         }
     }
+
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("hotelInsert")
+    void testHotelInsert(String testCaseName, Map<String, Object> keyMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roomService.roomInsert(keyMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
+    }
+
+    private static Stream<Arguments> hotelInsert() {
+        return Stream.of(
+                //region Test Case 1 - Insert room with correct data with filter
+                Arguments.of(
+                        "Insert room with correct data",
+                        Map.of(HotelDao.ADDRESS, "adress",HotelDao.NAME, "name"),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erInsert = new EntityResultMapImpl();
+                                    erInsert.put(HotelDao.ID, List.of(1));
+                                    erInsert.put(HotelDao.ADDRESS, List.of("address"));
+                                    erInsert.put(HotelDao.NAME, List.of("name"));
+
+                                    return when(daoHelper.insert(Mockito.any(HotelDao.class), Mockito.anyMap())).thenReturn(erInsert);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Insert hotel with correct data without filter
+                Arguments.of(
+                        "Insert room with correct data",
+                        Map.of(),
+                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(HotelDao.ID, List.of(1));
+                                    erQuery.put(HotelDao.ADDRESS, List.of("address"));
+                                    erQuery.put(HotelDao.NAME, List.of("name"));
+                                    erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
+
+                                    return when(daoHelper.query(Mockito.any(HotelDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 3 - Query hotel with null data
+                Arguments.of(
+                        "Query hotel with null data",
+                        Map.of(),
+                        List.of(),
+                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                )
+                //endregion
+        );
+    }
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class TestRoomQuery {
@@ -215,5 +278,12 @@ public class RoomServiceTest {
                 put(RoomDao.IDHOTEL, null);
             }}, new HashMap<String, Object>()).map(Arguments::of);
         }
+    }
+
+    private static EntityResult createEntityResult(int code, String message) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(code);
+        er.setMessage(message);
+        return er;
     }
 }

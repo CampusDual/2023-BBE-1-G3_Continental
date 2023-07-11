@@ -34,7 +34,7 @@ public class RoomTypeService implements IRoomTypeService {
 
         //Comprobar formato correcto en price
         if(attrMap.get(RoomTypeDao.PRICE) != null) {
-            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString());
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString(), Messages.PRICE_NOT_POSITIVE, Messages.PRICE_NOT_NUMBER);
             if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
                 return checkNumber;
             }
@@ -72,7 +72,7 @@ public class RoomTypeService implements IRoomTypeService {
 
         //Comprobar formato correcto en price
         if(attrMap.get(RoomTypeDao.PRICE) != null) {
-            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString());
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString(), Messages.PRICE_NOT_POSITIVE, Messages.PRICE_NOT_NUMBER);
             if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
                 return checkNumber;
             }

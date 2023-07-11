@@ -164,7 +164,7 @@ class BookingServiceTest {
 
     private static Stream<Arguments> bookingQueryTestData() {
         return Stream.of(
-                // Test case 1: Successful delete
+                // Test case 1: Successful query
                 Arguments.of(
                         "Test case 1: Successful query",
                         Map.of(BookingDao.BOOKINGID, 0),

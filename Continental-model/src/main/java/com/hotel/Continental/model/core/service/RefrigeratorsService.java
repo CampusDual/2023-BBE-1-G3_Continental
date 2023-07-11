@@ -37,7 +37,7 @@ public class RefrigeratorsService implements IRefrigeratorsService {
         }
         //Compruebo que la capacidad es un numero y es positiva
         if(attrMap.get(RefrigeratorsDao.CAPACITY) != null) {
-            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RefrigeratorsDao.CAPACITY).toString());
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RefrigeratorsDao.CAPACITY).toString(), Messages.CAPACITY_NOT_POSITIVE, Messages.CAPACITY_NOT_NUMBER);
             if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
                 return checkNumber;
             }

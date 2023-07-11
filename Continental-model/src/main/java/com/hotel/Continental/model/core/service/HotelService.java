@@ -37,19 +37,18 @@ public class HotelService implements IHotelService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
-        //Comprobar null key
-        if(!keyMap.containsKey(HotelDao.ID)){
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(Messages.NECESSARY_KEY);
+        EntityResult er;
+        er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        //Comprobar que los parámetros no esten vacios
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar hotel que el hotel existe
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
@@ -143,6 +142,5 @@ public class HotelService implements IHotelService {
         er.setMessage("Hotel dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;
     }
-
 }
 

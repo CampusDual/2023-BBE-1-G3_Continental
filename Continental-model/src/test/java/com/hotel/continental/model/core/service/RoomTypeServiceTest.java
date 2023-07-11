@@ -102,10 +102,10 @@ class RoomTypeServiceTest {
     }
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("roomTypeInsert")
-    void testRoomTypeInsert(String testCaseName, Map<String, Object> attrList, EntityResult expectedResult, List<Supplier> mock) {
+    void testRoomTypeInsert(String testCaseName, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {
         //For each test case, execute the mock,to make sure the mock is called
         mock.forEach(Supplier::get);
-        EntityResult result = roomTypeService.roomtypeInsert(attrList);
+        EntityResult result = roomTypeService.roomtypeInsert(attrMap);
         // Assert
         assertEquals(expectedResult.getMessage(), result.getMessage());
         assertEquals(expectedResult.getCode(), result.getCode());
@@ -113,7 +113,7 @@ class RoomTypeServiceTest {
 
     private static Stream<Arguments> roomTypeInsert() {
         return Stream.of(
-                //region Test Case 1 - Update roomtype with correct data
+                //region Test Case 1 - Insert roomtype with correct data
                 Arguments.of(
                         "Insert roomtype with correct data",
                         Map.of(RoomTypeDao.TYPE, "Suite", RoomTypeDao.PRICE, 20.2),

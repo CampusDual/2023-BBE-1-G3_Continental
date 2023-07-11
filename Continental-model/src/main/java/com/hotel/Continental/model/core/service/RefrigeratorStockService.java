@@ -151,7 +151,10 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             Map<String, Object> ids = new HashMap<>();
             ids.putAll(attrMap);
             ids.putAll(keyMap);
-            addExtraExpense(ids);
+            er = addExtraExpense(ids);
+            if (er.getCode()==1){
+                return er;
+            }
         }
 
         attrMap.put(RefrigeratorStockDao.STOCK, newStock);
@@ -161,7 +164,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, filter);
     }
 
-    public void addExtraExpense(Map<String, Object> map) {
+    public EntityResult addExtraExpense(Map<String, Object> map) {
         Map<String, Object> productFilter = new HashMap<>();
         productFilter.put(ProductsDao.PRODUCTID, map.get(RefrigeratorStockDao.PRODUCTID));
         List<String> productColumns = new ArrayList<>();
@@ -169,8 +172,6 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         productColumns.add(ProductsDao.PRICE);
         EntityResult product = this.daoHelper.query(this.productDao, productFilter, productColumns);
         Date now = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String nowformatted = format.format(now);
 
         String concept = "Fridge: " + (String) product.getRecordValues(0).get(ProductsDao.NAME) + " / " + now;
         Double price = (Double) product.getRecordValues(0).get(ProductsDao.PRICE);
@@ -181,19 +182,31 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         int roomid = (Integer) room.getRecordValues(0).get(RefrigeratorsDao.ROOM_ID);
         BasicField initialDate = new BasicField(BookingDao.STARTDATE);
         BasicField endDate = new BasicField(BookingDao.ENDDATE);
-        BasicExpression bexp1 = new BasicExpression(initialDate, BasicOperator.MORE_EQUAL_OP, nowformatted); //initialDate >= today
-        BasicExpression bexp2 = new BasicExpression(endDate, BasicOperator.LESS_EQUAL_OP, nowformatted);//endDate <= today
-        BasicExpression bexp12 = new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);//initialDate >= today AND endDate <= today
+        BasicExpression bexp1 = new BasicExpression(initialDate, BasicOperator.LESS_EQUAL_OP, now); //initialDate >= today
+        BasicExpression bexp2 = new BasicExpression(endDate, BasicOperator.MORE_EQUAL_OP, now);//endDate >= today
+        BasicExpression bexp12 = new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);//initialDate <= today AND endDate <= today
         Map<String, Object> filterDates = new HashMap<>();
         filterDates.put(BookingDao.ROOMID, roomid);
         filterDates.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp12);
         EntityResult booking = this.daoHelper.query(this.bookingDao, filterDates, List.of(BookingDao.BOOKINGID));
+
+        if (booking.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+
         int bookingid = (Integer) booking.getRecordValues(0).get(BookingDao.BOOKINGID);
 
         Map<String, Object> data = new HashMap<>();
         data.put(ExtraExpensesDao.BOOKINGID, bookingid);
         data.put(ExtraExpensesDao.CONCEPT, concept);
-        data.put(ExtraExpensesDao.PRICE, price);
-        this.daoHelper.insert(this.extraExpensesDao, data);
+        double finalprice = 0;
+        for (int i = 0; i<Math.abs((Integer) map.get(RefrigeratorStockDao.STOCK));i++) {
+            finalprice = finalprice + price;
+        }
+        data.put(ExtraExpensesDao.PRICE, finalprice);
+        return this.daoHelper.insert(this.extraExpensesDao, data);
     }
 }

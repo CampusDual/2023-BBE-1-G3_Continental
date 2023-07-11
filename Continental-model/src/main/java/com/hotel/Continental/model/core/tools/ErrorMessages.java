@@ -19,6 +19,8 @@ public class ErrorMessages {
     public static final String BOOKING_CHECK_IN_SUCCESS = "M_BOOKING_CHECK_IN_SUCCESS";
     public static final String BOOKING_CHECK_OUT_SUCCESS = "M_BOOKING_CHECK_OUT_SUCCESS";
     public static final String BOOKING_DOESNT_BELONG_CLIENT = "M_BOOKING_DOESNT_BELONG_CLIENT";
+    public static final String BOOKING_NOT_STARTED = "M_BOOKING_NOT_STARTED";
+    public static final String BOOKING_ALREADY_IN_PARKING = "M_BOOKING_ALREADY_IN_PARKING";
     //Fechas
     public static final String DATE_FORMAT_ERROR = "M_DATE_FORMAT_ERROR";
     public static final String FINAL_DATE_BEFORE_INITIAL_DATE = "M_FINAL_DATE_BEFORE_INITIAL_DATE";
@@ -60,6 +62,8 @@ public class ErrorMessages {
     public static final String CARD_DOESNT_BELONG_BOOKING = "M_CARD_DOESNT_BELONG_BOOKING";
     //Criterios
     public static final String CRITERIA_NOT_EXIST = "M_CRITERIA_NOT_EXIST";
+    public static final String MULTIPLIER_NOT_NUMBER = "M_MULTIPLIER_NOT_NUMBER";
+    public static final String MULTIPLIER_NOT_POSITIVE = "M_MULTIPLIER_NOT_POSITIVE";
     //Neveras
     public static final String CAPACITY_NOT_NUMBER = "M_CAPACITY_NOT_NUMBER";
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
@@ -69,13 +73,26 @@ public class ErrorMessages {
     public static final String UPDATE_STOCK_ZERO = "M_UPDATE_STOCK_ZERO";
     public static final String REFRIGERATOR_BLOCKED = "M_REFRIGERATOR_BLOCKED";
     public static final String REFRIGERATOR_NOT_EXIST = "M_REFRIGERATOR_NOT_EXIST";
+
+    //Fridge Stock
+    public static final String STOCK_NOT_NUMBER = "M_STOCK_NOT_NUMBER";
+    //Products
+    public static final String PRODUCT_NOT_EXIST = "M_PRODUCT_NOT_EXIST";
+    public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
     //Extra Expenses
     public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
+
     public static final String PRODUCT_NOT_EXISTS = "M_PRODUCT_NOT_EXISTS";
 
-    private ErrorMessages() {
+
+    //Parking
+    public static final String PARKING_ALREADY_EXIST = "M_PARKING_ALREADY_EXIST";
+    public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
+    public static final String PARKING_FULL = "M_PARKING_FULL";
+    public static final String BOOKING_NOT_SAME_HOTEL_AS_PARKING = "M_BOOKING_NOT_SAME_HOTEL_AS_PARKING";
+  private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }
 }

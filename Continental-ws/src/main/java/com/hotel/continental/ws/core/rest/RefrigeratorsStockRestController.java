@@ -19,10 +19,4 @@ public class RefrigeratorsStockRestController extends ORestController<IRefrigera
     public IRefrigeratorStockService getService() {
         return this.refrigeratorStockService;
     }
-
-    @PutMapping(value = "/refrigeratorDefault", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EntityResult refrigeratorDefaultUpdate(@RequestBody Map<String, Object> req) {
-        Map<String, Object> attr = ( Map<String, Object>) req.get("data");
-        return this.getService().refrigeratorDefaultUpdate(attr);
-    }
 }

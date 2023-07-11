@@ -16,4 +16,5 @@ public class ParkingDao extends OntimizeJdbcDaoSupport {
     public static final String TOTAL_CAPACITY = "total_capacity";
     public static final String OCCUPIED_CAPACITY = "occupied_capacity";
     public static final String DESCRIPTION = "description";
+    public static final String PRICE = "price";
 }

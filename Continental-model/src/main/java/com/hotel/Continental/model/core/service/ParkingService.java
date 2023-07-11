@@ -1,10 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IParkingService;
-import com.hotel.continental.model.core.dao.BookingDao;
-import com.hotel.continental.model.core.dao.ParkingDao;
-import com.hotel.continental.model.core.dao.ParkingHistoryDao;
-import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -17,6 +14,7 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 import com.ontimize.jee.common.db.SQLStatementBuilder.ExtendedSQLConditionValuesProcessor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +36,8 @@ public class ParkingService implements IParkingService {
     private ParkingHistoryService parkingHistoryService;
     @Autowired
     private RoomDao roomDao;
+    @Autowired
+    private ExtraExpensesService extraExpensesService;
 
 
     @Override
@@ -83,11 +83,12 @@ public class ParkingService implements IParkingService {
         //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva
         Date startDate = (Date) erBooking.getRecordValues(0).get(BookingDao.STARTDATE);
         Date currentDate = new Date();
-        if(startDate.compareTo(currentDate) > 0){
+        if(startDate.compareTo(currentDate) >= 0){
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.BOOKING_NOT_STARTED);
             return er;
         }
+        //TODO preguntar cesar si es correctro comprobar si hizo checkin a la hora de entrar al parking
         //Comprobar que la reserva esta activa,que hizo checkin y que no ha hecho checkout
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -160,6 +161,7 @@ public class ParkingService implements IParkingService {
         //Obtener todos los parking_history de la reserva
         Map<String, Object> attrMapParkingHistory = new HashMap<>();
         attrMapParkingHistory.put(ParkingHistoryDao.ID_BOOKING,attrMap.get(ParkingHistoryDao.ID_BOOKING));
+        attrMapParkingHistory.put(ParkingHistoryDao.ID_PARKING,attrMap.get(ParkingHistoryDao.ID_PARKING));
         BasicField field = new BasicField(ParkingHistoryDao.EXIT_DATE);
         BasicExpression bexp = new BasicExpression(field,BasicOperator.NULL_OP,null);
         attrMapParkingHistory.put(ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexp);
@@ -182,6 +184,59 @@ public class ParkingService implements IParkingService {
         Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.ID_PARKING,attrMap.get(ParkingDao.ID_PARKING));
         Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
         EntityResult erUpdateParking = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
+        //Lo calculo al final, es mas sencillo entender que si la fecha de salida existe 1o mas veces ya se tuvo en cuenta el dia de hoy
+        //De la otra forma tendria que buscar los que tuvieran fecha de salida hoy,
+        calculateParkingTime(attrMap);
         return er;
+    }
+    public EntityResult calculateParkingTime(Map<?,?> attr){
+        Map<String,Object> attrParkingHistory = new HashMap<>();
+        BasicField fieldSalida = new BasicField(ParkingHistoryDao.EXIT_DATE);
+        //Tengo que buscar que no haya salido del parking ese mismo dia,si salio ese dia ya se conto
+        BasicExpression bexp1 = new BasicExpression(fieldSalida,BasicOperator.EQUAL_OP,new Date());//FechaSalida=Hoy
+        BasicExpression bexp2 = new BasicExpression(fieldSalida,BasicOperator.NULL_OP,null);//FechaSalida=null
+        BasicExpression bexp = new BasicExpression(bexp1,BasicOperator.OR_OP,bexp2);//FechaSalida=Hoy OR FechaSalida=null
+        //Añado la condicion de que sea la reserva indicada
+        attrParkingHistory.put(ParkingHistoryDao.ID_BOOKING,attr.get(ParkingHistoryDao.ID_BOOKING));
+        //Añado la condicion de que la fecha de salida sea hoy o null
+        attrParkingHistory.put(ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY,bexp);
+
+        EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao,attrParkingHistory,List.of(ParkingHistoryDao.ID,ParkingHistoryDao.ID_BOOKING,ParkingHistoryDao.ENTRY_DATE,ParkingHistoryDao.EXIT_DATE));
+        //Si hay un registro de salida + 1 nulo,es decir que entro y salio el mismo dia,devuelvo el registro
+        if(erParkingHistory.calculateRecordNumber() > 1){
+            return erParkingHistory;
+        }
+        //Si no hay registro de salida hoy,obtengo la fecha de entrada y calculo el tiempo que ha estado en el parking
+        Date entrada = (Date) erParkingHistory.getRecordValues(0).get(ParkingHistoryDao.ENTRY_DATE);
+        Date salida = (Date) erParkingHistory.getRecordValues(0).get(ParkingHistoryDao.EXIT_DATE);
+        //Calculo los dias que pasaron entre la entrada y la salida
+        long diff = salida.getTime() - entrada.getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        //Si el tiempo que ha estado en el parking es 0 dias,es decir entro y salio el mismo dia,le sumo 1 dia
+        if(diffDays == 0){
+            diffDays++;
+        }
+        //Obtengo el id de la reserva
+        int idReserva = (int) attr.get(ParkingHistoryDao.ID_BOOKING);
+        //Obtengo el id del parking
+        int idParking = (int) attr.get(ParkingDao.ID_PARKING);
+        //Obtengo el precio del parking
+        Map<String,Object> attrMapParking = Map.of(ParkingDao.ID_PARKING,idParking);
+        EntityResult erParking = this.daoHelper.query(parkingDao,attrMapParking,List.of(ParkingDao.PRICE,ParkingDao.DESCRIPTION));
+        BigDecimal price = (BigDecimal) erParking.getRecordValues(0).get(ParkingDao.PRICE);
+        //Calculo el precio total
+        BigDecimal totalPrice = price.multiply(new BigDecimal(diffDays));
+        //Añado el precio a la tabla extra_expenses
+        StringBuilder sb = new StringBuilder();
+        String description = (String) erParking.getRecordValues(0).get(ParkingDao.DESCRIPTION);
+        sb.append(description);
+        sb.append(" ");
+        sb.append(entrada+"/"+salida);
+        Map<String,Object> attrMapExtraExpenses = new HashMap<>();
+        attrMapExtraExpenses.put(ExtraExpensesDao.BOOKINGID,idReserva);
+        attrMapExtraExpenses.put(ExtraExpensesDao.CONCEPT,sb.toString());
+        attrMapExtraExpenses.put(ExtraExpensesDao.PRICE,totalPrice);
+        EntityResult erExtraExpenses = extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
+        return erExtraExpenses;
     }
 }

@@ -2,8 +2,8 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
-import com.hotel.continental.model.core.tools.CheckDocument;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -148,7 +148,7 @@ public class ClientService implements IClientService {
         }
         if (attrMap.get(ClientDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (!CheckDocument.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
+            if (!Validation.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);

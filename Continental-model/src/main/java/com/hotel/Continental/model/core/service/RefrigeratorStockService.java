@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRefrigeratorStockService;
+import com.hotel.continental.model.core.dao.ProductsDao;
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;

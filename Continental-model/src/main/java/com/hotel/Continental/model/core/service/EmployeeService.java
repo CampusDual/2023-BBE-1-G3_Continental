@@ -1,11 +1,10 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IEmployeeService;
-import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.HotelDao;
-import com.hotel.continental.model.core.tools.CheckDocument;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -52,7 +51,7 @@ public class EmployeeService implements IEmployeeService {
         //Comprobamos que el documento es válido
         if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (!CheckDocument.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
+            if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
                 return er;
             }
@@ -89,7 +88,7 @@ public class EmployeeService implements IEmployeeService {
         //Comprobamos que el documento es válido
         if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (!CheckDocument.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
+            if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
                 er.setMessage(ErrorMessages.DOCUMENT_NOT_VALID);
                 return er;
             }

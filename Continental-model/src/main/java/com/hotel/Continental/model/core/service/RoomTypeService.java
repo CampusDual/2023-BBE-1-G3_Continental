@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IRoomTypeService;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -31,6 +32,15 @@ public class RoomTypeService implements IRoomTypeService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+
+        //Comprobar formato correcto en price
+        if(attrMap.get(RoomTypeDao.PRICE) != null) {
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString());
+            if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
+                return checkNumber;
+            }
+        }
+
         return this.daoHelper.insert(this.roomtypeDao, attrMap);
     }
 
@@ -60,6 +70,15 @@ public class RoomTypeService implements IRoomTypeService {
             er.setMessage(ErrorMessages.ROOMTYPE_NOT_EXIST);
             return er;
         }
+
+        //Comprobar formato correcto en price
+        if(attrMap.get(RoomTypeDao.PRICE) != null) {
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(RoomTypeDao.PRICE).toString());
+            if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
+                return checkNumber;
+            }
+        }
+
         return this.daoHelper.update(this.roomtypeDao, attrMap, keyMap);
     }
 }

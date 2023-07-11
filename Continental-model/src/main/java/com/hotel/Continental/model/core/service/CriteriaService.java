@@ -4,6 +4,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.ICriteriaService;
 import com.hotel.continental.model.core.dao.CriteriaDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -76,17 +77,9 @@ public class CriteriaService implements ICriteriaService {
 
         //Comprobar formato correcto en multiplicador
         if(attrMap.get(CriteriaDao.MULTIPLIER) != null) {
-            try {
-                double multiplier = Double.parseDouble(attrMap.get(CriteriaDao.MULTIPLIER).toString());
-                if(multiplier <= 0) {
-                    er.setMessage(ErrorMessages.MULTIPLIER_NOT_CORRECT_FORMAT);
-                    return er;
-                }
-            } catch (NumberFormatException e) {
-                EntityResult erError = new EntityResultMapImpl();
-                erError.setCode(EntityResult.OPERATION_WRONG);
-                erError.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
-                return erError;
+            EntityResult checkNumber = Validation.checkNumber(attrMap.get(CriteriaDao.MULTIPLIER).toString());
+            if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
+                return checkNumber;
             }
         }
 

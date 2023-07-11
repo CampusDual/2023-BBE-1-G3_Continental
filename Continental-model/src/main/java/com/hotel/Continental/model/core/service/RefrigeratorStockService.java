@@ -166,7 +166,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         Date now = new Date();
         String concept = "Fridge: " + (String) product.getRecordValues(0).get(ProductsDao.NAME) + " / " + now;
         Double price = (Double) product.getRecordValues(0).get(ProductsDao.PRICE);
-        
+
     }
 
 }

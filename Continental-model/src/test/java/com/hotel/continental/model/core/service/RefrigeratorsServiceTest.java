@@ -36,8 +36,8 @@ class RefrigeratorsServiceTest {
     RefrigeratorsDao refrigeratorsDao;
 
     @ParameterizedTest(name = "Test case {index} : {0}")
-    @MethodSource("regrigeratorInsert")
-    void testRegrigeratorInsert(String testCaseName, Map<String, Object> attr, EntityResult expectedResult, List<Supplier> mock) {
+    @MethodSource("refrigeratorInsert")
+    void testRefrigeratorInsert(String testCaseName, Map<String, Object> attr, EntityResult expectedResult, List<Supplier> mock) {
         //For each test case, execute the mock,to make sure the mock is called
         mock.forEach(Supplier::get);
         EntityResult result = refrigeratorsService.refrigeratorsInsert(attr);
@@ -46,7 +46,7 @@ class RefrigeratorsServiceTest {
         assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    private static Stream<Arguments> regrigeratorInsert() {
+    private static Stream<Arguments> refrigeratorInsert() {
         return Stream.of(
                 //region Test Case 1: Insert Refrigerator with correct data
                 Arguments.of(

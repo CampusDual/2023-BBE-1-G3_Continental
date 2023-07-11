@@ -63,10 +63,15 @@ public class ErrorMessages {
     //Criterios
     public static final String CRITERIA_NOT_EXIST = "M_CRITERIA_NOT_EXIST";
     public static final String MULTIPLIER_NOT_NUMBER = "M_MULTIPLIER_NOT_NUMBER";
-    public static final String MULTIPLIER_NOT_CORRECT_FORMAT = "M_MULTIPLIER_NOT_CORRECT_FORMAT";
+    public static final String MULTIPLIER_NOT_POSITIVE = "M_MULTIPLIER_NOT_POSITIVE";
     //Neveras
     public static final String CAPACITY_NOT_NUMBER = "M_CAPACITY_NOT_NUMBER";
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
+    //Fridge Stock
+    public static final String STOCK_NOT_NUMBER = "M_STOCK_NOT_NUMBER";
+    //Products
+    public static final String PRODUCT_NOT_EXIST = "M_PRODUCT_NOT_EXIST";
+    public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
     //Extra Expenses

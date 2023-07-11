@@ -86,8 +86,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             return er;
         }
         Map<String, Object> productmap = new HashMap<>();
-        productmap.put(RefrigeratorsDao.FRIDGE_ID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
-        EntityResult existproduct = this.daoHelper.query(this.refrigeratorsDao, productmap, List.of(RefrigeratorsDao.FRIDGE_ID));
+        productmap.put(ProductsDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+        EntityResult existproduct = this.daoHelper.query(this.productDao, productmap, List.of(ProductsDao.PRODUCTID));
         if (existproduct.calculateRecordNumber() == 0) {
             er.setMessage(ErrorMessages.PRODUCT_NOT_EXISTS);
             return er;

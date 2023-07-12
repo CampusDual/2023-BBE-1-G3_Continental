@@ -76,6 +76,7 @@ public class ErrorMessages {
 
     //Fridge Stock
     public static final String STOCK_NOT_NUMBER = "M_STOCK_NOT_NUMBER";
+    public static final String NOT_REGISTERS_FOUND = "M_NOT_REGISTERS_FOUND";
     //Products
     public static final String PRODUCT_NOT_EXIST = "M_PRODUCT_NOT_EXIST";
     public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";
@@ -92,7 +93,9 @@ public class ErrorMessages {
     public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
     public static final String PARKING_FULL = "M_PARKING_FULL";
     public static final String BOOKING_NOT_SAME_HOTEL_AS_PARKING = "M_BOOKING_NOT_SAME_HOTEL_AS_PARKING";
-  private ErrorMessages() {
+
+
+    private ErrorMessages() {
         throw new IllegalStateException("Utility class");
     }
 }

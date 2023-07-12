@@ -7,13 +7,9 @@ import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.apache.commons.math3.stat.descriptive.summary.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
@@ -79,6 +75,23 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, mapStockid);
     }
+
+    @Override
+    public EntityResult refrigeratorStockQuery(Map<String, Object> keyMap, List<String> attrList) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        if (attrList.isEmpty()) {
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
+        if (stock.calculateRecordNumber() == 0) {
+            er.setMessage(ErrorMessages.NOT_REGISTERS_FOUND);
+            return er;
+        }
+        return stock;
+    }
+
 
     @Override
     public EntityResult refrigeratorStockUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {

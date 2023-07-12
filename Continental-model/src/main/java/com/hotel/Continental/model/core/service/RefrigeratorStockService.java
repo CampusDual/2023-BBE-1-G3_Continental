@@ -125,7 +125,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         productmap.put(ProductsDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
         EntityResult existproduct = this.daoHelper.query(this.productDao, productmap, List.of(ProductsDao.PRODUCTID));
         if (existproduct.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.PRODUCT_NOT_EXISTS);
+            er.setMessage(ErrorMessages.PRODUCT_NOT_EXIST);
             return er;
         }
 

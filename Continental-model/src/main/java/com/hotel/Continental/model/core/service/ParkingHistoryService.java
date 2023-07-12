@@ -27,4 +27,15 @@ public class ParkingHistoryService {
         return this.daoHelper.insert(parkingHistoryDao, attrMap);
     }
 
+    /**
+     * Actualizacion de un registro en la tabla parking_history
+     * @param attrMap
+     * @param keyMap
+     * @return
+     */
+    public EntityResult parkingHistoryExit(Map<String, Object> attrMap, Map<String, Object> keyMap) {
+        //Solo va ser usada desde el servicio de parking
+        return this.daoHelper.update(parkingHistoryDao, attrMap, keyMap);
+    }
+
 }

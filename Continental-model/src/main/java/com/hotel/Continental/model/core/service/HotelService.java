@@ -87,7 +87,7 @@ public class HotelService implements IHotelService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos mull key
-        if(keyMap.containsKey(HotelDao.ID)){
+        if(keyMap.get(HotelDao.ID) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(ErrorMessages.NECESSARY_KEY);

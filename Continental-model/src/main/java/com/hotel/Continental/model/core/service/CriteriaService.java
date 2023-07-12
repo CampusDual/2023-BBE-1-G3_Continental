@@ -79,14 +79,12 @@ public class CriteriaService implements ICriteriaService {
             try {
                 double multiplier = Double.parseDouble(attrMap.get(CriteriaDao.MULTIPLIER).toString());
                 if(multiplier <= 0) {
-                    er.setMessage(ErrorMessages.MULTIPLIER_NOT_CORRECT_FORMAT);
+                    er.setMessage(ErrorMessages.MULTIPLIER_NOT_POSITIVE);
                     return er;
                 }
             } catch (NumberFormatException e) {
-                EntityResult erError = new EntityResultMapImpl();
-                erError.setCode(EntityResult.OPERATION_WRONG);
-                erError.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
-                return erError;
+                er.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
+                return er;
             }
         }
 

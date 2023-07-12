@@ -11,19 +11,19 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 
-class test{
+class test {
     public static void main(String[] args) {
         LocalDate localDate = LocalDate.now();
-        DateCondition dateConditionOriginal = new DateCondition(new DateField(localDate),DateOperator.DAYS_BETWEEN,new DateField(localDate.plusDays(5)), new DateField(5));//5 dias entre
-        DateCondition dateConditionOriginal2 = new DateCondition(null,DateOperator.DAYS_BEFORE,null, new DateField(5));//5 dias antes
-        DateCondition dateConditionOriginal3 = new DateCondition(new DateField(localDate),DateOperator.DAY_OF_WEEK,null, new DateField(3));//3 es miercoles
+        DateCondition dateConditionOriginal = new DateCondition(new DateField(localDate), DateOperator.DAYS_BETWEEN, new DateField(localDate.plusDays(5)), new DateField(5));//5 dias entre
+        DateCondition dateConditionOriginal2 = new DateCondition(null, DateOperator.DAYS_BEFORE, null, new DateField(5));//5 dias antes
+        DateCondition dateConditionOriginal3 = new DateCondition(new DateField(localDate), DateOperator.DAY_OF_WEEK, null, new DateField(3));//3 es miercoles
         //Creo el modulo para serializar y deserializar
         DateConditionModule dateConditionModule = new DateConditionModule();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(dateConditionModule.getModule());
         try {
             //Serializo el objeto
-            String json=objectMapper.writeValueAsString(dateConditionOriginal);
+            String json = objectMapper.writeValueAsString(dateConditionOriginal);
             //Deserializo el objeto
             DateCondition dateConditionRecuperada = objectMapper.readValue(json, DateCondition.class);
             //Evaluo la condicion
@@ -35,13 +35,29 @@ class test{
         }
     }
 }
+
 class DateCondition {
     private DateField dateFieldLeft;
     private DateField dateFieldRight;
-    private  DateField daysField;
+    private DateField daysField;
     private DateOperator operator;
 
-
+    /**
+     * Constructor para serializacion
+     * Dependiendo del operador se requieren diferentes parametros
+     * DATE_BETWEEN: dateFieldLeft, dateFieldRight
+     * EQUALS: dateFieldLeft
+     * BEFORE: dateFieldLeft
+     * AFTER: dateFieldLeft
+     * DAY_OF_WEEK: daysField
+     * DAYS_BEFORE: daysField
+     * DAYS_BETWEEN: dateFieldLeft, dateFieldRight, daysField
+     *
+     * @param dateFieldLeft  fecha izquierda
+     * @param operator       operador
+     * @param dateFieldRight fecha derecha
+     * @param daysField      dias
+     */
     public DateCondition(DateField dateFieldLeft, DateOperator operator, DateField dateFieldRight, DateField daysField) {
         validateArguments(operator, dateFieldLeft, dateFieldRight, daysField);
         this.dateFieldLeft = dateFieldLeft;
@@ -75,10 +91,17 @@ class DateCondition {
                 ", operator=" + operator +
                 '}';
     }
+
+    /**
+     * Evalua la condicion
+     *
+     * @param date fecha a evaluar,en algunos casos es ignorada
+     * @return true si la condicion se cumple, false en caso contrario
+     */
     public boolean evaluate(LocalDate date) {
         Object leftValue = dateFieldLeft != null ? dateFieldLeft.getValue() : null;
-        Object rightValue = dateFieldRight!= null ? dateFieldRight.getValue() : null;
-        Object daysValue = daysField!= null ? daysField.getValue() : null;
+        Object rightValue = dateFieldRight != null ? dateFieldRight.getValue() : null;
+        Object daysValue = daysField != null ? daysField.getValue() : null;
 
         switch (operator) {
             case DATE_BETWEEN:
@@ -95,15 +118,15 @@ class DateCondition {
                 }
                 break;
             case BEFORE:
-                if (rightValue instanceof LocalDate) {
-                    LocalDate rightDate = (LocalDate) rightValue;
-                    return date.compareTo(rightDate) < 0;
+                if (leftValue instanceof LocalDate) {
+                    LocalDate leftDate = (LocalDate) leftValue;
+                    return date.compareTo(leftDate) < 0;
                 }
                 break;
             case AFTER:
-                if (rightValue instanceof LocalDate) {
-                    LocalDate rightDate = (LocalDate) rightValue;
-                    return date.compareTo(rightDate) > 0;
+                if (leftValue instanceof LocalDate) {
+                    LocalDate leftDate = (LocalDate) leftValue;
+                    return date.compareTo(leftDate) > 0;
                 }
                 break;
             case DAY_OF_WEEK:
@@ -112,7 +135,7 @@ class DateCondition {
                     return date.getDayOfWeek().getValue() == dayOfWeek;
                 }
                 break;
-            case  DAYS_BEFORE:
+            case DAYS_BEFORE:
                 if (daysValue instanceof Integer) {
                     int daysBefore = (int) daysValue;
                     boolean result = date.compareTo(LocalDate.now().minusDays(daysBefore)) <= 0;
@@ -133,20 +156,33 @@ class DateCondition {
 
         return false;
     }
+
     protected void validateArguments(DateOperator operator, DateField dateFieldLeft, DateField dateFieldRight, DateField daysField) {
         if (operator == DateOperator.DATE_BETWEEN && (dateFieldLeft == null || dateFieldRight == null)) {
-            throw new IllegalArgumentException("The BETWEEN operator requires two date fields.");
+            throw new IllegalArgumentException("The BETWEEN operator requires dateFieldLeft & dateFieldRight fields.");
         }
-        if(operator == DateOperator.DAYS_BEFORE && daysField == null){
-            throw new IllegalArgumentException("The " +operator+ " operator requires days field.");
+        if (operator == DateOperator.DAYS_BEFORE && daysField == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires days field.");
         }
-        if(operator==DateOperator.DAYS_BETWEEN && (dateFieldLeft == null || dateFieldRight == null || daysField == null)){
-            throw new IllegalArgumentException("The " +operator+ " operator requires two date fields and days field.");
+        if (operator == DateOperator.DAYS_BETWEEN && (dateFieldLeft == null || dateFieldRight == null || daysField == null)) {
+            throw new IllegalArgumentException("The " + operator + " operator requires two date fields and days field.");
         }
-
+        if (operator == DateOperator.EQUALS && dateFieldLeft == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires a dateFieldLeft field.");
+        }
+        if (operator == DateOperator.BEFORE && dateFieldLeft == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires a dateFieldLeft field.");
+        }
+        if (operator == DateOperator.AFTER && dateFieldLeft == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires a dateFieldLeft field.");
+        }
+        if (operator == DateOperator.DAY_OF_WEEK && daysField == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires a days field.");
+        }
     }
 
 }
+
 enum DateOperator {
     DATE_BETWEEN,
     EQUALS,
@@ -156,7 +192,6 @@ enum DateOperator {
     DAYS_BEFORE,
     DAYS_BETWEEN
 }
-
 
 
 class DateConditionModule {
@@ -229,6 +264,7 @@ class DateConditionModule {
             return null;
         }
     }
+
     public static class DateFieldSerializer extends JsonSerializer<DateField> {
         @Override
         public void serialize(DateField dateField, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -264,6 +300,7 @@ class DateField {
     public Integer getDays() {
         return days;
     }
+
     public Object getValue() {
         if (date != null) {
             return date;

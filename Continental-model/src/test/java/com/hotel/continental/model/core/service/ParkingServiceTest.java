@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -114,7 +113,7 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erParkingHistory = new EntityResultMapImpl();
                                     erParkingHistory.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    return Mockito.when(parkingHistoryService.parkingHistoryInsert(anyMap())).thenReturn(erParkingHistory);
+                                    return Mockito.when(parkingHistoryService.parkingHistoryEnter(anyMap())).thenReturn(erParkingHistory);
                                 },
                                 // Mock  update parkingDao
                                 (Supplier) () -> {

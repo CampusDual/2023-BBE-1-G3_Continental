@@ -151,12 +151,6 @@ public class ParkingService implements IParkingService {
             er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
             return er;
         }
-        //Comprobar que la reserva esta activa,que no ha hecho checkout
-        if(erBooking.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null){
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
-            return er;
-        }
         //Comprobar que la reserva ha entrado pero no salio (es decir tiene fecha de entrada pero no de salida)
         //Obtener todos los parking_history de la reserva
         Map<String, Object> attrMapParkingHistory = new HashMap<>();
@@ -177,7 +171,7 @@ public class ParkingService implements IParkingService {
         Map<String,Object> keyMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.ID,idParkingHistory);
         Date currentDate = new Date();
         Map<String,Object> attrMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.EXIT_DATE,currentDate);
-        EntityResult erUpdate = this.daoHelper.update(parkingHistoryDao,attrMapParkingHistoryUpdate,keyMapParkingHistoryUpdate);
+        EntityResult erUpdate = parkingHistoryService.parkingHistoryExit(attrMapParkingHistoryUpdate,keyMapParkingHistoryUpdate);
         //Actualizar tabla parking para restar 1 a los coches que hay en el parking
         int occupiedCapacity = (int) erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
         occupiedCapacity--;

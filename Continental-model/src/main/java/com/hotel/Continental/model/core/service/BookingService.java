@@ -513,6 +513,11 @@ public class BookingService implements IBookingService {
         price = price.add(extradecimal);
         for(int i=0;i<historic.calculateRecordNumber();i++) {
             extradecimal = BigDecimal.valueOf((Double) historic.getRecordValues(i).get(ExtraExpensesDao.PRICE));
+            String key = (String) historic.getRecordValues(i).get(ExtraExpensesDao.CONCEPT) + ": ";
+            if (extraexpenses.containsKey(key)) {
+                BigDecimal repeatedexpense = (BigDecimal) extraexpenses.get(key);
+                extradecimal = extradecimal.add(repeatedexpense);
+            }
             extraexpenses.put((String) historic.getRecordValues(i).get(ExtraExpensesDao.CONCEPT) + ": ", extradecimal);
             price = price.add(extradecimal);
         }

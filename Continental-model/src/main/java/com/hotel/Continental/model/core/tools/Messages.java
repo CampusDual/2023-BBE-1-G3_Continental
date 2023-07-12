@@ -67,6 +67,13 @@ public class Messages {
     //Neveras
     public static final String CAPACITY_NOT_NUMBER = "M_CAPACITY_NOT_NUMBER";
     public static final String CAPACITY_NOT_POSITIVE = "M_CAPACITY_NOT_POSITIVE";
+    public static final String PRODUCT_NOT_NECESSARY = "M_PRODUCT_NOT_NECESSARY";
+    public static final String NEW_STOCK_HIGHER_THAN_DEFAULT = "M_NEW_STOCK_HIGHER_THAN_DEFAULT";
+    public static final String NEW_STOCK_UNDER_ZERO = "M_NEW_STOCK_UNDER_ZERO";
+    public static final String UPDATE_STOCK_ZERO = "M_UPDATE_STOCK_ZERO";
+    public static final String REFRIGERATOR_BLOCKED = "M_REFRIGERATOR_BLOCKED";
+    public static final String REFRIGERATOR_NOT_EXIST = "M_REFRIGERATOR_NOT_EXIST";
+
     //Fridge Stock
     public static final String STOCK_NOT_NUMBER = "M_STOCK_NOT_NUMBER";
     //Products
@@ -78,6 +85,10 @@ public class Messages {
     public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
     //Extra Expenses
     public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
+
+    public static final String PRODUCT_NOT_EXISTS = "M_PRODUCT_NOT_EXISTS";
+
+
     //Parking
     public static final String PARKING_ALREADY_EXIST = "M_PARKING_ALREADY_EXIST";
     public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";

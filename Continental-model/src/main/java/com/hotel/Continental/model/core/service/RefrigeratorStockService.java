@@ -77,7 +77,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
     }
 
     @Override
-    public EntityResult refrigeratorStockQuery(Map<String, Object> keyMap, List<String> attrList) {
+    public EntityResult refrigeratorstockQuery(Map<String, Object> keyMap, List<String> attrList) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (attrList.isEmpty()) {

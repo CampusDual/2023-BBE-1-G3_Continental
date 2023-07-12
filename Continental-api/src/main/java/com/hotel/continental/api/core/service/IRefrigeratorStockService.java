@@ -8,6 +8,6 @@ import java.util.Map;
 public interface IRefrigeratorStockService {
     public EntityResult refrigeratorStockUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap);
     public EntityResult refrigeratorDefaultUpdate(Map<String,Object> attrMap, Map<?,?> keyMap);
-    public EntityResult refrigeratorStockQuery(Map<String,Object> keyMap, List<String> attrList);
+    public EntityResult refrigeratorstockQuery(Map<String,Object> keyMap, List<String> attrList);
 
 }

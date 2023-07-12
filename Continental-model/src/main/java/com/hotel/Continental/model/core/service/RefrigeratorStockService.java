@@ -1,20 +1,19 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRefrigeratorStockService;
-import com.hotel.continental.model.core.dao.ExtraExpensesDao;
-import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
-import com.hotel.continental.model.core.dao.RefrigeratorsDao;
+import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
+import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 
 @Lazy
 @Service("RefrigeratorStockService")
@@ -29,6 +28,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
     DefaultOntimizeDaoHelper daoHelper;
     @Autowired
     ExtraExpensesDao extraExpensesDao;
+    @Autowired
+    BookingDao bookingDao;
     
     @Override
     public EntityResult refrigeratorDefaultUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
@@ -74,6 +75,23 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
 
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, mapStockid);
     }
+
+    @Override
+    public EntityResult refrigeratorstockQuery(Map<String, Object> keyMap, List<String> attrList) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        if (attrList.isEmpty()) {
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
+        if (stock.calculateRecordNumber() == 0) {
+            er.setMessage(ErrorMessages.NOT_REGISTERS_FOUND);
+            return er;
+        }
+        return stock;
+    }
+
 
     @Override
     public EntityResult refrigeratorStockUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
@@ -141,9 +159,67 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
             return er;
         }
+
+        if ((Integer) attrMap.get(RefrigeratorStockDao.STOCK) < 0) {
+            Map<String, Object> ids = new HashMap<>();
+            ids.putAll(attrMap);
+            ids.putAll(keyMap);
+            er = addExtraExpense(ids);
+            if (er.getCode()==1){
+                return er;
+            }
+        }
+
         attrMap.put(RefrigeratorStockDao.STOCK, newStock);
         Map<String, Object> filter = new HashMap<>();
         filter.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, filter);
+    }
+
+    public EntityResult addExtraExpense(Map<String, Object> map) {
+        Map<String, Object> productFilter = new HashMap<>();
+        productFilter.put(ProductsDao.PRODUCTID, map.get(RefrigeratorStockDao.PRODUCTID));
+        List<String> productColumns = new ArrayList<>();
+        productColumns.add(ProductsDao.NAME);
+        productColumns.add(ProductsDao.PRICE);
+        EntityResult product = this.daoHelper.query(this.productDao, productFilter, productColumns);
+        Date now = new Date();
+
+        String concept = "Fridge: " + (String) product.getRecordValues(0).get(ProductsDao.NAME) + " / " + now;
+        Double price = (Double) product.getRecordValues(0).get(ProductsDao.PRICE);
+
+        Map<String, Object> refrigeratorFilter = new HashMap<>();
+        refrigeratorFilter.put(RefrigeratorsDao.FRIDGE_ID, map.get(RefrigeratorStockDao.REFRIGERATORID));
+        EntityResult room = this.daoHelper.query(this.refrigeratorsDao, refrigeratorFilter, List.of(RefrigeratorsDao.ROOM_ID));
+        int roomid = (Integer) room.getRecordValues(0).get(RefrigeratorsDao.ROOM_ID);
+        BasicField initialDate = new BasicField(BookingDao.STARTDATE);
+        BasicField endDate = new BasicField(BookingDao.ENDDATE);
+        BasicExpression bexp1 = new BasicExpression(initialDate, BasicOperator.LESS_EQUAL_OP, now); //initialDate >= today
+        BasicExpression bexp2 = new BasicExpression(endDate, BasicOperator.MORE_EQUAL_OP, now);//endDate >= today
+        BasicExpression bexp12 = new BasicExpression(bexp1, BasicOperator.AND_OP, bexp2);//initialDate <= today AND endDate <= today
+        Map<String, Object> filterDates = new HashMap<>();
+        filterDates.put(BookingDao.ROOMID, roomid);
+        filterDates.put(SQLStatementBuilder.ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp12);
+        EntityResult booking = this.daoHelper.query(this.bookingDao, filterDates, List.of(BookingDao.BOOKINGID));
+
+        if (booking.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            return er;
+        }
+
+        int bookingid = (Integer) booking.getRecordValues(0).get(BookingDao.BOOKINGID);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put(ExtraExpensesDao.BOOKINGID, bookingid);
+        data.put(ExtraExpensesDao.CONCEPT, concept);
+        double finalprice = 0;
+        for (int i = 0; i<Math.abs((Integer) map.get(RefrigeratorStockDao.STOCK));i++) {
+            finalprice = finalprice + price;
+        }
+        data.put(ExtraExpensesDao.PRICE, finalprice);
+        return this.daoHelper.insert(this.extraExpensesDao, data);
     }
 }

@@ -10,29 +10,50 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 class test {
+    //TODO Cambiar el DAY_OF_WEEK por una lista de dias,para poder comprobar varios dias
+    //TODO Crear enum con los dias de la semana?
+    //TODO Crear un nuevo operador que sea SEASON
+    //TODO Days_Between deberia de aceptar el numero de dias, el evaulador deberia de recibir dos fechas y calcular los dias entre ellas listo
     public static void main(String[] args) {
-        LocalDate localDate = LocalDate.now();
-        DateCondition dateConditionOriginal = new DateCondition(new DateField(localDate), DateOperator.DAYS_BETWEEN, new DateField(localDate.plusDays(5)), new DateField(5));//5 dias entre
-        DateCondition dateConditionOriginal2 = new DateCondition(null, DateOperator.DAYS_BEFORE, null, new DateField(5));//5 dias antes
-        DateCondition dateConditionOriginal3 = new DateCondition(new DateField(localDate), DateOperator.DAY_OF_WEEK, null, new DateField(3));//3 es miercoles
-        //Creo el modulo para serializar y deserializar
+        List<DateCondition> lista = new ArrayList<>();
+        //DateCondition que comprueba si es entre el 1 del 6 y el 31 del 8
+        DateCondition dateConditionHighSeason = new DateCondition(new DateField(LocalDate.of(2020, 6, 1)), DateOperator.DATE_BETWEEN_SEASON, new DateField(LocalDate.of(2020, 8, 31)), null);
+        lista.add(dateConditionHighSeason);
+        //DateCondition que comprueba si es entre el 1 del 9 y el 30 del 11
+        DateCondition dateConditionLowSeason = new DateCondition(new DateField(LocalDate.of(2020, 9, 1)), DateOperator.DATE_BETWEEN_SEASON, new DateField(LocalDate.of(2020, 11, 30)), null);
+        lista.add(dateConditionLowSeason);
+        //DateCondition que comprueba si la reserva se realizo con 10 dias de antelacion
+        DateCondition dateCondition10DaysBefore = new DateCondition(null, DateOperator.DAYS_BEFORE, null, new DateField(10));
+        lista.add(dateCondition10DaysBefore);
+        //DateCondition que comprueba si la reserva dura mas de 5 dias
+        DateCondition dateCondition5DaysBetween = new DateCondition(null, DateOperator.DAYS_BETWEEN, null, new DateField(5));
+        lista.add(dateCondition5DaysBetween);
+        //DateCondition que comprueba si el dia es sabado
+        DateCondition dateConditionSaturday = new DateCondition(null, DateOperator.DAY_OF_WEEK, null, new DateField(6));
+        lista.add(dateConditionSaturday);
+        //DateCondition que comprueba si el dia es domingo
+        DateCondition dateConditionSunday = new DateCondition(null, DateOperator.DAY_OF_WEEK, null, new DateField(7));
+        lista.add(dateConditionSunday);
+
+        //Serializacion
         DateConditionModule dateConditionModule = new DateConditionModule();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(dateConditionModule.getModule());
         try {
-            //Serializo el objeto
-            String json = objectMapper.writeValueAsString(dateConditionOriginal);
-            //Deserializo el objeto
-            DateCondition dateConditionRecuperada = objectMapper.readValue(json, DateCondition.class);
-            //Evaluo la condicion
-            System.out.println(dateConditionOriginal.evaluate(localDate));
-            System.out.println(dateConditionOriginal2.evaluate(localDate.minusDays(5)));
-            System.out.println(dateConditionOriginal3.evaluate(localDate));
+            for (DateCondition dateCondition : lista) {
+                String json = objectMapper.writeValueAsString(dateCondition);
+                System.out.println(json);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
     }
 }
 
@@ -111,6 +132,20 @@ class DateCondition {
                     return date.compareTo(leftDate) >= 0 && date.compareTo(rightDate) <= 0;
                 }
                 break;
+            case DATE_BETWEEN_SEASON:
+                if (leftValue instanceof LocalDate && rightValue instanceof LocalDate) {
+                    LocalDate leftDate = (LocalDate) leftValue;
+                    LocalDate rightDate = (LocalDate) rightValue;
+                    int leftMonth = leftDate.getMonthValue();
+                    int leftDay = leftDate.getDayOfMonth();
+                    int rightMonth = rightDate.getMonthValue();
+                    int rightDay = rightDate.getDayOfMonth();
+                    int currentMonth = date.getMonthValue();
+                    int currentDay = date.getDayOfMonth();
+                    return (currentMonth > leftMonth || (currentMonth == leftMonth && currentDay >= leftDay))
+                            && (currentMonth < rightMonth || (currentMonth == rightMonth && currentDay <= rightDay));
+                }
+                break;
             case EQUALS:
                 if (leftValue instanceof LocalDate) {
                     LocalDate leftDate = (LocalDate) leftValue;
@@ -142,13 +177,27 @@ class DateCondition {
                     return result;
                 }
                 break;
+        }
+
+        return false;
+    }
+
+    /**
+     * Evalua la condicion
+     *
+     * @param initialDate fecha inicial a evaluar
+     * @param endDate     fecha final a evaluar
+     * @return true si la condicion se cumple, false en caso contrario
+     */
+    public boolean evaluate(LocalDate initialDate, LocalDate endDate) {
+        Object daysValue = daysField != null ? daysField.getValue() : null;
+
+        switch (operator) {
             case DAYS_BETWEEN:
-                if (leftValue instanceof LocalDate && rightValue instanceof LocalDate && daysValue instanceof Integer) {
+                if (daysValue instanceof Integer) {
                     //Calcular la diferencia entre leftValue y rightValue
-                    LocalDate leftDate = (LocalDate) leftValue;
-                    LocalDate rightDate = (LocalDate) rightValue;
                     int daysBetween = (int) daysValue;
-                    Period period = Period.between(leftDate, rightDate.plusDays(1));
+                    Period period = Period.between(initialDate, endDate.plusDays(1));
                     return period.getDays() >= daysBetween;
                 }
                 break;
@@ -157,15 +206,19 @@ class DateCondition {
         return false;
     }
 
+
     protected void validateArguments(DateOperator operator, DateField dateFieldLeft, DateField dateFieldRight, DateField daysField) {
+        if(operator == null) {
+            throw new IllegalArgumentException("The operator is required.");
+        }
         if (operator == DateOperator.DATE_BETWEEN && (dateFieldLeft == null || dateFieldRight == null)) {
-            throw new IllegalArgumentException("The BETWEEN operator requires dateFieldLeft & dateFieldRight fields.");
+            throw new IllegalArgumentException("The " + operator + " operator requires two date fields.");
         }
         if (operator == DateOperator.DAYS_BEFORE && daysField == null) {
             throw new IllegalArgumentException("The " + operator + " operator requires days field.");
         }
-        if (operator == DateOperator.DAYS_BETWEEN && (dateFieldLeft == null || dateFieldRight == null || daysField == null)) {
-            throw new IllegalArgumentException("The " + operator + " operator requires two date fields and days field.");
+        if (operator == DateOperator.DAYS_BETWEEN &&  daysField == null) {
+            throw new IllegalArgumentException("The " + operator + " operator requires  days field.");
         }
         if (operator == DateOperator.EQUALS && dateFieldLeft == null) {
             throw new IllegalArgumentException("The " + operator + " operator requires a dateFieldLeft field.");
@@ -179,6 +232,9 @@ class DateCondition {
         if (operator == DateOperator.DAY_OF_WEEK && daysField == null) {
             throw new IllegalArgumentException("The " + operator + " operator requires a days field.");
         }
+        if (operator == DateOperator.DATE_BETWEEN_SEASON && (dateFieldLeft == null || dateFieldRight == null)) {
+            throw new IllegalArgumentException("The " + operator + " operator requires dateFieldLeft & dateFieldRight fields.");
+        }
     }
 
 }
@@ -190,7 +246,8 @@ enum DateOperator {
     AFTER,
     DAY_OF_WEEK,
     DAYS_BEFORE,
-    DAYS_BETWEEN
+    DAYS_BETWEEN,
+    DATE_BETWEEN_SEASON
 }
 
 

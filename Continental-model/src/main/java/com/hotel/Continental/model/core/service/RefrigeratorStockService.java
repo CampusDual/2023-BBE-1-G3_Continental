@@ -99,6 +99,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         //keyMap: refrigeratorid, productid
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
+        //Probamos que se mandan lo necesario
         if (keyMap.get(RefrigeratorStockDao.REFRIGERATORID) == null || keyMap.get(RefrigeratorStockDao.PRODUCTID) == null) {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
@@ -107,10 +108,12 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
         }
+        //Si mandamos la nevera default la bloquea
         if ((Integer) keyMap.get(RefrigeratorStockDao.REFRIGERATORID) == -1) {
             er.setMessage(ErrorMessages.REFRIGERATOR_BLOCKED);
             return er;
         }
+        //Si mandamos un codigo de una nevera o un producto que no existe falla
         Map<String, Object> fridgemap = new HashMap<>();
         fridgemap.put(RefrigeratorsDao.FRIDGE_ID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
         EntityResult existFridge = this.daoHelper.query(this.refrigeratorsDao, fridgemap, List.of(RefrigeratorsDao.FRIDGE_ID));
@@ -126,6 +129,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             return er;
         }
 
+        //Si un producto no existe ni en la nevera fisica ni en la nevera default falla por que no es necesario
         EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, keyMap, List.of(RefrigeratorStockDao.STOCKID));
         Map<String, Object> keyMapDefault = new HashMap<>();
         keyMapDefault.putAll(keyMap);
@@ -135,12 +139,14 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.PRODUCT_NOT_NECESSARY);
             return er;
         }
+        //Si mandamos el stock 0 como no cambia nada falla
         int update = (Integer) attrMap.get(RefrigeratorStockDao.STOCK);
         EntityResult updateStock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, List.of(RefrigeratorStockDao.STOCK));
         if (update == 0) {
             er.setMessage(ErrorMessages.UPDATE_STOCK_ZERO);
             return er;
         }
+        //Si con esos criterios no existe ningun registro, y existe en la default, insertamos
         if (updateStock.calculateRecordNumber() == 0) {
             Map<String, Object> data = new HashMap<>();
             data.putAll(attrMap);
@@ -148,6 +154,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             data.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
             return this.daoHelper.insert(this.refrigeratorStockDao, data);
         }
+
+        //Calculamos que no haya más en el default que en la fisica, y que no haya menos que 0
         int stock = (Integer) updateStock.getRecordValues(0).get(RefrigeratorStockDao.STOCK);
         int newStock = stock + update;
         int defaultStock = (Integer) stockdefault.getRecordValues(0).get(RefrigeratorStockDao.STOCK);
@@ -159,7 +167,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
             return er;
         }
-
+        //Lo añadimos a extra expense
         if ((Integer) attrMap.get(RefrigeratorStockDao.STOCK) < 0) {
             Map<String, Object> ids = new HashMap<>();
             ids.putAll(attrMap);
@@ -170,6 +178,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             }
         }
 
+        //Updateamos el stock
         attrMap.put(RefrigeratorStockDao.STOCK, newStock);
         Map<String, Object> filter = new HashMap<>();
         filter.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));

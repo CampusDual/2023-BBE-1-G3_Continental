@@ -56,18 +56,20 @@ class ExtraExpensesServiceTest {
                         createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
-                                    EntityResult erExpense = new EntityResultMapImpl();
-                                    erExpense.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erExpense.put(ExtraExpensesDao.IDEXPENSE, List.of(1));
-                                    erExpense.put(ExtraExpensesDao.BOOKINGID, List.of(2));
-                                    erExpense.put(ExtraExpensesDao.CONCEPT, List.of("concepto"));
-                                    erExpense.put(ExtraExpensesDao.PRICE, List.of(12));
-
                                     EntityResult erBooking = new EntityResultMapImpl();
-                                    erBooking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erBooking.put(BookingDao.BOOKINGID, List.of(2));
-                                    return List.of(Mockito.when(daoHelper.insert(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap())).thenReturn(erExpense),
-                                            Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erBooking));
+                                    return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erBooking);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erExpense = new EntityResultMapImpl();
+                                    erExpense.put(ExtraExpensesDao.IDEXPENSE, List.of(1));
+
+                                    return Mockito.when(daoHelper.insert(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap())).thenReturn(erExpense);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erExpense = new EntityResultMapImpl();
+
+                                    return Mockito.when(daoHelper.query(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erExpense);
                                 }
                         )
                 ),

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JdbcEntitySetup
+        xmlns="http://www.ontimize.com/schema/jdbc"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.ontimize.com/schema/jdbc http://www.ontimize.com/schema/jdbc/ontimize-jdbc-dao.xsd"
+        catalog="" schema="${mainschema}" table="refrigerator_stock"
+        datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
+    <DeleteKeys>
+        <Column>stock_id</Column>
+    </DeleteKeys>
+    <UpdateKeys>
+        <Column>stock_id</Column>
+    </UpdateKeys>
+    <GeneratedKey>stock_id</GeneratedKey>
+    <Queries>
+        <Query id="getBooking">
+            <Sentence>
+                <![CDATA[
+                         SELECT
+                          #COLUMNS#
+                         FROM
+                          refrigerators r
+                          inner join rooms r2
+                          on r.room_id = r2.roomid
+                          inner join bookings b
+                          on b.roomid = r2.roomid
+                         #WHERE#
+                ]]>
+            </Sentence>
+        </Query>
+    </Queries>
+</JdbcEntitySetup>

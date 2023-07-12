@@ -7,4 +7,5 @@ import java.util.Map;
 
 public interface ICriteriaService {
     public EntityResult criteriaQuery(Map<?,?> keyMap, List<String> attrList);
+    public EntityResult criteriaUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap);
 }

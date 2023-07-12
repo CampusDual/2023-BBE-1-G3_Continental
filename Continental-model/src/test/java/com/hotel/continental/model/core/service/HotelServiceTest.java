@@ -100,10 +100,6 @@ public class HotelServiceTest {
         @Test
         @DisplayName("Test insert empty data")
         void testQueryHotelEmpty() {
-            EntityResult er = new EntityResultMapImpl();
-
-            when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
-
             EntityResult queryResult = hotelService.hotelQuery(new HashMap<>(), List.of());
 
             assertTrue(queryResult.isEmpty());
@@ -149,8 +145,6 @@ public class HotelServiceTest {
             er.setCode(1);
             er.put(HotelDao.NAME, List.of("pruebaActualizada"));
             er.put(HotelDao.ADDRESS, List.of("direccionActualizada"));
-
-            when(daoHelper.query(any(HotelDao.class), anyMap(), anyList())).thenReturn(er);
 
             Map<String, Object> keyMap = new HashMap<>();
             keyMap.put(HotelDao.ID, List.of(1));

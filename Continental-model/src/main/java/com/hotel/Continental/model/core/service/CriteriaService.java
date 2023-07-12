@@ -51,4 +51,43 @@ public class CriteriaService implements ICriteriaService {
         }
         return er;
     }
+
+    @Override
+    public EntityResult criteriaUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        //Compruebo que tenga la clave
+        if(keyMap.isEmpty() || keyMap.get(CriteriaDao.ID) == null) {
+            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            return er;
+        }
+        //Compruebo que el attrMap no este vacio
+        if(attrMap.isEmpty()) {
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        //Compruebo que el criterio exista
+        EntityResult criteriaQuery = this.daoHelper.query(this.criteriaDao, keyMap, List.of(CriteriaDao.ID));
+        if(criteriaQuery.calculateRecordNumber() == 0) {
+            er.setMessage(ErrorMessages.CRITERIA_NOT_EXIST);
+            return er;
+        }
+
+        //Comprobar formato correcto en multiplicador
+        if(attrMap.get(CriteriaDao.MULTIPLIER) != null) {
+            try {
+                double multiplier = Double.parseDouble(attrMap.get(CriteriaDao.MULTIPLIER).toString());
+                if(multiplier <= 0) {
+                    er.setMessage(ErrorMessages.MULTIPLIER_NOT_POSITIVE);
+                    return er;
+                }
+            } catch (NumberFormatException e) {
+                er.setMessage(ErrorMessages.MULTIPLIER_NOT_NUMBER);
+                return er;
+            }
+        }
+
+        return this.daoHelper.update(this.criteriaDao, attrMap, keyMap);
+    }
 }

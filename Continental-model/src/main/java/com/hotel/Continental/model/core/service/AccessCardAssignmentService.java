@@ -167,7 +167,7 @@ public class AccessCardAssignmentService implements IAccessCardAssignmentService
         if ((boolean)query.getRecordValues(0).get(AccessCardDao.AVAILABLE)) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_ALREADY_GIVEN);
+            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_GIVEN);
             return er;
         }
         //Comprobamos que esta asignada a esa reserva

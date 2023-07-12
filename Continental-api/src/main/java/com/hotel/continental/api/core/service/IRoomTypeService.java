@@ -6,5 +6,6 @@ import java.util.Map;
 
 
 public interface IRoomTypeService {
+    public EntityResult roomtypeInsert(Map<?, ?> attrMap);
     public EntityResult roomtypeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap);
 }

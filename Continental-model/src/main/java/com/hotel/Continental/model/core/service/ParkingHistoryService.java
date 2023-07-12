@@ -1,6 +1,5 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IParkingHistoryService;
 import com.hotel.continental.model.core.dao.ParkingHistoryDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 @Lazy
 @Service("ParkingHistoryService")
-public class ParkingHistoryService implements IParkingHistoryService {
+public class ParkingHistoryService {
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
     @Autowired

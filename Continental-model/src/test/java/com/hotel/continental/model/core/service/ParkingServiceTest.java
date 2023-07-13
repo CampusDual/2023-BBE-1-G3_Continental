@@ -4,6 +4,7 @@ import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ParkingDao;
 import com.hotel.continental.model.core.dao.ParkingHistoryDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -71,7 +72,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Successful enter",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
                         ),
@@ -132,7 +133,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Parking not found",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.PARKING_NOT_FOUND
                         ),
@@ -150,7 +151,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Parking full",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.PARKING_FULL
                         ),
@@ -170,7 +171,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Booking not found",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_EXIST
                         ),
@@ -197,7 +198,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Booking not checked in",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_CHECKED_IN
                         ),
@@ -234,7 +235,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Booking already checked out",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_ALREADY_CHECKED_OUT
                         ),
@@ -273,7 +274,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Booking not started",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_STARTED
                         ),
@@ -311,7 +312,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Already in parking",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_ALREADY_IN_PARKING
                         ),
@@ -361,7 +362,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Not same id hotel booking and parking",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_SAME_HOTEL_AS_PARKING
                         ),
@@ -399,7 +400,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Neccesary data",
                         Map.of(),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.NECESSARY_DATA
                         ),
@@ -431,7 +432,7 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Successful enter",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
                         ),
@@ -495,9 +496,9 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Parking not found",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.PARKING_NOT_FOUND
+                                Messages.PARKING_NOT_FOUND
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -513,9 +514,9 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Booking not found",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_EXIST
+                                Messages.BOOKING_NOT_EXIST
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -540,9 +541,9 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Not in parking",
                         Map.of("id_booking", 1, "id_parking", 1),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.BOOKING_NOT_IN_PARKING
+                                Messages.BOOKING_NOT_IN_PARKING
                         ),
                         List.of(
                                 // Mock parkingDao
@@ -583,9 +584,9 @@ public class ParkingServiceTest {
                 Arguments.of(
                         "Neccesary data",
                         Map.of(),
-                        createEntityResult(
+                        Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
-                                ErrorMessages.NECESSARY_DATA
+                                Messages.NECESSARY_DATA
                         ),
                         List.of()
                 )
@@ -593,21 +594,6 @@ public class ParkingServiceTest {
 
 
         );
-    }
-
-
-    /**
-     * Creates an EntityResult with the given code and message
-     *
-     * @param code    EntityResult code
-     * @param message EntityResult message
-     * @return EntityResult
-     */
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }
 

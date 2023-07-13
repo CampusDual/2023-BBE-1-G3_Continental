@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 
 import com.hotel.continental.model.core.dao.CriteriaDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -50,7 +51,7 @@ class CriteriaTest {
                         "Successful criteriaQuery without filters",//Nombre del test
                         Map.of(),//keyMap
                         List.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteria = new EntityResultMapImpl();
@@ -64,7 +65,7 @@ class CriteriaTest {
                         "Successful criteriaQuery with filters",//Nombre del test
                         Map.of(CriteriaDao.ID,1),//keyMap
                         List.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteria = new EntityResultMapImpl();
@@ -80,7 +81,7 @@ class CriteriaTest {
                         "Successful criteriaQuery with filters",//Nombre del test
                         Map.of(CriteriaDao.ID,1),//keyMap
                         List.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.CRITERIA_NOT_EXIST),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CRITERIA_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteria = new EntityResultMapImpl();
@@ -114,7 +115,7 @@ class CriteriaTest {
                         Map.of(CriteriaDao.DESCRIPTION, "description",
                                 CriteriaDao.NAME, "criteriaUpdate",
                                 CriteriaDao.MULTIPLIER, 1.2),//attrList
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteriaQuery = new EntityResultMapImpl();
@@ -139,7 +140,7 @@ class CriteriaTest {
                         "criteriaQuery with wrong attrMap",//Nombre del test
                         Map.of(CriteriaDao.ID,1),//keyMap
                         Map.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -148,7 +149,7 @@ class CriteriaTest {
                         "criteriaQuery with wrong keyMap",//Nombre del test
                         Map.of(),//keyMap
                         Map.of(CriteriaDao.DESCRIPTION, "description"),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),//Resultado esperado
                         List.of()
                 ),
                 //endregion
@@ -159,7 +160,7 @@ class CriteriaTest {
                         Map.of(CriteriaDao.DESCRIPTION, "description",
                                 CriteriaDao.NAME, "criteriaUpdate",
                                 CriteriaDao.MULTIPLIER, "a"),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.MULTIPLIER_NOT_NUMBER),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.MULTIPLIER_NOT_NUMBER),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteriaQuery = new EntityResultMapImpl();
@@ -177,7 +178,7 @@ class CriteriaTest {
                         Map.of(CriteriaDao.DESCRIPTION, "description",
                                 CriteriaDao.NAME, "criteriaUpdate",
                                 CriteriaDao.MULTIPLIER, -1),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.MULTIPLIER_NOT_POSITIVE),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.MULTIPLIER_NOT_POSITIVE),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erCriteriaQuery = new EntityResultMapImpl();
@@ -190,11 +191,5 @@ class CriteriaTest {
                 //endregion
 
         );
-    }
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
 import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RefrigeratorsServiceTest {
+class RefrigeratorServiceTest {
     @Mock
     static
     DefaultOntimizeDaoHelper daoHelper;
@@ -52,7 +53,7 @@ class RefrigeratorsServiceTest {
                 Arguments.of(
                         "Insert Refrigerator with correct data",
                         Map.of(RefrigeratorsDao.ROOM_ID, 1, RefrigeratorsDao.CAPACITY, 100),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryRoom = new EntityResultMapImpl();
@@ -71,7 +72,7 @@ class RefrigeratorsServiceTest {
                 Arguments.of(
                         "Insert Refrigerator with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -79,7 +80,7 @@ class RefrigeratorsServiceTest {
                 Arguments.of(
                         "Insert Refrigerator with fail data (not number)",
                         Map.of(RefrigeratorsDao.ROOM_ID, 1, RefrigeratorsDao.CAPACITY, "a"),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.CAPACITY_NOT_NUMBER),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CAPACITY_NOT_NUMBER),
                         List.of()
                 ),
                 //endregion
@@ -87,7 +88,7 @@ class RefrigeratorsServiceTest {
                 Arguments.of(
                         "Insert Refrigerator with fail data (not positive)",
                         Map.of(RefrigeratorsDao.ROOM_ID, 1, RefrigeratorsDao.CAPACITY, -100),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.CAPACITY_NOT_POSITIVE),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CAPACITY_NOT_POSITIVE),
                         List.of()
                 ),
                 //endregion
@@ -95,7 +96,7 @@ class RefrigeratorsServiceTest {
                 Arguments.of(
                         "Insert Refrigerator with fail data (not exist room)",
                         Map.of(RefrigeratorsDao.ROOM_ID, 1, RefrigeratorsDao.CAPACITY, 100),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryRoom = new EntityResultMapImpl();
@@ -106,12 +107,4 @@ class RefrigeratorsServiceTest {
                 //endregion
         );
     }
-
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
-    }
-
 }

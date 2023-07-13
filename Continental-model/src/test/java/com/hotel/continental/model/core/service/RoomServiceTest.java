@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.dao.RoomTypeDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -58,7 +59,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Insert room with correct data",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de alta con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de alta con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -92,7 +93,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Insert room with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -100,7 +101,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Insert room hotel not exist",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -114,7 +115,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Insert room type room not exist",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -134,7 +135,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Insert room already exist",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_EXIST),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -178,7 +179,7 @@ public class RoomServiceTest {
                         "Query room with correct data",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
                         List.of(RoomDao.IDROOM),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -197,7 +198,7 @@ public class RoomServiceTest {
                         "Query room with correct data",
                         Map.of(),
                         List.of(RoomDao.IDROOM),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -216,7 +217,7 @@ public class RoomServiceTest {
                         "Insert room with null data",
                         Map.of(),
                         List.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endRegion
@@ -225,7 +226,7 @@ public class RoomServiceTest {
                         "Insert room with null data",
                         Map.of(),
                         List.of(RoomDao.IDROOM),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
                         List.of(
                             (Supplier) () -> {
                                 EntityResult erQuery = new EntityResultMapImpl();
@@ -256,7 +257,7 @@ public class RoomServiceTest {
                         "Update room with correct data",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -285,7 +286,7 @@ public class RoomServiceTest {
                         "Update room with null key",
                         Map.of(),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 ),
                 //endRegion
@@ -294,7 +295,7 @@ public class RoomServiceTest {
                         "Update room with null data",
                         Map.of(),
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -303,7 +304,7 @@ public class RoomServiceTest {
                         "Update room hotel not exist",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -324,7 +325,7 @@ public class RoomServiceTest {
                         "Update room column not editable",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.IDHOTEL, 1, RoomDao.ROOMTYPEID, 2),
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.COLUMN_NOT_EDITABLE),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.COLUMN_NOT_EDITABLE),
                         List.of()
                 ),
                 //endregion
@@ -333,7 +334,7 @@ public class RoomServiceTest {
                         "Update room typeroom not exist",
                         Map.of(RoomDao.ROOMNUMBER, 112, RoomDao.ROOMTYPEID, 2),
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.TYPE_NOT_EXISTENT),
                         List.of(
                             (Supplier) () -> {
                             EntityResult erQuery = new EntityResultMapImpl();
@@ -362,7 +363,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Delete room with correct data",
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "La habitación ha sido dada de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -385,7 +386,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Delete room with null key",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 ),
                 //endRegion
@@ -393,7 +394,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Delete room doesnt exist",
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -407,7 +408,7 @@ public class RoomServiceTest {
                 Arguments.of(
                         "Delete room already inactive",
                         Map.of(RoomDao.IDROOM, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_INACTIVE),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_ALREADY_INACTIVE),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -420,12 +421,5 @@ public class RoomServiceTest {
                 )
                 //endregion
         );
-    }
-
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.ProductsDao;
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -57,7 +58,7 @@ class RefrigeratorStockServiceTest {
                         "update RefrigeratorDefault stock with correct data",
                         Map.of(RefrigeratorStockDao.STOCK, 5),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
@@ -88,7 +89,7 @@ class RefrigeratorStockServiceTest {
                         "Insert Product in RefrigeratorDefault",
                         Map.of(RefrigeratorStockDao.STOCK, 5),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
@@ -115,7 +116,7 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDefault with null data",
                         Map.of(),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -124,7 +125,7 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDafault product not exist",
                         Map.of(RefrigeratorStockDao.STOCK, 2),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
@@ -139,25 +140,17 @@ class RefrigeratorStockServiceTest {
                         "Update RefrigeratorDafault with bad stock(not number)",
                         Map.of(RefrigeratorStockDao.STOCK, "a"),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_NUMBER),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_NUMBER),
                         List.of()
                 ),
                 Arguments.of(
                         "Update RefrigeratorDafault with bad stock(not positive)",
                         Map.of(RefrigeratorStockDao.STOCK, -1),
                         Map.of(RefrigeratorStockDao.PRODUCTID, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_POSITIVE),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_POSITIVE),
                         List.of()
                 )
                 //endregion
         );
     }
-
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
-    }
-
 }

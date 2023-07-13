@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.HotelDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -60,7 +61,7 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Insert hotel with correct data",
                         Map.of(HotelDao.ADDRESS, "address", HotelDao.NAME, "name"),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erInsert = new EntityResultMapImpl();
@@ -75,7 +76,7 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Insert hotel with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 )
                 //endregion
@@ -100,7 +101,7 @@ public class HotelServiceTest {
                         "Query hotel with correct data",
                         Map.of(HotelDao.ID, 1),
                         List.of(HotelDao.ID, HotelDao.ADDRESS, HotelDao.NAME),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -119,7 +120,7 @@ public class HotelServiceTest {
                         "Query hotel with correct data",
                         Map.of(),
                         List.of(HotelDao.ID, HotelDao.ADDRESS, HotelDao.NAME),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -138,7 +139,7 @@ public class HotelServiceTest {
                         "Query hotel with null data",
                         Map.of(),
                         List.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 )
                 //endregion
@@ -163,7 +164,7 @@ public class HotelServiceTest {
                         "Update hotel with correct data",
                         Map.of(HotelDao.ID, 1),
                         Map.of(HotelDao.ADDRESS, "addressUpdate", HotelDao.NAME, "nameUpdate"),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -189,7 +190,7 @@ public class HotelServiceTest {
                         "Update hotel wrong hotel doesnt exist",
                         Map.of(HotelDao.ID, 1),
                         Map.of(HotelDao.ADDRESS, "addressUpdate", HotelDao.NAME, "nameUpdate"),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -205,7 +206,7 @@ public class HotelServiceTest {
                         "Update hotel with null data",
                         Map.of(),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
                 //endregion
@@ -229,7 +230,7 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Delete hotel with correct data",
                         Map.of(HotelDao.ID, 1),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Hotel dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Hotel dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -255,7 +256,7 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Update hotel wrong hotel doesnt exist",
                         Map.of(HotelDao.ID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -270,17 +271,10 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Update hotel with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
                 //endregion
         );
-    }
-
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

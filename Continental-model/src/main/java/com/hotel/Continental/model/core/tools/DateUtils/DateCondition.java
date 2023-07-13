@@ -1,8 +1,12 @@
 package com.hotel.continental.model.core.tools.DateUtils;
 
+import org.apache.poi.ss.formula.functions.Days;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateCondition {
     private DateField dateFieldLeft;
@@ -63,10 +67,10 @@ public class DateCondition {
     /**
      * Evalua la condicion
      *
-     * @param date fecha a evaluar,en algunos casos es ignorada
+     * @param initialDate fecha a evaluar,en algunos casos es ignorada
      * @return true si la condicion se cumple, false en caso contrario
      */
-    public boolean evaluate(LocalDate date) {
+    public boolean evaluate(LocalDate initialDate,LocalDate endDate) {
         Object leftValue = dateFieldLeft != null ? dateFieldLeft.getValue() : null;
         Object rightValue = dateFieldRight != null ? dateFieldRight.getValue() : null;
         Object daysValue = daysField != null ? daysField.getValue() : null;
@@ -76,7 +80,7 @@ public class DateCondition {
                 if (leftValue instanceof LocalDate && rightValue instanceof LocalDate) {
                     LocalDate leftDate = (LocalDate) leftValue;
                     LocalDate rightDate = (LocalDate) rightValue;
-                    return date.compareTo(leftDate) >= 0 && date.compareTo(rightDate) <= 0;
+                    return initialDate.compareTo(leftDate) >= 0 && initialDate.compareTo(rightDate) <= 0;
                 }
                 break;
             case DATE_BETWEEN_SEASON:
@@ -87,8 +91,8 @@ public class DateCondition {
                     int leftDay = leftDate.getDayOfMonth();
                     int rightMonth = rightDate.getMonthValue();
                     int rightDay = rightDate.getDayOfMonth();
-                    int currentMonth = date.getMonthValue();
-                    int currentDay = date.getDayOfMonth();
+                    int currentMonth = initialDate.getMonthValue();
+                    int currentDay = initialDate.getDayOfMonth();
                     return (currentMonth > leftMonth || (currentMonth == leftMonth && currentDay >= leftDay))
                             && (currentMonth < rightMonth || (currentMonth == rightMonth && currentDay <= rightDay));
                 }
@@ -96,64 +100,47 @@ public class DateCondition {
             case EQUALS:
                 if (leftValue instanceof LocalDate) {
                     LocalDate leftDate = (LocalDate) leftValue;
-                    return date.equals(leftDate);
+                    return initialDate.equals(leftDate);
                 }
                 break;
             case BEFORE:
                 if (leftValue instanceof LocalDate) {
                     LocalDate leftDate = (LocalDate) leftValue;
-                    return date.compareTo(leftDate) < 0;
+                    return initialDate.compareTo(leftDate) < 0;
                 }
                 break;
             case AFTER:
                 if (leftValue instanceof LocalDate) {
                     LocalDate leftDate = (LocalDate) leftValue;
-                    return date.compareTo(leftDate) > 0;
+                    return initialDate.compareTo(leftDate) > 0;
                 }
                 break;
             case DAY_OF_WEEK:
                 if (daysValue instanceof List) {
                     List<Integer> dayOfWeekList = (List<Integer>) daysValue;
-                    int currentDayOfWeek = date.getDayOfWeek().getValue();
+                    int currentDayOfWeek = initialDate.getDayOfWeek().getValue();
                     return dayOfWeekList.contains(currentDayOfWeek);
                 }
                 break;
             case DAYS_BEFORE:
                 if (daysValue instanceof Integer) {
                     int daysBefore = (int) daysValue;
-                    boolean result = date.compareTo(LocalDate.now().minusDays(daysBefore)) <= 0;
+                    boolean result = initialDate.compareTo(LocalDate.now().plusDays(daysBefore)) >= 0;
                     return result;
                 }
                 break;
-        }
-
-        return false;
-    }
-
-    /**
-     * Evalua la condicion
-     *
-     * @param initialDate fecha inicial a evaluar
-     * @param endDate     fecha final a evaluar
-     * @return true si la condicion se cumple, false en caso contrario
-     */
-    public boolean evaluate(LocalDate initialDate, LocalDate endDate) {
-        Object daysValue = daysField != null ? daysField.getValue() : null;
-
-        switch (operator) {
             case DAYS_BETWEEN:
                 if (daysValue instanceof Integer) {
                     //Calcular la diferencia entre leftValue y rightValue
                     int daysBetween = (int) daysValue;
-                    Period period = Period.between(initialDate, endDate.plusDays(1));
-                    return period.getDays() >= daysBetween;
+                    Long dias = DAYS.between(initialDate, endDate.plusDays(1));
+                    return dias>=daysBetween;
                 }
                 break;
         }
 
         return false;
     }
-
 
     protected void validateArguments(DateOperator operator, DateField dateFieldLeft, DateField dateFieldRight, DateField daysField) {
         if (operator == null) {

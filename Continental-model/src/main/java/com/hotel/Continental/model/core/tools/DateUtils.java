@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 class test {
-    //TODO Cambiar el DAY_OF_WEEK por una lista de dias,para poder comprobar varios dias
-    //TODO Crear enum con los dias de la semana?
-    //TODO Crear un nuevo operador que sea SEASON
-    //TODO Days_Between deberia de aceptar el numero de dias, el evaulador deberia de recibir dos fechas y calcular los dias entre ellas listo
     public static void main(String[] args) {
         List<DateCondition> lista = new ArrayList<>();
         //DateCondition que comprueba si es entre el 1 del 6 y el 31 del 8
@@ -27,9 +23,11 @@ class test {
         //DateCondition que comprueba si la reserva se realizo con 10 dias de antelacion
         DateCondition dateCondition10DaysBefore = new DateCondition(null, DateOperator.DAYS_BEFORE, null, new DateField(10));
         lista.add(dateCondition10DaysBefore);
+        System.out.println(dateCondition10DaysBefore.evaluate(LocalDate.of(2023, 7, 20), LocalDate.of(2024, 6, 30)));
         //DateCondition que comprueba si la reserva dura mas de 5 dias
         DateCondition dateCondition5DaysBetween = new DateCondition(null, DateOperator.DAYS_BETWEEN, null, new DateField(5));
         lista.add(dateCondition5DaysBetween);
+        System.out.println(dateCondition5DaysBetween.evaluate(LocalDate.of(2020, 6, 1), LocalDate.of(2020, 6, 30)));
         //DateCondition que comprueba si el dia es sabado o domingo
         DateCondition dateConditionSunday = new DateCondition(null, DateOperator.DAY_OF_WEEK, null, new DateField(List.of(6,7)));
         lista.add(dateConditionSunday);

@@ -76,6 +76,7 @@ public class Messages {
 
     //Fridge Stock
     public static final String STOCK_NOT_NUMBER = "M_STOCK_NOT_NUMBER";
+    public static final String NOT_REGISTERS_FOUND = "M_NOT_REGISTERS_FOUND";
     //Products
     public static final String PRODUCT_NOT_EXIST = "M_PRODUCT_NOT_EXIST";
     public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";

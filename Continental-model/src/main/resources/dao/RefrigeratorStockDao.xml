@@ -12,4 +12,21 @@
         <Column>stock_id</Column>
     </UpdateKeys>
     <GeneratedKey>stock_id</GeneratedKey>
+    <Queries>
+        <Query id="getBooking">
+            <Sentence>
+                <![CDATA[
+                         SELECT
+                          #COLUMNS#
+                         FROM
+                          refrigerators r
+                          inner join rooms r2
+                          on r.room_id = r2.roomid
+                          inner join bookings b
+                          on b.roomid = r2.roomid
+                         #WHERE#
+                ]]>
+            </Sentence>
+        </Query>
+    </Queries>
 </JdbcEntitySetup>

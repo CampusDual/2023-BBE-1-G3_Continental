@@ -380,10 +380,9 @@ public class BookingService implements IBookingService {
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
-        EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        er.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
-        er.put(BookingDao.PRICE, List.of(finalPrice.get(BookingDao.PRICE)));
-        return er;
+        this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
+        finalPrice.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
+        return finalPrice;
     }
 
     /**
@@ -521,24 +520,36 @@ public class BookingService implements IBookingService {
         return er;
     }
 
-    private EntityResult obtainFinalPrice(Map<String, Object> attrMap) {
+    private EntityResult obtainFinalPrice(Map<String,Object> attrMap) {
         Map<String, Object> filter = new HashMap<>();
         filter.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
-        EntityResult historic = this.daoHelper.query(this.extraExpensesDao, filter, List.of(ExtraExpensesDao.PRICE));
-        ArrayList<Double> extrasExpenses = (ArrayList<Double>) historic.get(ExtraExpensesDao.PRICE) != null ? (ArrayList<Double>) historic.get(ExtraExpensesDao.PRICE) : new ArrayList<>();
-        double finalPrice = 0;
-        for (Double price : extrasExpenses) {
-            finalPrice += price;
-        }
-        EntityResult bookingPrice = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.PRICE));
-        BigDecimal bookingcost = (BigDecimal) bookingPrice.getRecordValues(0).get(BookingDao.PRICE);
-        BigDecimal doubleAsBigDecimal = BigDecimal.valueOf(finalPrice);
-        BigDecimal resultado = bookingcost.add(doubleAsBigDecimal);
+        List<String> columns = new ArrayList<>();
+        columns.add(ExtraExpensesDao.CONCEPT);
+        columns.add(ExtraExpensesDao.PRICE);
+        EntityResult historic = this.daoHelper.query(this.extraExpensesDao, filter, columns);
 
-        EntityResult erFinalPrice = new EntityResultMapImpl();
-        erFinalPrice.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        erFinalPrice.put(BookingDao.PRICE, resultado);
-        return erFinalPrice;
+        EntityResult bookingPrice = this.daoHelper.query(this.bookingDao, filter, List.of(BookingDao.PRICE));
+
+        EntityResult extraexpenses = new EntityResultMapImpl();
+        BigDecimal extradecimal = (BigDecimal)bookingPrice.getRecordValues(0).get(BookingDao.PRICE);
+        extraexpenses.put("Booking price: ", extradecimal);
+
+        //Iteramos todas las extraexpenses para hacer un ticket
+        BigDecimal price = new BigDecimal("0.00");
+        price = price.add(extradecimal);
+        for(int i=0;i<historic.calculateRecordNumber();i++) {
+            extradecimal = BigDecimal.valueOf((Double) historic.getRecordValues(i).get(ExtraExpensesDao.PRICE));
+            String key = (String) historic.getRecordValues(i).get(ExtraExpensesDao.CONCEPT) + ": ";
+            if (extraexpenses.containsKey(key)) {
+                BigDecimal repeatedexpense = (BigDecimal) extraexpenses.get(key);
+                extradecimal = extradecimal.add(repeatedexpense);
+            }
+            extraexpenses.put((String) historic.getRecordValues(i).get(ExtraExpensesDao.CONCEPT) + ": ", extradecimal);
+            price = price.add(extradecimal);
+        }
+
+        extraexpenses.put("Total: ", price);
+        return extraexpenses;
     }
 
     private DateCondition jsonToDateCondition(String json) {

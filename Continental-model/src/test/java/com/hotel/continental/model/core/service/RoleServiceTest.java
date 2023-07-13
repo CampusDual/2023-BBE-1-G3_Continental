@@ -133,7 +133,7 @@ public class RoleServiceTest {
                 Arguments.of(
                         "Insert Role with correct data",
                         attrMap,
-                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Cliente insertado correctamente"),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();

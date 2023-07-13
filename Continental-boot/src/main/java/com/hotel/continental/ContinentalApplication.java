@@ -13,5 +13,4 @@ public class ContinentalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ContinentalApplication.class, args);
 	}
-
 }

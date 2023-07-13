@@ -152,6 +152,10 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
             data.putAll(attrMap);
             data.put(RefrigeratorStockDao.REFRIGERATORID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
             data.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+            if ((Integer) data.get(RefrigeratorStockDao.STOCK) < 0) {
+                er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
+                return er;
+            }
             return this.daoHelper.insert(this.refrigeratorStockDao, data);
         }
 

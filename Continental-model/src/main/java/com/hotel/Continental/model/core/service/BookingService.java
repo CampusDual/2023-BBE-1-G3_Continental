@@ -465,9 +465,10 @@ public class BookingService implements IBookingService {
         //Separar por tipo de aplicacion
         List<Map<String, Object>> dateConditionDaily = new ArrayList<>();
         List<Map<String, Object>> dateConditionUnique = new ArrayList<>();
-        for (int i = 0; i < dateCondition.calculateRecordNumber(); i++) {
+        for (int i = 0; i <= dateCondition.calculateRecordNumber(); i++) {
+                Object bool = dateCondition.getRecordValues(i).get("type");
             if (dateCondition.getRecordValues(i).get(CriteriaDao.TYPE) != null) {
-                if (dateCondition.getRecordValues(i).get(CriteriaDao.TYPE).equals("unique")) {
+                if (dateCondition.getRecordValues(i).get(CriteriaDao.TYPE)=="unique") {
                     dateConditionUnique.add(dateCondition.getRecordValues(i));
                 } else {
                     dateConditionDaily.add(dateCondition.getRecordValues(i));

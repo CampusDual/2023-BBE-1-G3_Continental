@@ -25,11 +25,17 @@ public class RoleService implements IRoleService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleQuery(Map<?, ?> keyMap, List<?> attrList) {
+        EntityResult er;
+        er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
+            return er;
+        }
+
         EntityResult role = this.daoHelper.query(this.roleDao, keyMap, attrList);
         if(role == null || role.calculateRecordNumber() == 0){
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.ROLE_DOESNT_EXIST);
             return er;
         }
@@ -39,14 +45,6 @@ public class RoleService implements IRoleService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleInsert(Map<String, Object> attrMap) {
-        //Comnprobamos que nos mandan los atributos necesarios(rolename)
-        if(!attrMap.containsKey(RoleDao.ROLENAME)){
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(Messages.NECESSARY_DATA);
-            return er;
-        }
         //Comprobamos que no esta vacio y que no es nulo
         if(attrMap.get(RoleDao.ROLENAME) == null || attrMap.get(RoleDao.ROLENAME).toString().isEmpty()){
             EntityResult er;
@@ -89,10 +87,11 @@ public class RoleService implements IRoleService {
         //si el rol no existe lanzar un error
         EntityResult role = roleQuery(keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
         if (role.getCode() == EntityResult.OPERATION_WRONG) {
+            role.setMessage(Messages.ROLE_DOESNT_EXIST);
             return role;
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
-        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted succesfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted successfully");
         return er;
     }
 
@@ -137,7 +136,7 @@ public class RoleService implements IRoleService {
         }
         //Actualizamos el rol
         EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
-        er.setMessage("Role updated succesfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " updated successfully");
         return er;
     }
 }

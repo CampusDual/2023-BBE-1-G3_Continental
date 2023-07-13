@@ -95,6 +95,7 @@ public class Messages {
     public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
     public static final String PARKING_FULL = "M_PARKING_FULL";
     public static final String BOOKING_NOT_SAME_HOTEL_AS_PARKING = "M_BOOKING_NOT_SAME_HOTEL_AS_PARKING";
+    public static final String BOOKING_NOT_IN_PARKING = "M_BOOKING_NOT_IN_PARKING";
 
     private Messages() {
         throw new IllegalStateException("Utility class");

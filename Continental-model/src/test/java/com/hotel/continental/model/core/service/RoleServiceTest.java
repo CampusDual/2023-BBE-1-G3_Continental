@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoleDao;
+import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -12,14 +13,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,6 +32,7 @@ import static org.mockito.Mockito.when;
 public class RoleServiceTest {
     //Generame los test para el metodo roleQuery
     @Mock
+    static
     DefaultOntimizeDaoHelper daoHelper;
     @InjectMocks
     RoleService roleService;
@@ -35,253 +40,308 @@ public class RoleServiceTest {
     @Mock
     RoleDao roleDao;
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoleQuery {
-        @ParameterizedTest()
-        @ArgumentsSource(queryGoodWithAndWithoutFilter.class)
-        @DisplayName("Test role query good with and without filter")
-        void testRoleQueryGoodWithAndWithoutFilter(HashMap<String, Object> keyMap) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            er.put(RoleDao.ROLENAME, List.of("admin"));
-
-            List<Object> attr = new ArrayList<>();
-            attr.add(RoleDao.ID_ROLENAME);
-            attr.add(RoleDao.ROLENAME);
-
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
-
-            EntityResult result = roleService.roleQuery(keyMap, attr);
-            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
-        }
-
-        @Test
-        @DisplayName("Test role query bad without columns ")
-        void testRoleQueryBadWithoutColumns() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ROLENAME,"admin");
-
-            List<Object> attr = new ArrayList<>();
-
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(er);
-
-            EntityResult result = roleService.roleQuery(keyMap, attr);
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
-    }
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoleInsert {
-        @Test
-        @DisplayName("Test role insert good")
-        void testRoleInsertGood() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"admin");
-
-            //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
-            //Ejecutamos el insert
-            when(daoHelper.insert(any(RoleDao.class), anyMap())).thenReturn(er);
-
-            EntityResult result = roleService.roleInsert(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
-        }
-
-        @ParameterizedTest
-        @ArgumentsSource(hashMapsNullAndEmptyInsert.class)
-        @DisplayName("Test role insert null data & empty data")
-        void testRoleInsertNullDataAndEmptyData(HashMap<String, Object> attr) {
-            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleInsert(attr);
-
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(Messages.NECESSARY_DATA, result.getMessage());
-        }
-
-        @Test
-        @DisplayName("Test role insert duplicated data")
-        void testRoleInsertDuplicatedData() {
-            EntityResult erQuery=new EntityResultMapImpl();
-            erQuery.put(RoleDao.ROLENAME, List.of("admin"));
-            erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
-            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"admin");
-
-            //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
-            //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
-
-            EntityResult result = roleService.roleInsert(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("roleQuery")
+    void testRoleQuery(String testCaseName, Map<String, Object> keyMap, List<String> attrList,EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roleService.roleQuery(keyMap, attrList);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoleDelete {
-        @Test
-        @DisplayName("Test role delete good")
-        void testRoleDeleteGood() {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+    private static Stream<Arguments> roleQuery() {
+        return Stream.of(
+                //region Test Case 1 - Query Role with correct data with filter
+                Arguments.of(
+                        "Query Role with correct data",
+                        Map.of(RoleDao.ID_ROLENAME, 1),
+                        List.of(RoleDao.ID_ROLENAME, RoleDao.ROLENAME),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("roleName"));
 
-            EntityResult erQuery = new EntityResultMapImpl();
-            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Query Role with correct data without filter
+                Arguments.of(
+                        "Query Role with correct data",
+                        Map.of(),
+                        List.of(RoleDao.ID_ROLENAME, RoleDao.ROLENAME),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("roleName"));
 
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ID_ROLENAME, 1);
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 3 - Query Role with null data
+                Arguments.of(
+                        "Query Role with null data",
+                        Map.of(),
+                        List.of(),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 3 - Query Role with role not exist
+                Arguments.of(
+                        "Query Role with role not exist",
+                        Map.of(),
+                        List.of(RoleDao.ID_ROLENAME, RoleDao.ROLENAME),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROLE_DOESNT_EXIST),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
 
-            //el delete comprueba a traves de un query que existe asique devolvemos un entity result okey + 1 resultado
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
-            //Ejecutamos el delete
-            when(daoHelper.delete(any(RoleDao.class), anyMap())).thenReturn(er);
-
-            EntityResult result = roleService.roleDelete(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
-        }
-
-        @ParameterizedTest
-        @ArgumentsSource(testRoleDeleteNotExistKeyAndNullKey.class)
-        @DisplayName("Test role delete not exist key and null key")
-        void testRoleDeleteNotExistKeyAndNullKey(HashMap<String, Object> attr) {
-            //Ejecutamos el delete, al no existir la clave nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleDelete(attr);
-
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(Messages.NECESSARY_KEY, result.getMessage());
-        }
-
-        @Test
-        @DisplayName("Test role delete admin")
-        void testRoleDeleteAdmin() {
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ID_ROLENAME, 0);
-            //Ejecutamos el delete, da error porque se esta intentando borrar el admin
-            EntityResult result = roleService.roleDelete(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
-    }
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    class TestRoleUpdate {
-        @Test
-        @DisplayName("Test role update good")
-        void testRoleUpdateGood() {
-            //Query resultado
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            //Query buscar id, correcta+1 resultado
-            EntityResult erQueryID = new EntityResultMapImpl();
-            erQueryID.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            erQueryID.put(RoleDao.ID_ROLENAME, List.of(1));
-            //Query buscar rolename, correcta+ 0 resultado
-            EntityResult erQueryRolename=new EntityResultMapImpl();
-            erQueryRolename.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"admin");
-
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ID_ROLENAME,1);
-            //el insert comprueba a traves de un query que existe asique devolvemos un entity result okey+1 resultado
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQueryID).thenReturn(erQueryRolename);
-            //Ejecutamos el insert
-            when(daoHelper.update(any(RoleDao.class), anyMap(),anyMap())).thenReturn(er);
-            EntityResult result = roleService.roleUpdate(attr, keyMap);
-            Assertions.assertEquals(EntityResult.OPERATION_SUCCESSFUL, result.getCode());
-        }
-
-        @ParameterizedTest
-        @ArgumentsSource(testRoleUpdateNullDataAndNullKey.class)
-        @DisplayName("Test role update null key and null data")
-        void testRoleUpdateNullDataAndNullKey(HashMap<String, Object> keyMap, String errorMessage) {
-            Map<String, Object> attr = new HashMap<>();
-            //Ejecutamos el update, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleUpdate(attr, keyMap);
-
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(errorMessage, result.getMessage());
-        }
-
-        @Test
-        @DisplayName("Test role update empty data")
-        void testRoleUpdateEmptyData() {
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"");
-            Map<String, Object> keyMap = new HashMap<>();
-            keyMap.put(RoleDao.ID_ROLENAME,1);
-            //Ejecutamos el insert, al no tener datos nos va petar sin llegar a tener que mockear nada
-            EntityResult result = roleService.roleInsert(attr);
-
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-            Assertions.assertEquals(Messages.NECESSARY_DATA, result.getMessage());
-        }
-
-        @Test
-        @DisplayName("Test role update duplicated data")
-        void testRoleUpdateDuplicatedData() {
-            EntityResult erQuery=new EntityResultMapImpl();
-            erQuery.put(RoleDao.ROLENAME, List.of("admin"));
-            erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
-            erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-
-            Map<String, Object> attr = new HashMap<>();
-            attr.put(RoleDao.ROLENAME,"admin");
-            //el insert comprueba a traves de un query que no existe asique devolvemos un entity result okey+vacio
-            when(daoHelper.query(any(RoleDao.class), anyMap(), anyList())).thenReturn(erQuery);
-            //no hace falta mockear el insert porque no llega a el,dado qeu el error salta antes
-            EntityResult result = roleService.roleInsert(attr);
-            Assertions.assertEquals(EntityResult.OPERATION_WRONG, result.getCode());
-        }
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                )
+                //endregion
+        );
     }
 
-    public static class hashMapsNullAndEmptyInsert implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(new HashMap<String, Object>() {{
-                put(null, null);
-            }},new HashMap<String, Object>()).map(Arguments::of);
-        }
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("roleInsert")
+    void testRoleInsert(String testCaseName, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roleService.roleInsert(attrMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    public static class queryGoodWithAndWithoutFilter implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(new HashMap<String, Object>() {{
-                put(RoleDao.ROLENAME, "admin");
-            }},new HashMap<String, Object>()).map(Arguments::of);
-        }
+    private static Stream<Arguments> roleInsert() {
+        Map<String, Object> attrMap = new HashMap<>();
+        attrMap.put(RoleDao.ROLENAME, "name");
+        return Stream.of(
+                //region Test Case 1 - Insert Role with correct data
+                Arguments.of(
+                        "Insert Role with correct data",
+                        attrMap,
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Cliente insertado correctamente"),
+                        List.of(
+                                () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("name"));
+
+                                    return when(daoHelper.insert(Mockito.any(RoleDao.class), Mockito.anyMap())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endRegion
+                //region Test Case 2 - Insert Role with existed role
+                Arguments.of(
+                        "Insert Role with correct data",
+                        attrMap,
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROLE_ALREADY_EXISTS),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("roleName"));
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 3 - Insert Role with null data
+                Arguments.of(
+                        "Insert Role with null data",
+                        Map.of(),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                )
+                //endregion
+        );
     }
 
-    public static class testRoleDeleteNotExistKeyAndNullKey implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(new HashMap<String, Object>() {{
-                put(RoleDao.ROLENAME, 1);
-            }},new HashMap<String, Object>()).map(Arguments::of);
-        }
+
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("roleDelete")
+    void testRoleDelete(String testCaseName, Map<String, Object> keyMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roleService.roleDelete(keyMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
     }
 
-    public static class testRoleUpdateNullDataAndNullKey implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(Arguments.of(new HashMap<String, Object>() {{
-                put(RoleDao.ID_ROLENAME, 1);
-            }}, Messages.NECESSARY_DATA),
-                    Arguments.of(new HashMap<String, Object>(),
-                            Messages.NECESSARY_KEY));
-        }
+    private static Stream<Arguments> roleDelete() {
+        int roleId = 1;
+        return Stream.of(
+                //region Test Case 1 - Delete Role with correct data
+                Arguments.of(
+                        "Delete Role with correct data",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Role " + roleId + " deleted successfully"),
+                        List.of(
+                                () -> {
+                                    EntityResult erQueryDoesntExist = new EntityResultMapImpl();
+
+                                    EntityResult erQueryExist = new EntityResultMapImpl();
+                                    erQueryExist.put(RoleDao.ID_ROLENAME, List.of(roleId));
+                                    erQueryExist.put(RoleDao.ROLENAME, List.of("roleName"));
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQueryExist, erQueryDoesntExist);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erDelete = new EntityResultMapImpl();
+                                    erDelete.put(RoleDao.ID_ROLENAME, List.of(roleId));
+                                    erDelete.put(RoleDao.ROLENAME, List.of("NameUpdate"));
+
+                                    return when(daoHelper.delete(Mockito.any(RoleDao.class), Mockito.anyMap())).thenReturn(erDelete);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 2 - Delete Role with null key
+                Arguments.of(
+                        "Delete Role with null key",
+                        Map.of(),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        List.of()
+                ),
+                //endRegion
+                //region Test Case 3 - Delete Role with role not exist
+                Arguments.of(
+                        "Delete Role with role not exist",
+                        Map.of(RoleDao.ID_ROLENAME, 0),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ADMIN_ROLE_NOT_EDITABLE),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 4 - Delete Role with role doesnt exist
+                Arguments.of(
+                        "Delete Role with role doesnt exist",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROLE_DOESNT_EXIST),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQuery);
+                                }
+                        )
+                )
+                //endregion
+        );
+    }
+
+    @ParameterizedTest(name = "Test case {index} : {0}")
+    @MethodSource("roleUpdate")
+    void testRoleUpdate(String testCaseName, Map<String, Object> keyMap, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {
+        //For each test case, execute the mock,to make sure the mock is called
+        mock.forEach(Supplier::get);
+        EntityResult result = roleService.roleUpdate(attrMap, keyMap);
+        // Assert
+        assertEquals(expectedResult.getMessage(), result.getMessage());
+        assertEquals(expectedResult.getCode(), result.getCode());
+    }
+
+    private static Stream<Arguments> roleUpdate() {
+        int roleId = 1;
+        Map<String, Object> attrMap = new HashMap<>();
+        attrMap.put(RoleDao.ROLENAME, "nameUpdate");
+        return Stream.of(
+                //region Test Case 1 - Delete Role with correct data
+                Arguments.of(
+                        "Delete Role with correct data",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        attrMap,
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Role " + roleId + " updated successfully"),
+                        List.of(
+                                () -> {
+                                    EntityResult erQueryDoesntExist = new EntityResultMapImpl();
+
+                                    EntityResult erQueryExist = new EntityResultMapImpl();
+                                    erQueryExist.put(RoleDao.ID_ROLENAME, List.of(roleId));
+                                    erQueryExist.put(RoleDao.ROLENAME, List.of("roleName"));
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQueryExist, erQueryDoesntExist);
+                                },
+                                (Supplier) () -> {
+                                    EntityResult erQuery = new EntityResultMapImpl();
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(roleId));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("NameUpdate"));
+
+                                    return when(daoHelper.update(Mockito.any(RoleDao.class), Mockito.anyMap(), anyMap())).thenReturn(erQuery);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 2 - Delete Role with null key
+                Arguments.of(
+                        "Delete Role with null key",
+                        Map.of(),
+                        Map.of(),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
+                        List.of()
+                ),
+                //endregion
+                //region Test Case 3 - Delete Role with null data
+                Arguments.of(
+                        "Delete Role with null data",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        Map.of(),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
+                        List.of()
+                ),
+                //endRegion
+                //region Test Case 4 - Delete Role with role not exist
+                Arguments.of(
+                        "Delete Role with role not exist",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        attrMap,
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROLE_DOESNT_EXIST),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQueryDoesntExist = new EntityResultMapImpl();
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQueryDoesntExist);
+                                }
+                        )
+                ),
+                //endregion
+                //region Test Case 5 - Query Role with role already exist
+                Arguments.of(
+                        "Query Role with role already exist",
+                        Map.of(RoleDao.ID_ROLENAME, roleId),
+                        attrMap,
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROLE_ALREADY_EXISTS),
+                        List.of(
+                                (Supplier) () -> {
+                                    EntityResult erQueryExist = new EntityResultMapImpl();
+                                    erQueryExist.put(RoleDao.ID_ROLENAME, List.of(roleId));
+                                    erQueryExist.put(RoleDao.ROLENAME, List.of("roleName"));
+
+                                    return when(daoHelper.query(Mockito.any(RoleDao.class), Mockito.anyMap(), anyList())).thenReturn(erQueryExist);
+                                }
+                        )
+                )
+                //endregion
+        );
     }
 }

@@ -36,17 +36,21 @@ public class ClientService implements IClientService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
-        //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        //Primero compruebo que el clientid existe dado que es necesario para la actualización
         if (keyMap.get(ClientDao.CLIENTID) == null) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobamos que el attrMap no este vacio
+        if(attrMap.isEmpty()){
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Si el id del cliente no existe en la base de datos esta mal
         if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.CLIENT_NOT_EXIST);
             return er;
         }
@@ -55,7 +59,8 @@ public class ClientService implements IClientService {
         if (checkDatos.getCode() == EntityResult.OPERATION_WRONG) {
             return checkDatos;
         }
-        EntityResult er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
+
+        er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         return er;
     }
@@ -64,16 +69,15 @@ public class ClientService implements IClientService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientDelete(Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
         //Comprobar que se envia el id del cliente
         if (keyMap.get(ClientDao.CLIENTID) == null) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
+            return er;
         }
         if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.CLIENT_NOT_EXIST);
         } else if (isCanceled(keyMap)) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.CLIENT_ALREADY_DELETED);
         } else {
             Map<String, Object> attrMap = new HashMap<>();
@@ -201,14 +205,21 @@ public class ClientService implements IClientService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        //Comprobamos que el attrMap no está vacio
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
+            return er;
+        }
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
-            EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
-            if(client == null || client.calculateRecordNumber() == 0) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(Messages.CLIENT_NOT_EXIST);
-                return er;
-            }
-            return client;
+        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
+        if(client == null || client.calculateRecordNumber() == 0) {
+            er.setMessage(Messages.CLIENT_NOT_EXIST);
+            return er;
+        }
+
+        return client;
     }
 }

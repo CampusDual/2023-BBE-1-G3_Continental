@@ -20,6 +20,7 @@ import com.ontimize.jee.common.db.SQLStatementBuilder.ExtendedSQLConditionValues
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +136,7 @@ public class ParkingService implements IParkingService {
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
         if(attrMap.get(ParkingHistoryDao.ID_BOOKING) == null || attrMap.get(ParkingDao.ID_PARKING) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar existe parking indicado
@@ -143,7 +144,7 @@ public class ParkingService implements IParkingService {
         EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.ID_HOTEL,ParkingDao.OCCUPIED_CAPACITY));
         if(erParking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.PARKING_NOT_FOUND);
+            er.setMessage(Messages.PARKING_NOT_FOUND);
             return er;
         }
         //Comprobar que la reserva existe
@@ -151,7 +152,7 @@ public class ParkingService implements IParkingService {
         EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME,BookingDao.ROOMID));
         if(erBooking.calculateRecordNumber() == 0){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Comprobar que la reserva ha entrado pero no salio (es decir tiene fecha de entrada pero no de salida)
@@ -166,7 +167,7 @@ public class ParkingService implements IParkingService {
         //Compruebo que hay 1 y solo 1 parking_history que tenga fecha de entrada pero no de salida
         if(erParkingHistory.calculateRecordNumber() != 1){
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_IN_PARKING);
+            er.setMessage(Messages.BOOKING_NOT_IN_PARKING);
             return er;
         }
         //Actualizar tabla parking_history

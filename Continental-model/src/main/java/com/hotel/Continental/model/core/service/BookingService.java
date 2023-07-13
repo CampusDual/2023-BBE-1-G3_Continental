@@ -1,7 +1,11 @@
 package com.hotel.continental.model.core.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.*;
+import com.hotel.continental.model.core.tools.DateUtils.DateCondition;
+import com.hotel.continental.model.core.tools.DateUtils.DateConditionModule;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
@@ -461,25 +465,63 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapDateCondition = new HashMap<>();
         List<String> fields = new ArrayList<>();
         fields.add("*");
-        EntityResult dateCondition = criteriaService.criteriaQuery(attrMapDateCondition, fields);
+        EntityResult erDateCondition = criteriaService.criteriaQuery(attrMapDateCondition, fields);
+        //Multiplicadores
+        Map<Integer, BigDecimal> multiplierDateCondition = new HashMap<>();
         //Separar por tipo de aplicacion
-        List<Map<String, Object>> dateConditionDaily = new ArrayList<>();
-        List<Map<String, Object>> dateConditionUnique = new ArrayList<>();
-        for (int i = 0; i <= dateCondition.calculateRecordNumber(); i++) {
-                Object bool = dateCondition.getRecordValues(i).get("type");
-            if (dateCondition.getRecordValues(i).get(CriteriaDao.TYPE) != null) {
-                if (dateCondition.getRecordValues(i).get(CriteriaDao.TYPE)=="unique") {
-                    dateConditionUnique.add(dateCondition.getRecordValues(i));
-                } else {
-                    dateConditionDaily.add(dateCondition.getRecordValues(i));
+        Map<Integer,DateCondition> dateConditionDaily = new HashMap<>();
+        Map<Integer,DateCondition> dateConditionUnique = new HashMap<>();
+        for (int i = 0; i < erDateCondition.calculateRecordNumber(); i++) {
+            multiplierDateCondition.put((int) erDateCondition.getRecordValues(i).get(CriteriaDao.ID), (BigDecimal) erDateCondition.getRecordValues(i).get(CriteriaDao.MULTIPLIER));
+            if (erDateCondition.getRecordValues(i).get(CriteriaDao.TYPE) != null && erDateCondition.getRecordValues(i).get(CriteriaDao.DATE_CONDITION) != null) {
+                String json = erDateCondition.getRecordValues(i).get(CriteriaDao.DATE_CONDITION).toString();
+                int id = (int) erDateCondition.getRecordValues(i).get(CriteriaDao.ID);
+                DateCondition dc = jsonToDateCondition(json);
+                if (erDateCondition.getRecordValues(i).get(CriteriaDao.TYPE).equals("unique")){
+                    dateConditionUnique.put(id,dc);
+                }else if(erDateCondition.getRecordValues(i).get(CriteriaDao.TYPE).equals("daily")){
+                    dateConditionDaily.put(id,dc);
                 }
             }
         }
+        //Crear mapa de id de DateCondition y numero de veces que se aplica
+        Map<Integer, Integer> dateConditionMap = new HashMap<>();
+        //Aplico las que se aplican una vez y añado al mapa el id de la DateCondition y el numero de veces que se aplica
+        for (Map.Entry<Integer, DateCondition> entry : dateConditionUnique.entrySet()) {
+            if (entry.getValue().evaluate(start)) {
+                dateConditionMap.put(entry.getKey(), 1);
+            }
+        }
+
+        //Itero por cada dia de la reserva y aplico las que se aplican diariamente añadiendo al mapa el id de la DateCondition y el numero de veces que se aplica
+        while (!startIter.isAfter(end)) {
+            for (Map.Entry<Integer, DateCondition> entry : dateConditionDaily.entrySet()) {
+                if (entry.getValue().evaluate(startIter)) {
+                    if (dateConditionMap.containsKey(entry.getKey())) {
+                        dateConditionMap.put(entry.getKey(), dateConditionMap.get(entry.getKey()) + 1);
+                    } else {
+                        dateConditionMap.put(entry.getKey(), 1);
+                    }
+                }
+            }
+            startIter = startIter.plusDays(1);
+        }
+
+        //Tengo un mapa con los multiplicadores de las DateCondition
+        //Tengo otro mapa con el numero de veces que se aplica cada DateCondition
+        //Itero por el mapa de multiplicadores y aplico el multiplicador tantas veces como se aplique la DateCondition
+        double extra=0;
+        for(Integer key:dateConditionMap.keySet()){
+            extra+=
+            extra+=((roomprice*dateConditionMap.get(key))*multiplierDateCondition.get(key).doubleValue())-(roomprice*dateConditionMap.get(key));
+        }
+
+
 
 
         //Iterar por cada dia de la reserva y calcular el precio
         while (!startIter.isAfter(end)) {
-            double extra = 0;
+            extra = 0;
             if (isWeekend(startIter)) {
                 extra += (multiplierWeekend.doubleValue() * roomprice) - roomprice;
             }
@@ -548,6 +590,18 @@ public class BookingService implements IBookingService {
         erFinalPrice.setCode(EntityResult.OPERATION_SUCCESSFUL);
         erFinalPrice.put(BookingDao.PRICE, resultado);
         return erFinalPrice;
+    }
+
+    private DateCondition jsonToDateCondition(String json) {
+        try {
+            DateConditionModule dateConditionModule = new DateConditionModule();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(dateConditionModule.getModule());
+            DateCondition dateCondition = objectMapper.readValue(json, DateCondition.class);
+            return dateCondition;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

@@ -53,8 +53,6 @@ public class BookingService implements IBookingService {
     @Autowired
     private CriteriaDao criteriaDao;
     @Autowired
-    private SeasonDao seasonDao;
-    @Autowired
     private ExtraExpensesDao extraExpensesDao;
     @Autowired
     private CriteriaService criteriaService;

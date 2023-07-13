@@ -1,10 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRefrigeratorStockService;
-import com.hotel.continental.model.core.dao.ProductsDao;
-import com.hotel.continental.model.core.dao.ExtraExpensesDao;
-import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
-import com.hotel.continental.model.core.dao.RefrigeratorsDao;
+import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -84,12 +81,12 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (attrList.isEmpty()) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
         if (stock.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.NOT_REGISTERS_FOUND);
+            er.setMessage(Messages.NOT_REGISTERS_FOUND);
             return er;
         }
         return stock;
@@ -209,7 +206,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         if (booking.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
 

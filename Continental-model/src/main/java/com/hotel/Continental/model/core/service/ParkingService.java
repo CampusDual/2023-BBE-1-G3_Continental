@@ -185,7 +185,7 @@ public class ParkingService implements IParkingService {
         calculateParkingTime(attrMap);
         return er;
     }
-    public EntityResult calculateParkingTime(Map<?,?> attr){
+    public EntityResult calculateParkingTime(Map<?,?> attr) {
         Map<String,Object> attrParkingHistory = new HashMap<>();
         BasicField fieldSalida = new BasicField(ParkingHistoryDao.EXIT_DATE);
         //Tengo que buscar que no haya salido del parking ese mismo dia,si salio ese dia ya se conto
@@ -232,8 +232,8 @@ public class ParkingService implements IParkingService {
         attrMapExtraExpenses.put(ExtraExpensesDao.BOOKINGID,idReserva);
         attrMapExtraExpenses.put(ExtraExpensesDao.CONCEPT,sb.toString());
         attrMapExtraExpenses.put(ExtraExpensesDao.PRICE,totalPrice);
-        EntityResult erExtraExpenses = extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
-        return erExtraExpenses;
+
+        return extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
     }
 
     //@Override
@@ -255,7 +255,7 @@ public class ParkingService implements IParkingService {
         }
         //Se comprueba que se mande una capacidad que sea un numero positivo
         try {
-            if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) > 0){
+            if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) <= 0){
                 er.setMessage(ErrorMessages.CAPACITY_NOT_POSITIVE);
                 return er;
             }

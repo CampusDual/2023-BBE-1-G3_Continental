@@ -4,6 +4,10 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 
 public class Extras {
+
+    private Extras() {
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Creates an EntityResult with the given code and message
      *

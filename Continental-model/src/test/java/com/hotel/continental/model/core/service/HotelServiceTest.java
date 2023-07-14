@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class HotelServiceTest {
+class HotelServiceTest {
     @Mock
     static
     DefaultOntimizeDaoHelper daoHelper;
@@ -241,7 +241,7 @@ public class HotelServiceTest {
                                     erUpdate.put(HotelDao.HOTEL_ID, List.of(1));
                                     erUpdate.put(HotelDao.ADDRESS, List.of("address"));
                                     erUpdate.put(HotelDao.NAME, List.of("name"));
-                                    erUpdate.put(HotelDao.HOTELDOWNDATE, List.of(LocalDateTime.now()));
+                                    erUpdate.put(HotelDao.HOTEL_DOWN_DATE, List.of(LocalDateTime.now()));
 
                                     return when(daoHelper.update(Mockito.any(HotelDao.class), Mockito.anyMap(), anyMap())).thenReturn(erUpdate);
                                 }

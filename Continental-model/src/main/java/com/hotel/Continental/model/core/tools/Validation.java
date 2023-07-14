@@ -5,6 +5,9 @@ import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 
 public class Validation {
+    private Validation() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Metodo que comprueba si el documento es valido

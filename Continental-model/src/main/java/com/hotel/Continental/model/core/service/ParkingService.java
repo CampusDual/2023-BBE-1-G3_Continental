@@ -92,7 +92,6 @@ public class ParkingService implements IParkingService {
             er.setMessage(Messages.BOOKING_NOT_STARTED);
             return er;
         }
-        //TODO preguntar cesar si es correctro comprobar si hizo checkin a la hora de entrar al parking
         //Comprobar que la reserva esta activa,que hizo checkin y que no ha hecho checkout
         if(erBooking.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null){
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -121,13 +120,12 @@ public class ParkingService implements IParkingService {
         }
         //Insertar en la tabla parking_history
         Map<String,Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.PARKING_ID,attrMap.get(ParkingHistoryDao.PARKING_ID),ParkingHistoryDao.BOOKING_ID,attrMap.get(ParkingHistoryDao.BOOKING_ID),ParkingHistoryDao.ENTRY_DATE,currentDate);
-        EntityResult erInsert = parkingHistoryService.parkingHistoryEnter(attrMapParkingHistoryInsert);
+        parkingHistoryService.parkingHistoryEnter(attrMapParkingHistoryInsert);
         //Actualizar tabla parking para sumar 1 a los coches que hay en el parking
         occupiedCapacity++;
         Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.PARKING_ID,attrMap.get(ParkingDao.PARKING_ID));
         Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
-        EntityResult erUpdate = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
-        return erUpdate;
+        return this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
     }
 
     @Override
@@ -175,13 +173,13 @@ public class ParkingService implements IParkingService {
         Map<String,Object> keyMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.PARKING_HISTORY_ID,idParkingHistory);
         Date currentDate = new Date();
         Map<String,Object> attrMapParkingHistoryUpdate = Map.of(ParkingHistoryDao.EXIT_DATE,currentDate);
-        EntityResult erUpdate = parkingHistoryService.parkingHistoryExit(attrMapParkingHistoryUpdate,keyMapParkingHistoryUpdate);
+        parkingHistoryService.parkingHistoryExit(attrMapParkingHistoryUpdate,keyMapParkingHistoryUpdate);
         //Actualizar tabla parking para restar 1 a los coches que hay en el parking
         int occupiedCapacity = (int) erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
         occupiedCapacity--;
         Map<String,Object> keyMapParkingUpdate = Map.of(ParkingDao.PARKING_ID,attrMap.get(ParkingDao.PARKING_ID));
         Map<String,Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY,occupiedCapacity);
-        EntityResult erUpdateParking = this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
+        this.daoHelper.update(parkingDao,attrMapParkingUpdate,keyMapParkingUpdate);
         //Lo calculo al final, es mas sencillo entender que si la fecha de salida existe 1o mas veces ya se tuvo en cuenta el dia de hoy
         //De la otra forma tendria que buscar los que tuvieran fecha de salida hoy,
         calculateParkingTime(attrMap);
@@ -234,7 +232,6 @@ public class ParkingService implements IParkingService {
         attrMapExtraExpenses.put(ExtraExpensesDao.BOOKING_ID,idReserva);
         attrMapExtraExpenses.put(ExtraExpensesDao.CONCEPT,sb.toString());
         attrMapExtraExpenses.put(ExtraExpensesDao.PRICE,totalPrice);
-        EntityResult erExtraExpenses = extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
-        return erExtraExpenses;
+        return extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
     }
 }

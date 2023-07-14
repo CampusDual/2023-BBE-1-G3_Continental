@@ -6,12 +6,12 @@
         catalog="" schema="${mainschema}" table="employees"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>employeeid</Column>
+        <Column>employee_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>employeeid</Column>
+        <Column>employee_id</Column>
     </UpdateKeys>
-    <GeneratedKey>employeeid</GeneratedKey>
+    <GeneratedKey>employee_id</GeneratedKey>
     <Queries>
 
     </Queries>

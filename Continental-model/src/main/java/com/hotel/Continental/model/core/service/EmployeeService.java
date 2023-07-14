@@ -49,12 +49,10 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
         //Comprobamos que el documento es válido
-        if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
+        if (attrMap.get(EmployeeDao.DOCUMENT) != null && !Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
             //Si el documento no es valido esta mal
-            if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
                 er.setMessage(Messages.DOCUMENT_NOT_VALID);
                 return er;
-            }
         }
         //Check que no existe el nif
         filter = new HashMap<>();
@@ -86,12 +84,10 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
         //Comprobamos que el documento es válido
-        if (attrMap.get(EmployeeDao.DOCUMENT) != null) {
+        if (attrMap.get(EmployeeDao.DOCUMENT) != null && !Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
             //Si el documento no es valido esta mal
-            if (!Validation.checkDocument((String) attrMap.get(EmployeeDao.DOCUMENT), "ES")) {
                 er.setMessage(Messages.DOCUMENT_NOT_VALID);
                 return er;
-            }
         }
 
         // Comprobar que el empleado exista

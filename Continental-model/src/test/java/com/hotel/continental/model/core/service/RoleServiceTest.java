@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleServiceTest {
+class RoleServiceTest {
     //Generame los test para el metodo roleQuery
     @Mock
     static

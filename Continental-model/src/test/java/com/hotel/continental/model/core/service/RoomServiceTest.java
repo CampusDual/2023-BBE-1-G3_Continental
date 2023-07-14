@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RoomServiceTest {
+class RoomServiceTest {
     @Mock
     static
     DefaultOntimizeDaoHelper daoHelper;

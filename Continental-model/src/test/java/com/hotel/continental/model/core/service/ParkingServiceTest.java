@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingServiceTest {
+class ParkingServiceTest {
     @InjectMocks
     private ParkingService parkingService;
     @Mock
@@ -68,7 +68,7 @@ public class ParkingServiceTest {
                 //region Test case 1: Successful enter
                 Arguments.of(
                         "Successful enter",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
@@ -129,7 +129,7 @@ public class ParkingServiceTest {
                 //region Test case 2: Parking not found
                 Arguments.of(
                         "Parking not found",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.PARKING_NOT_FOUND
@@ -147,7 +147,7 @@ public class ParkingServiceTest {
                 //region Test case 3: Parking full
                 Arguments.of(
                         "Parking full",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.PARKING_FULL
@@ -167,7 +167,7 @@ public class ParkingServiceTest {
                 //region Test case 4: Booking not found
                 Arguments.of(
                         "Booking not found",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_EXIST
@@ -194,7 +194,7 @@ public class ParkingServiceTest {
                 //region Test case 5: Booking not checked in
                 Arguments.of(
                         "Booking not checked in",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_CHECKED_IN
@@ -231,7 +231,7 @@ public class ParkingServiceTest {
                 //region Test case 6: Booking already checked out
                 Arguments.of(
                         "Booking already checked out",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_ALREADY_CHECKED_OUT
@@ -270,7 +270,7 @@ public class ParkingServiceTest {
                 //region Test case 7: Booking not started
                 Arguments.of(
                         "Booking not started",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_STARTED
@@ -308,7 +308,7 @@ public class ParkingServiceTest {
                 //region Test case 8: Already in parking
                 Arguments.of(
                         "Already in parking",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_ALREADY_IN_PARKING
@@ -358,7 +358,7 @@ public class ParkingServiceTest {
                 //region Test case 9: Not same id hotel booking and parking
                 Arguments.of(
                         "Not same id hotel booking and parking",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_SAME_HOTEL_AS_PARKING
@@ -428,7 +428,7 @@ public class ParkingServiceTest {
                 //region Test case 1: Successful enter
                 Arguments.of(
                         "Successful enter",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
@@ -492,7 +492,7 @@ public class ParkingServiceTest {
                 //region Test case 2: Parking not found
                 Arguments.of(
                         "Parking not found",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.PARKING_NOT_FOUND
@@ -510,7 +510,7 @@ public class ParkingServiceTest {
                 //region Test case 4: Booking not found
                 Arguments.of(
                         "Booking not found",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_EXIST
@@ -537,14 +537,14 @@ public class ParkingServiceTest {
                 //region Test case 8: Not in parking
                 Arguments.of(
                         "Not in parking",
-                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.ID_PARKING, 1),
+                        Map.of(ParkingHistoryDao.ID_BOOKING, 1, ParkingDao.ID_PARKING, 1),
                         createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 ErrorMessages.BOOKING_NOT_IN_PARKING
                         ),
                         List.of(
                                 // Mock parkingDao
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erParking = new EntityResultMapImpl();
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
@@ -553,7 +553,7 @@ public class ParkingServiceTest {
                                     return Mockito.when(daoHelper.query(any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erBooking = new EntityResultMapImpl();
                                     erBooking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erBooking.put(BookingDao.STARTDATE, List.of(new Date(LocalDate.now().minusDays(1).toEpochDay())));
@@ -773,7 +773,6 @@ public class ParkingServiceTest {
                 //endregion
         );
     }
-
 
     /**
      * Creates an EntityResult with the given code and message

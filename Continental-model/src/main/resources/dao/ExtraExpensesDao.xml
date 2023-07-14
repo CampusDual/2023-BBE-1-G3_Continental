@@ -6,12 +6,12 @@
         catalog="" schema="${mainschema}" table="extraexpenses"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>idexpense</Column>
+        <Column>extra_expense_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>idexpense</Column>
+        <Column>extra_expense_id</Column>
     </UpdateKeys>
-    <GeneratedKey>idexpense</GeneratedKey>
+    <GeneratedKey>extra_expense_id</GeneratedKey>
     <Queries>
     </Queries>
 </JdbcEntitySetup>

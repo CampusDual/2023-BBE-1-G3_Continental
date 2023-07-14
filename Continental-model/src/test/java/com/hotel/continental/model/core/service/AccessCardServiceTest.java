@@ -47,13 +47,13 @@ class AccessCardServiceTest {
                 Arguments.of(
                         "Successful query",//Nombre del test
                         Map.of(),//keyMap
-                        List.of(AccessCardDao.ACCESSCARDID),//attrList
+                        List.of(AccessCardDao.ACCESS_CARD_ID),//attrList
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier)() ->{
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erQuery.put(AccessCardDao.ACCESSCARDID, List.of(1));
+                                    erQuery.put(AccessCardDao.ACCESS_CARD_ID, List.of(1));
                                     return when(daoHelper.query(any(AccessCardDao.class), anyMap(), anyList())).thenReturn(erQuery);
                                 })//Mocks
                 ),
@@ -68,8 +68,8 @@ class AccessCardServiceTest {
                 // Test case 3: No access card found
                 Arguments.of(
                         "No access card found",//Nombre del test
-                        Map.of(AccessCardDao.ACCESSCARDID,1),//keyMap
-                        List.of(AccessCardDao.ACCESSCARDID),//attrList
+                        Map.of(AccessCardDao.ACCESS_CARD_ID,1),//keyMap
+                        List.of(AccessCardDao.ACCESS_CARD_ID),//attrList
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier)() ->{

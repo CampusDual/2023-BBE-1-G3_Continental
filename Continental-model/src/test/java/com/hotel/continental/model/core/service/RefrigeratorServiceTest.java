@@ -57,12 +57,12 @@ class RefrigeratorServiceTest {
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQueryRoom = new EntityResultMapImpl();
-                                    erQueryRoom.put(RoomDao.IDROOM, List.of(1));
+                                    erQueryRoom.put(RoomDao.ROOM_ID, List.of(1));
                                     return when(daoHelper.query(any(RoomDao.class), anyMap(), anyList())).thenReturn(erQueryRoom);
                                 },
                                 (Supplier) () -> {
                                     EntityResult erInsertFridge = new EntityResultMapImpl();
-                                    erInsertFridge.put(RoomDao.IDROOM, 1);
+                                    erInsertFridge.put(RoomDao.ROOM_ID, 1);
                                     return when(daoHelper.insert(any(RefrigeratorsDao.class), anyMap())).thenReturn(erInsertFridge);
                                 }
                         )

@@ -59,7 +59,7 @@ public class CriteriaService implements ICriteriaService {
         er.setCode(EntityResult.OPERATION_WRONG);
 
         //Compruebo que tenga la clave
-        if(keyMap.isEmpty() || keyMap.get(CriteriaDao.ID) == null) {
+        if(keyMap.isEmpty() || keyMap.get(CriteriaDao.CRITERIA_ID) == null) {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
@@ -69,7 +69,7 @@ public class CriteriaService implements ICriteriaService {
             return er;
         }
         //Compruebo que el criterio exista
-        EntityResult criteriaQuery = this.daoHelper.query(this.criteriaDao, keyMap, List.of(CriteriaDao.ID));
+        EntityResult criteriaQuery = this.daoHelper.query(this.criteriaDao, keyMap, List.of(CriteriaDao.CRITERIA_ID));
         if(criteriaQuery.calculateRecordNumber() == 0) {
             er.setMessage(Messages.CRITERIA_NOT_EXIST);
             return er;

@@ -86,7 +86,7 @@ public class HotelService implements IHotelService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos mull key
-        if(keyMap.get(HotelDao.ID) == null){
+        if(keyMap.get(HotelDao.HOTEL_ID) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
@@ -94,7 +94,7 @@ public class HotelService implements IHotelService {
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTELDOWNDATE));
         EntityResult er;
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
@@ -115,7 +115,7 @@ public class HotelService implements IHotelService {
     public EntityResult hotelDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
-        if (!keyMap.containsKey(HotelDao.ID)) {
+        if (!keyMap.containsKey(HotelDao.HOTEL_ID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
@@ -123,7 +123,7 @@ public class HotelService implements IHotelService {
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTELDOWNDATE));
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }

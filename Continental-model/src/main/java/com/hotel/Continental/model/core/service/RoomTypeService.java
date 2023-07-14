@@ -25,7 +25,7 @@ public class RoomTypeService implements IRoomTypeService {
 
     @Override
     public EntityResult roomtypeInsert(Map<?, ?> attrMap) {
-        if(attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null){
+        if(attrMap.get(RoomTypeDao.NAME) == null || attrMap.get(RoomTypeDao.PRICE) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -46,7 +46,7 @@ public class RoomTypeService implements IRoomTypeService {
     @Override
     public EntityResult roomtypeUpdate(Map<?, ?> attrMap, Map<?, ?> keyMap) {
         //Compruebo que me envian la clave
-        if (keyMap.get(RoomTypeDao.TYPEID) == null) {
+        if (keyMap.get(RoomTypeDao.TYPE_ID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_KEY);
@@ -61,8 +61,8 @@ public class RoomTypeService implements IRoomTypeService {
         }
         //Compruebo que el tipo de habitacion existe
         Map<String, Object> attrMapRoomType = new HashMap<>();
-        attrMapRoomType.put(RoomTypeDao.TYPEID, keyMap.get(RoomTypeDao.TYPEID));
-        EntityResult erRoomType = this.daoHelper.query(this.roomtypeDao,attrMapRoomType,List.of(RoomTypeDao.TYPEID));
+        attrMapRoomType.put(RoomTypeDao.TYPE_ID, keyMap.get(RoomTypeDao.TYPE_ID));
+        EntityResult erRoomType = this.daoHelper.query(this.roomtypeDao,attrMapRoomType,List.of(RoomTypeDao.TYPE_ID));
         if(erRoomType.calculateRecordNumber() == 0){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);

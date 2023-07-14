@@ -8,7 +8,6 @@ import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -59,27 +58,27 @@ class RefrigeratorStockServiceTest {
                 Arguments.of(
                         "update RefrigeratorDefault stock with correct data",
                         Map.of(RefrigeratorStockDao.STOCK, 5),
-                        Map.of(RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.PRODUCT_ID, 2),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(ProductsDao.class), anyMap(), anyList())).thenReturn(erQueryProductDefault);
                                 },
                                 () -> {
                                     EntityResult erQueryFridgeDefault = new EntityResultMapImpl();
-                                    erQueryFridgeDefault.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erQueryFridgeDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorStockDao.class), anyMap(), anyList())).thenReturn(erQueryFridgeDefault);
                                 },
                                 (Supplier) () -> {
                                     EntityResult erUpdateFridgeDefault = new EntityResultMapImpl();
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
                                     erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCK, List.of(5));
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.PRODUCTID, List.of(2));
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.REFRIGERATORID, List.of(-1));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.PRODUCT_ID, List.of(2));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.FRIDGE_ID, List.of(-1));
 
                                     return Mockito.when(daoHelper.update(any(RefrigeratorStockDao.class), anyMap(), anyMap())).thenReturn(erUpdateFridgeDefault);
                                 }
@@ -90,12 +89,12 @@ class RefrigeratorStockServiceTest {
                 Arguments.of(
                         "Insert Product in RefrigeratorDefault",
                         Map.of(RefrigeratorStockDao.STOCK, 5),
-                        Map.of(RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.PRODUCT_ID, 2),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(ProductsDao.class), anyMap(), anyList())).thenReturn(erQueryProductDefault);
                                 },
@@ -106,7 +105,7 @@ class RefrigeratorStockServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erInsertFridgeDefault = new EntityResultMapImpl();
-                                    erInsertFridgeDefault.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erInsertFridgeDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
 
                                     return Mockito.when(daoHelper.insert(any(RefrigeratorStockDao.class), anyMap())).thenReturn(erInsertFridgeDefault);
                                 }
@@ -126,7 +125,7 @@ class RefrigeratorStockServiceTest {
                 Arguments.of(
                         "Update RefrigeratorDafault product not exist",
                         Map.of(RefrigeratorStockDao.STOCK, 2),
-                        Map.of(RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.PRODUCT_ID, 2),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
@@ -141,14 +140,14 @@ class RefrigeratorStockServiceTest {
                 Arguments.of(
                         "Update RefrigeratorDafault with bad stock(not number)",
                         Map.of(RefrigeratorStockDao.STOCK, "a"),
-                        Map.of(RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.PRODUCT_ID, 2),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_NUMBER),
                         List.of()
                 ),
                 Arguments.of(
                         "Update RefrigeratorDafault with bad stock(not positive)",
                         Map.of(RefrigeratorStockDao.STOCK, -1),
-                        Map.of(RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.PRODUCT_ID, 2),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.STOCK_NOT_POSITIVE),
                         List.of()
                 )
@@ -174,13 +173,13 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 1: update RefrigeratorDefault stock with correct data
                 Arguments.of(
                         "update RefrigeratorDefault stock with correct data",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
                                     erQueryProductDefault.put(ProductsDao.NAME, List.of("name"));
                                     erQueryProductDefault.put(ProductsDao.PRICE, List.of(12));
 
@@ -188,13 +187,13 @@ class RefrigeratorStockServiceTest {
                                 },
                                 () -> {
                                     EntityResult erQueryFridgeStock = new EntityResultMapImpl();
-                                    erQueryFridgeStock.put(RefrigeratorStockDao.STOCKID, List.of(1, 2));
-                                    erQueryFridgeStock.put(RefrigeratorStockDao.REFRIGERATORID, List.of(1));
+                                    erQueryFridgeStock.put(RefrigeratorStockDao.STOCK_ID, List.of(1, 2));
+                                    erQueryFridgeStock.put(RefrigeratorStockDao.FRIDGE_ID, List.of(1));
                                     erQueryFridgeStock.put(RefrigeratorStockDao.STOCK, List.of(2, 2));
 
                                     EntityResult erQueryFridgeStockDefault = new EntityResultMapImpl();
-                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCKID, List.of(1, 2));
-                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.REFRIGERATORID, List.of(-1));
+                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(1, 2));
+                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.FRIDGE_ID, List.of(-1));
                                     erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCK, List.of(5, 5));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorStockDao.class), anyMap(), anyList())).thenReturn(erQueryFridgeStock,erQueryFridgeStockDefault,erQueryFridgeStock);
@@ -202,19 +201,19 @@ class RefrigeratorStockServiceTest {
                                 () -> {
 
                                     EntityResult erQueryFridge = new EntityResultMapImpl();
-                                    erQueryFridge.put(RefrigeratorStockDao.REFRIGERATORID, List.of(-1));
-                                    erQueryFridge.put(RefrigeratorStockDao.STOCKID, List.of(2));
-                                    erQueryFridge.put(RefrigeratorStockDao.PRODUCTID, List.of(2));
+                                    erQueryFridge.put(RefrigeratorStockDao.FRIDGE_ID, List.of(-1));
+                                    erQueryFridge.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
+                                    erQueryFridge.put(RefrigeratorStockDao.PRODUCT_ID, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorsDao.class), anyMap(), anyList()))
                                             .thenReturn(erQueryFridge);
                                 },
                                 (Supplier) () -> {
                                     EntityResult erUpdateFridgeDefault = new EntityResultMapImpl();
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
                                     erUpdateFridgeDefault.put(RefrigeratorStockDao.STOCK, List.of(5));
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.PRODUCTID, List.of(2));
-                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.REFRIGERATORID, List.of(-1));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.PRODUCT_ID, List.of(2));
+                                    erUpdateFridgeDefault.put(RefrigeratorStockDao.FRIDGE_ID, List.of(-1));
 
                                     return Mockito.when(daoHelper.update(any(RefrigeratorStockDao.class), anyMap(), anyMap())).thenReturn(erUpdateFridgeDefault);
                                 }
@@ -231,7 +230,7 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 3: update RefrigeratorDefault stock with null data
                 Arguments.of(
                         "update RefrigeratorDefault stock with null data",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         Map.of(),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
@@ -239,7 +238,7 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 4: update RefrigeratorDefault stock refrigerator blocked
                 Arguments.of(
                         "update RefrigeratorDefault stock refrigerator blocked",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, -1, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, -1, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.REFRIGERATOR_BLOCKED),
                         List.of()
@@ -247,7 +246,7 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 5: update RefrigeratorDefault stock fridge not exist
                 Arguments.of(
                         "update RefrigeratorDefault stock fridge not exist",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.REFRIGERATOR_NOT_EXIST),
                         List.of(
@@ -263,7 +262,7 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 6: update RefrigeratorDefault stock fridge not exist
                 Arguments.of(
                         "update RefrigeratorDefault stock fridge not exist",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_EXIST),
                         List.of(
@@ -284,13 +283,13 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 7: update RefrigeratorDefault stock product not necessary
                 Arguments.of(
                         "update RefrigeratorDefault stock product not necessary",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.PRODUCT_NOT_NECESSARY),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
                                     erQueryProductDefault.put(ProductsDao.NAME, List.of("name"));
                                     erQueryProductDefault.put(ProductsDao.PRICE, List.of(12));
 
@@ -313,13 +312,13 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 8: update RefrigeratorDefault stock zero
                 Arguments.of(
                         "update RefrigeratorDefault stock zero",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         Map.of(RefrigeratorStockDao.STOCK, 0),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.UPDATE_STOCK_ZERO),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
                                     erQueryProductDefault.put(ProductsDao.NAME, List.of("name"));
                                     erQueryProductDefault.put(ProductsDao.PRICE, List.of(12));
 
@@ -327,8 +326,8 @@ class RefrigeratorStockServiceTest {
                                 },
                                 () -> {
                                     EntityResult erQueryStockFridge = new EntityResultMapImpl();
-                                    erQueryStockFridge.put(RefrigeratorStockDao.REFRIGERATORID, List.of(2));
-                                    erQueryStockFridge.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erQueryStockFridge.put(RefrigeratorStockDao.FRIDGE_ID, List.of(2));
+                                    erQueryStockFridge.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
                                     erQueryStockFridge.put(RefrigeratorStockDao.STOCK, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorStockDao.class), anyMap(), anyList())).thenReturn(erQueryStockFridge);
@@ -345,13 +344,13 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 9: update RefrigeratorDefault new stock higher than default
                 Arguments.of(
                         "update RefrigeratorDefault new stock higher than default",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NEW_STOCK_HIGHER_THAN_DEFAULT),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
                                     erQueryProductDefault.put(ProductsDao.NAME, List.of("name"));
                                     erQueryProductDefault.put(ProductsDao.PRICE, List.of(12));
 
@@ -359,8 +358,8 @@ class RefrigeratorStockServiceTest {
                                 },
                                 () -> {
                                     EntityResult erQueryStockFridge = new EntityResultMapImpl();
-                                    erQueryStockFridge.put(RefrigeratorStockDao.REFRIGERATORID, List.of(2));
-                                    erQueryStockFridge.put(RefrigeratorStockDao.STOCKID, List.of(2));
+                                    erQueryStockFridge.put(RefrigeratorStockDao.FRIDGE_ID, List.of(2));
+                                    erQueryStockFridge.put(RefrigeratorStockDao.STOCK_ID, List.of(2));
                                     erQueryStockFridge.put(RefrigeratorStockDao.STOCK, List.of(2));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorStockDao.class), anyMap(), anyList())).thenReturn(erQueryStockFridge);
@@ -377,13 +376,13 @@ class RefrigeratorStockServiceTest {
                 //region Test Case 9: update RefrigeratorDefault new stock higher than default
                 Arguments.of(
                         "update RefrigeratorDefault new stock higher than default",
-                        Map.of(RefrigeratorStockDao.REFRIGERATORID, 2, RefrigeratorStockDao.PRODUCTID, 2),
+                        Map.of(RefrigeratorStockDao.FRIDGE_ID, 2, RefrigeratorStockDao.PRODUCT_ID, 2),
                         attrMap,
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NEW_STOCK_UNDER_ZERO),
                         List.of(
                                 () -> {
                                     EntityResult erQueryProductDefault = new EntityResultMapImpl();
-                                    erQueryProductDefault.put(ProductsDao.PRODUCTID, List.of(2));
+                                    erQueryProductDefault.put(ProductsDao.PRODUCT_ID, List.of(2));
                                     erQueryProductDefault.put(ProductsDao.NAME, List.of("name"));
                                     erQueryProductDefault.put(ProductsDao.PRICE, List.of(12));
 
@@ -391,13 +390,13 @@ class RefrigeratorStockServiceTest {
                                 },
                                 () -> {
                                     EntityResult erQueryFridgeStock = new EntityResultMapImpl();
-                                    erQueryFridgeStock.put(RefrigeratorStockDao.STOCKID, List.of(1, 2));
-                                    erQueryFridgeStock.put(RefrigeratorStockDao.REFRIGERATORID, List.of(1));
+                                    erQueryFridgeStock.put(RefrigeratorStockDao.STOCK_ID, List.of(1, 2));
+                                    erQueryFridgeStock.put(RefrigeratorStockDao.FRIDGE_ID, List.of(1));
                                     erQueryFridgeStock.put(RefrigeratorStockDao.STOCK, List.of(-5, -5));
 
                                     EntityResult erQueryFridgeStockDefault = new EntityResultMapImpl();
-                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCKID, List.of(1, 2));
-                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.REFRIGERATORID, List.of(-1));
+                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCK_ID, List.of(1, 2));
+                                    erQueryFridgeStockDefault.put(RefrigeratorStockDao.FRIDGE_ID, List.of(-1));
                                     erQueryFridgeStockDefault.put(RefrigeratorStockDao.STOCK, List.of(5, 5));
 
                                     return Mockito.when(daoHelper.query(any(RefrigeratorStockDao.class), anyMap(), anyList())).thenReturn(erQueryFridgeStock,erQueryFridgeStockDefault,erQueryFridgeStock);

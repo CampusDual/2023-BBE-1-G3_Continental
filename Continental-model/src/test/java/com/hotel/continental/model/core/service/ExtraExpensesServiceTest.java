@@ -50,7 +50,7 @@ class ExtraExpensesServiceTest {
                 //region Test case 1: Successful insert
                 Arguments.of(
                         "Successful extra expenses",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 2,
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 2,
                                 ExtraExpensesDao.CONCEPT, "concepto", ExtraExpensesDao.PRICE, 12),//keyMap
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
@@ -61,7 +61,7 @@ class ExtraExpensesServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erExpense = new EntityResultMapImpl();
-                                    erExpense.put(ExtraExpensesDao.IDEXPENSE, List.of(1));
+                                    erExpense.put(ExtraExpensesDao.EXTRA_EXPENSE_ID, List.of(1));
 
                                     return Mockito.when(daoHelper.insert(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap())).thenReturn(erExpense);
                                 },
@@ -76,7 +76,7 @@ class ExtraExpensesServiceTest {
                 //region Test case 2: Null data
                 Arguments.of(
                         "null data",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 1),//keyMap
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 1),//keyMap
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
@@ -84,7 +84,7 @@ class ExtraExpensesServiceTest {
                 //region Test case 3: Empty Data
                 Arguments.of(
                         "empty data",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
@@ -92,7 +92,7 @@ class ExtraExpensesServiceTest {
                 //region Test case 4: Booking doesn´t exist
                 Arguments.of(
                         "Booking doesn´t exist",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 3,
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 3,
                                 ExtraExpensesDao.CONCEPT, "concepto", ExtraExpensesDao.PRICE, 12),//keyMap
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),//Resultado esperado
                         List.of(

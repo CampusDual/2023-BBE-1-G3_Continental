@@ -48,14 +48,14 @@ class RoomTypeServiceTest {
                 //region Test Case 1 - Update roomtype with correct data
                 Arguments.of(
                         "Update roomtype with correct data",
-                        Map.of(RoomTypeDao.TYPE, "Suite"),
-                        Map.of(RoomTypeDao.TYPEID, 1),
+                        Map.of(RoomTypeDao.NAME, "Suite"),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erQuery.put(RoomTypeDao.TYPEID, List.of(1));
+                                    erQuery.put(RoomTypeDao.TYPE_ID, List.of(1));
                                     return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erQuery);
                                 },
                                 (Supplier) () -> {
@@ -70,7 +70,7 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Update roomtype with null data",
                         Map.of(),
-                        Map.of(RoomTypeDao.TYPEID, 1),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
@@ -78,7 +78,7 @@ class RoomTypeServiceTest {
                 //region Test Case 3 - Update roomtype with null key
                 Arguments.of(
                         "Update roomtype with null key",
-                        Map.of(RoomTypeDao.TYPE, "Suite"),
+                        Map.of(RoomTypeDao.NAME, "Suite"),
                         Map.of(),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
@@ -87,8 +87,8 @@ class RoomTypeServiceTest {
                 //region Test Case 4 - Update roomtype with no existing key
                 Arguments.of(
                         "Update roomtype with no existing key",
-                        Map.of(RoomTypeDao.TYPE, "Suite"),
-                        Map.of(RoomTypeDao.TYPEID, 1),
+                        Map.of(RoomTypeDao.NAME, "Suite"),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOMTYPE_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
@@ -117,12 +117,12 @@ class RoomTypeServiceTest {
                 //region Test Case 1 - Insert roomtype with correct data
                 Arguments.of(
                         "Insert roomtype with correct data",
-                        Map.of(RoomTypeDao.TYPE, "Suite", RoomTypeDao.PRICE, 20.2),
+                        Map.of(RoomTypeDao.NAME, "Suite", RoomTypeDao.PRICE, 20.2),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erInsert = new EntityResultMapImpl();
-                                    erInsert.put(RoomTypeDao.TYPEID, 1);
+                                    erInsert.put(RoomTypeDao.TYPE_ID, 1);
                                     erInsert.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return when(daoHelper.insert(Mockito.any(RoomTypeDao.class), Mockito.anyMap())).thenReturn(erInsert);
                                 }

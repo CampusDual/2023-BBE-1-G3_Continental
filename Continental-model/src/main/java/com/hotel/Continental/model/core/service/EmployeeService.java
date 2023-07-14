@@ -34,15 +34,15 @@ public class EmployeeService implements IEmployeeService {
     public EntityResult employeeInsert(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
-        if (!attrMap.containsKey(EmployeeDao.IDHOTEL) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
+        if (!attrMap.containsKey(EmployeeDao.HOTEL_ID) || !attrMap.containsKey(EmployeeDao.DOCUMENT) || !attrMap.containsKey(EmployeeDao.NAME)) {
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
         // Comprueba que el hotel existe
         Map<String, Object> filter = new HashMap<>();
-        filter.put(HotelDao.ID, attrMap.get(EmployeeDao.IDHOTEL));
-        EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.ID));
+        filter.put(HotelDao.HOTEL_ID, attrMap.get(EmployeeDao.HOTEL_ID));
+        EntityResult hotel = this.daoHelper.query(this.hotelDao, filter, Arrays.asList(HotelDao.HOTEL_ID));
 
         if (hotel.calculateRecordNumber() == 0) {
             er.setMessage(Messages.HOTEL_NOT_EXIST);
@@ -81,7 +81,7 @@ public class EmployeeService implements IEmployeeService {
             return er;
         }
         //Comprobamos que nos envia un EmployeeId
-        if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+        if (!keyMap.containsKey(EmployeeDao.EMPLOYEE_ID)) {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
@@ -95,7 +95,7 @@ public class EmployeeService implements IEmployeeService {
         }
 
         // Comprobar que el empleado exista
-        EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEEID));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, keyMap, Arrays.asList(EmployeeDao.EMPLOYEE_ID));
         if (employee.calculateRecordNumber() == 0) {
             er.setMessage(Messages.EMPLOYEE_NOT_EXIST);
             return er;
@@ -108,7 +108,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult employeeQuery(Map<?, ?> keyMap, List<?> attrList) {
-        if (keyMap.containsKey(EmployeeDao.EMPLOYEEID) || keyMap.containsKey(EmployeeDao.IDHOTEL)) {
+        if (keyMap.containsKey(EmployeeDao.EMPLOYEE_ID) || keyMap.containsKey(EmployeeDao.HOTEL_ID)) {
             EntityResult employees = this.daoHelper.query(this.employeeDao, keyMap, attrList);
             if (employees.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
@@ -125,7 +125,7 @@ public class EmployeeService implements IEmployeeService {
     public EntityResult employeeDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
-        if (!keyMap.containsKey(EmployeeDao.EMPLOYEEID)) {
+        if (!keyMap.containsKey(EmployeeDao.EMPLOYEE_ID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
@@ -134,8 +134,8 @@ public class EmployeeService implements IEmployeeService {
         //Comprobamos que el empleado existe
         //Si no existe, devolvemos un entityResult que representa un error
         Map<String, Object> filter = new HashMap<>();
-        filter.put(EmployeeDao.EMPLOYEEID, keyMap.get(EmployeeDao.EMPLOYEEID));
-        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEEID, EmployeeDao.EMPLOYEEDOWNDATE));
+        filter.put(EmployeeDao.EMPLOYEE_ID, keyMap.get(EmployeeDao.EMPLOYEE_ID));
+        EntityResult employee = this.daoHelper.query(this.employeeDao, filter, Arrays.asList(EmployeeDao.EMPLOYEE_ID, EmployeeDao.EMPLOYEE_DOWN_DATE));
         if (employee.calculateRecordNumber() == 0) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -144,7 +144,7 @@ public class EmployeeService implements IEmployeeService {
         }
 
         //Comprobamos que el empleado esta en activo
-        if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEEDOWNDATE) != null) {
+        if (employee.getRecordValues(0).get(EmployeeDao.EMPLOYEE_DOWN_DATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.EMPLOYEE_ALREADY_INACTIVE);
@@ -152,7 +152,7 @@ public class EmployeeService implements IEmployeeService {
         }
 
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos
-        attrMap.put(EmployeeDao.EMPLOYEEDOWNDATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
+        attrMap.put(EmployeeDao.EMPLOYEE_DOWN_DATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
         //Devolvemos un entityResult que representa el éxito de la operación
         er = this.daoHelper.update(this.employeeDao, attrMap, keyMap);//Actualizamos el empleado
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);

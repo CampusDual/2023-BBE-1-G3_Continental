@@ -95,17 +95,17 @@ public class BookingService implements IBookingService {
         //Si esta libre se inserta
         //Si no esta libre se devuelve un error
         List<String> roomKeyMap = new ArrayList<>();
-        roomKeyMap.add(RoomDao.IDROOM);
+        roomKeyMap.add(RoomDao.ROOM_ID);
         Map<String, Object> roomAttrMap = new HashMap<>();
         roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
         roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
         //Si se nos envia el id de la habitacion se busca esa habitacion
 
         if (attrMap.get(BookingDao.ROOMID) != null) {
-            roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDROOM));
+            roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.ROOM_ID));
         }
-        if(attrMap.get(RoomDao.ROOMTYPEID)!=null){
-            roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+        if(attrMap.get(RoomDao.ROOM_TYPE_ID)!=null){
+            roomAttrMap.put(RoomDao.ROOM_TYPE_ID, attrMap.get(RoomDao.ROOM_TYPE_ID));
         }
         EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
         //Comprobar que no dio error
@@ -118,7 +118,7 @@ public class BookingService implements IBookingService {
         if (habitacionesLibres.calculateRecordNumber() > 0) {
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
-            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDROOM));
+            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.ROOM_ID));
             //Calculamos el precio de la reserva
             EntityResult price = bookingPrice(attrMap);
             attrMap.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
@@ -197,16 +197,16 @@ public class BookingService implements IBookingService {
             //Si esta libre se actualiza
             //Si no esta libre se devuelve un error
             List<String> roomKeyMap = new ArrayList<>();
-            roomKeyMap.add(RoomDao.IDROOM);
+            roomKeyMap.add(RoomDao.ROOM_ID);
             Map<String, Object> roomAttrMap = new HashMap<>();
             roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
             roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
             //Si se nos envia el id de la habitacion se busca esa habitacion
             if (attrMap.get(BookingDao.ROOMID) != null) {
-                roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDROOM));
+                roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.ROOM_ID));
             }
-            if(attrMap.get(RoomDao.ROOMTYPEID)!=null){
-                roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+            if(attrMap.get(RoomDao.ROOM_TYPE_ID)!=null){
+                roomAttrMap.put(RoomDao.ROOM_TYPE_ID, attrMap.get(RoomDao.ROOM_TYPE_ID));
             }
             EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
             //Comprobar que no dio error
@@ -224,7 +224,7 @@ public class BookingService implements IBookingService {
             }
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
-            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDROOM));
+            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.ROOM_ID));
             attrMap.remove(BookingDao.STARTDATE);
             attrMap.remove(BookingDao.ENDDATE);
             attrMap.put(BookingDao.STARTDATE, roomAttrMap.get(INITIALDATE));
@@ -252,7 +252,7 @@ public class BookingService implements IBookingService {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -357,7 +357,7 @@ public class BookingService implements IBookingService {
         }
         //Update de la tarjeta
         Map<String, Object> keyMapCard = new HashMap<>();
-        keyMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
+        keyMapCard.put(AccessCardDao.ACCESS_CARD_ID, attrMap.get(AccessCardDao.ACCESS_CARD_ID));
         keyMapCard.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         EntityResult erTarjeta = accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
         if (erTarjeta.getCode() == EntityResult.OPERATION_WRONG) {
@@ -400,8 +400,8 @@ public class BookingService implements IBookingService {
         }
         //Obtener tipo de habitacion
         Map<String, Object> attrMapRoom = new HashMap<>();
-        attrMapRoom.put(RoomDao.IDROOM, attrMap.get(BookingDao.ROOMID));
-        EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.IDROOM, RoomDao.ROOMTYPEID, RoomDao.ROOMDOWNDATE));
+        attrMapRoom.put(RoomDao.ROOM_ID, attrMap.get(BookingDao.ROOMID));
+        EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.ROOM_ID, RoomDao.ROOM_TYPE_ID, RoomDao.ROOM_DOWN_DATE));
         //Comprobamos que la habitacion existe
         if (room.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
@@ -410,22 +410,22 @@ public class BookingService implements IBookingService {
             return er;
         }
         Map<String, Object> attrMapRoomType = new HashMap<>();
-        attrMapRoomType.put(RoomTypeDao.TYPEID, room.getRecordValues(0).get(RoomDao.ROOMTYPEID));
-        EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
+        attrMapRoomType.put(RoomTypeDao.TYPE_ID, room.getRecordValues(0).get(RoomDao.ROOM_TYPE_ID));
+        EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPE_ID, RoomTypeDao.PRICE));
 
         //Precio de la habitacion por dia
         double roomprice = (double) roomtype.getRecordValues(0).get(RoomTypeDao.PRICE);
         //Obtener criterios de precio
         Map<String, Object> attrMapCriteria = new HashMap<>();
-        EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
+        EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.CRITERIA_ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
 
         //Hacer que obtenga los multiplicadores por nombre
         BigDecimal multiplierWeekend= (BigDecimal) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
         BigDecimal earlyBooking= (BigDecimal) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
         Map<Integer,BigDecimal> multiplierSeason=new HashMap<>();
         multiplierSeason.put(0, BigDecimal.ONE);
-        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
-        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.ID),(BigDecimal) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(2).get(CriteriaDao.CRITERIA_ID),(BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
+        multiplierSeason.put((int)criteria.getRecordValues(3).get(CriteriaDao.CRITERIA_ID),(BigDecimal) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER));
         BigDecimal multiplierLongStay= (BigDecimal) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
 
         //Obtener fechas de la reserva

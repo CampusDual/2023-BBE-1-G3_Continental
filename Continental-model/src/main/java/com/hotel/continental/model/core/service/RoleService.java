@@ -46,17 +46,17 @@ public class RoleService implements IRoleService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleInsert(Map<String, Object> attrMap) {
         //Comprobamos que no esta vacio y que no es nulo
-        if(attrMap.get(RoleDao.ROLENAME) == null || attrMap.get(RoleDao.ROLENAME).toString().isEmpty()){
+        if(attrMap.get(RoleDao.ROLE_NAME) == null || attrMap.get(RoleDao.ROLE_NAME).toString().isEmpty()){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
-        attrMap.put(RoleDao.ROLENAME, attrMap.remove(RoleDao.ROLENAME).toString().toLowerCase());
+        attrMap.put(RoleDao.ROLE_NAME, attrMap.remove(RoleDao.ROLE_NAME).toString().toLowerCase());
         attrMap.put(RoleDao.XMLCLIENTPERMISSION,"<?xml version=\"1.0\" encoding=\"UTF-8\"?><security></security>");
         //Primero comprobamos que el rol que nos pasan no existe
-        EntityResult role = this.daoHelper.query(this.roleDao, attrMap, Arrays.asList(RoleDao.ROLENAME));
+        EntityResult role = this.daoHelper.query(this.roleDao, attrMap, Arrays.asList(RoleDao.ROLE_NAME));
         if(role.calculateRecordNumber() > 0){
             EntityResult er;
             er = new EntityResultMapImpl();
@@ -71,27 +71,27 @@ public class RoleService implements IRoleService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleDelete(Map<?, ?> keyMap) {
-        if (!keyMap.containsKey(RoleDao.ID_ROLENAME)) {
+        if (!keyMap.containsKey(RoleDao.ROLE_ID)) {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if ((int) keyMap.get(RoleDao.ID_ROLENAME) == 0) {
+        if ((int) keyMap.get(RoleDao.ROLE_ID) == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.ADMIN_ROLE_NOT_EDITABLE);
             return er;
         }
         //si el rol no existe lanzar un error
-        EntityResult role = roleQuery(keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
+        EntityResult role = roleQuery(keyMap, Arrays.asList(RoleDao.ROLE_ID));
         if (role.getCode() == EntityResult.OPERATION_WRONG) {
             role.setMessage(Messages.ROLE_DOESNT_EXIST);
             return role;
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
-        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted successfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ROLE_ID) + " deleted successfully");
         return er;
     }
 
@@ -99,7 +99,7 @@ public class RoleService implements IRoleService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
         //Comprobamos que nos manda la clave primaria o que no es nula o vacia
-        if(!keyMap.containsKey(RoleDao.ID_ROLENAME) || keyMap.get(RoleDao.ID_ROLENAME) == null || keyMap.get(RoleDao.ID_ROLENAME).toString().isEmpty()){
+        if(!keyMap.containsKey(RoleDao.ROLE_ID) || keyMap.get(RoleDao.ROLE_ID) == null || keyMap.get(RoleDao.ROLE_ID).toString().isEmpty()){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -107,7 +107,7 @@ public class RoleService implements IRoleService {
             return er;
         }
         //Comprobamos que nos mandan el rolename
-        if(!attrMap.containsKey(RoleDao.ROLENAME)){
+        if(!attrMap.containsKey(RoleDao.ROLE_NAME)){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
@@ -115,9 +115,9 @@ public class RoleService implements IRoleService {
             return er;
         }
         //Ponemos el rolename en minusculas
-        attrMap.put(RoleDao.ROLENAME, attrMap.remove(RoleDao.ROLENAME).toString().toLowerCase());
+        attrMap.put(RoleDao.ROLE_NAME, attrMap.remove(RoleDao.ROLE_NAME).toString().toLowerCase());
         //Comprobamos que ese rol existe
-        EntityResult role = this.daoHelper.query(this.roleDao, keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
+        EntityResult role = this.daoHelper.query(this.roleDao, keyMap, Arrays.asList(RoleDao.ROLE_ID));
         if(role.calculateRecordNumber() == 0){
             EntityResult er;
             er = new EntityResultMapImpl();
@@ -126,7 +126,7 @@ public class RoleService implements IRoleService {
             return er;
         }
         //Comprobamos que no hay otro rol con ese rolename
-        EntityResult role2 = this.daoHelper.query(this.roleDao, attrMap, Arrays.asList(RoleDao.ROLENAME));
+        EntityResult role2 = this.daoHelper.query(this.roleDao, attrMap, Arrays.asList(RoleDao.ROLE_NAME));
         if(role2.calculateRecordNumber() > 0){
             EntityResult er;
             er = new EntityResultMapImpl();
@@ -136,7 +136,7 @@ public class RoleService implements IRoleService {
         }
         //Actualizamos el rol
         EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
-        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " updated successfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ROLE_ID) + " updated successfully");
         return er;
     }
 }

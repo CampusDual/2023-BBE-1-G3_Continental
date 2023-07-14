@@ -40,7 +40,7 @@ public class ClientService implements IClientService {
         er.setCode(EntityResult.OPERATION_WRONG);
 
         //Primero compruebo que el clientid existe dado que es necesario para la actualización
-        if (keyMap.get(ClientDao.CLIENTID) == null) {
+        if (keyMap.get(ClientDao.CLIENT_ID) == null) {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
@@ -50,7 +50,7 @@ public class ClientService implements IClientService {
             return er;
         }
         //Si el id del cliente no existe en la base de datos esta mal
-        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
+        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENT_ID, keyMap.get(ClientDao.CLIENT_ID)))) {
             er.setMessage(Messages.CLIENT_NOT_EXIST);
             return er;
         }
@@ -71,17 +71,17 @@ public class ClientService implements IClientService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
         //Comprobar que se envia el id del cliente
-        if (keyMap.get(ClientDao.CLIENTID) == null) {
+        if (keyMap.get(ClientDao.CLIENT_ID) == null) {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENTID, keyMap.get(ClientDao.CLIENTID)))) {
+        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENT_ID, keyMap.get(ClientDao.CLIENT_ID)))) {
             er.setMessage(Messages.CLIENT_NOT_EXIST);
         } else if (isCanceled(keyMap)) {
             er.setMessage(Messages.CLIENT_ALREADY_DELETED);
         } else {
             Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put(ClientDao.CLIENTDOWNDATE, new Timestamp(System.currentTimeMillis()));
+            attrMap.put(ClientDao.CLIENT_DOWN_DATE, new Timestamp(System.currentTimeMillis()));
             er = this.daoHelper.update(clientDao, attrMap, keyMap);
             er.setCode(EntityResult.OPERATION_SUCCESSFUL);
             er.setMessage("Este cliente se ha dado de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -100,14 +100,14 @@ public class ClientService implements IClientService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientInsert(Map<String, Object> attrMap) {
         //Si alguno de los campos necesarios esta nulo esta mal
-        if (attrMap.get(ClientDao.COUNTRYCODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
+        if (attrMap.get(ClientDao.COUNTRY_CODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Si alguno de los campos necesarios esta vacio esta mal
-        if (((String) attrMap.get(ClientDao.COUNTRYCODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
+        if (((String) attrMap.get(ClientDao.COUNTRY_CODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -133,17 +133,17 @@ public class ClientService implements IClientService {
      */
     private EntityResult checkUpdate(Map<String, Object> attrMap) {
         //Hago esto para asegurarme de que el codigo de pais esta en mayusculas y que no sea nulo
-        if (attrMap.get(ClientDao.COUNTRYCODE) != null) {
-            attrMap.put(ClientDao.COUNTRYCODE, ((String) attrMap.remove(ClientDao.COUNTRYCODE)).toUpperCase());
+        if (attrMap.get(ClientDao.COUNTRY_CODE) != null) {
+            attrMap.put(ClientDao.COUNTRY_CODE, ((String) attrMap.remove(ClientDao.COUNTRY_CODE)).toUpperCase());
             //Si el country code no mide 2 Caracteres esta mal
-            if (((String) attrMap.get(ClientDao.COUNTRYCODE)).length() != 2) {
+            if (((String) attrMap.get(ClientDao.COUNTRY_CODE)).length() != 2) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(Messages.COUNTRY_CODE_FORMAT_ERROR);
                 return er;
             }
             //Si el country code no es un codigo de pais valido esta mal
-            if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRYCODE)))) {
+            if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRY_CODE)))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(Messages.COUNTRY_CODE_NOT_VALID);
@@ -152,7 +152,7 @@ public class ClientService implements IClientService {
         }
         if (attrMap.get(ClientDao.DOCUMENT) != null) {
             //Si el documento no es valido esta mal
-            if (!Validation.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRYCODE))) {
+            if (!Validation.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRY_CODE))) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
                 er.setMessage(Messages.DOCUMENT_NOT_VALID);
@@ -191,16 +191,16 @@ public class ClientService implements IClientService {
 
     private boolean existsKeymap(Map<String, Object> keyMap) {
         List<Object> attrList = new ArrayList<>();
-        attrList.add(ClientDao.CLIENTID);
+        attrList.add(ClientDao.CLIENT_ID);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
         return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0;
     }
 
     private boolean isCanceled(Map<?, ?> keyMap) {
         List<Object> attrList = new ArrayList<>();
-        attrList.add(ClientDao.CLIENTDOWNDATE);
+        attrList.add(ClientDao.CLIENT_DOWN_DATE);
         EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENTDOWNDATE) != null;
+        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENT_DOWN_DATE) != null;
     }
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })

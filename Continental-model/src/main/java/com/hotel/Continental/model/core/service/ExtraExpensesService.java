@@ -38,7 +38,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         }
         //Comprobar empty data
         if (((String) attrMap.get(ExtraExpensesDao.CONCEPT)).isBlank() || ((String.valueOf(attrMap.get(ExtraExpensesDao.PRICE))).isBlank())
-                || (String.valueOf(attrMap.get(ExtraExpensesDao.BOOKINGID)).isBlank())) {
+                || (String.valueOf(attrMap.get(ExtraExpensesDao.BOOKING_ID)).isBlank())) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -46,7 +46,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
         }
         //Comprobar booking exists
         Map<String, Object> keyMap = new HashMap<>();
-        keyMap.put(BookingDao.BOOKINGID, attrMap.get(ExtraExpensesDao.BOOKINGID));
+        keyMap.put(BookingDao.BOOKINGID, attrMap.get(ExtraExpensesDao.BOOKING_ID));
         EntityResult bookings = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
         if (bookings.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
@@ -55,7 +55,7 @@ public class ExtraExpensesService implements IExtraExpensesService {
             return er;
         }
         //Comprobar data repeat
-        EntityResult queryExtraExpenses = this.daoHelper.query(this.extraExpensesDao, attrMap, List.of(ExtraExpensesDao.IDEXPENSE));
+        EntityResult queryExtraExpenses = this.daoHelper.query(this.extraExpensesDao, attrMap, List.of(ExtraExpensesDao.EXTRA_EXPENSE_ID));
         if(queryExtraExpenses.calculateRecordNumber() > 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

@@ -6,10 +6,7 @@ import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
@@ -18,7 +15,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -65,7 +61,7 @@ public class HotelServiceTest {
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erInsert = new EntityResultMapImpl();
-                                    erInsert.put(HotelDao.ID, List.of(1));
+                                    erInsert.put(HotelDao.HOTEL_ID, List.of(1));
 
                                     return when(daoHelper.insert(Mockito.any(HotelDao.class), Mockito.anyMap())).thenReturn(erInsert);
                                 }
@@ -99,13 +95,13 @@ public class HotelServiceTest {
                 //region Test Case 1 - Query hotel with correct data with filter
                 Arguments.of(
                         "Query hotel with correct data",
-                        Map.of(HotelDao.ID, 1),
-                        List.of(HotelDao.ID, HotelDao.ADDRESS, HotelDao.NAME),
+                        Map.of(HotelDao.HOTEL_ID, 1),
+                        List.of(HotelDao.HOTEL_ID, HotelDao.ADDRESS, HotelDao.NAME),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(HotelDao.ID, List.of(1));
+                                    erQuery.put(HotelDao.HOTEL_ID, List.of(1));
                                     erQuery.put(HotelDao.ADDRESS, List.of("address"));
                                     erQuery.put(HotelDao.NAME, List.of("name"));
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
@@ -119,12 +115,12 @@ public class HotelServiceTest {
                 Arguments.of(
                         "Query hotel with correct data",
                         Map.of(),
-                        List.of(HotelDao.ID, HotelDao.ADDRESS, HotelDao.NAME),
+                        List.of(HotelDao.HOTEL_ID, HotelDao.ADDRESS, HotelDao.NAME),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(HotelDao.ID, List.of(1));
+                                    erQuery.put(HotelDao.HOTEL_ID, List.of(1));
                                     erQuery.put(HotelDao.ADDRESS, List.of("address"));
                                     erQuery.put(HotelDao.NAME, List.of("name"));
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
@@ -162,13 +158,13 @@ public class HotelServiceTest {
                 //region Test Case 1 - Update hotel with correct data
                 Arguments.of(
                         "Update hotel with correct data",
-                        Map.of(HotelDao.ID, 1),
+                        Map.of(HotelDao.HOTEL_ID, 1),
                         Map.of(HotelDao.ADDRESS, "addressUpdate", HotelDao.NAME, "nameUpdate"),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(HotelDao.ID, List.of(1));
+                                    erQuery.put(HotelDao.HOTEL_ID, List.of(1));
                                     erQuery.put(HotelDao.ADDRESS, List.of("address"));
                                     erQuery.put(HotelDao.NAME, List.of("name"));
 
@@ -176,7 +172,7 @@ public class HotelServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erUpdate = new EntityResultMapImpl();
-                                    erUpdate.put(HotelDao.ID, List.of(1));
+                                    erUpdate.put(HotelDao.HOTEL_ID, List.of(1));
                                     erUpdate.put(HotelDao.ADDRESS, List.of("addressUpdate"));
                                     erUpdate.put(HotelDao.NAME, List.of("nameUpdate"));
 
@@ -188,7 +184,7 @@ public class HotelServiceTest {
                 //region Test Case 2 - Update hotel wrong hotel doesnt exist
                 Arguments.of(
                         "Update hotel wrong hotel doesnt exist",
-                        Map.of(HotelDao.ID, 1),
+                        Map.of(HotelDao.HOTEL_ID, 1),
                         Map.of(HotelDao.ADDRESS, "addressUpdate", HotelDao.NAME, "nameUpdate"),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
@@ -229,12 +225,12 @@ public class HotelServiceTest {
                 //region Test Case 1 - Delete hotel with correct data
                 Arguments.of(
                         "Delete hotel with correct data",
-                        Map.of(HotelDao.ID, 1),
+                        Map.of(HotelDao.HOTEL_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Hotel dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date())),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(HotelDao.ID, List.of(1));
+                                    erQuery.put(HotelDao.HOTEL_ID, List.of(1));
                                     erQuery.put(HotelDao.ADDRESS, List.of("address"));
                                     erQuery.put(HotelDao.NAME, List.of("name"));
 
@@ -242,7 +238,7 @@ public class HotelServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erUpdate = new EntityResultMapImpl();
-                                    erUpdate.put(HotelDao.ID, List.of(1));
+                                    erUpdate.put(HotelDao.HOTEL_ID, List.of(1));
                                     erUpdate.put(HotelDao.ADDRESS, List.of("address"));
                                     erUpdate.put(HotelDao.NAME, List.of("name"));
                                     erUpdate.put(HotelDao.HOTELDOWNDATE, List.of(LocalDateTime.now()));
@@ -255,7 +251,7 @@ public class HotelServiceTest {
                 //region Test Case 2 - Update hotel wrong hotel doesnt exist
                 Arguments.of(
                         "Update hotel wrong hotel doesnt exist",
-                        Map.of(HotelDao.ID, 1),
+                        Map.of(HotelDao.HOTEL_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.HOTEL_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {

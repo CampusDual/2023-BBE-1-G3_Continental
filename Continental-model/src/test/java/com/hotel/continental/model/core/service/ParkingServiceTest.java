@@ -83,7 +83,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -100,8 +100,8 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
-                                    erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
+                                    erRoomDao.put(RoomDao.ROOM_ID, List.of(1));
+                                    erRoomDao.put(RoomDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 },
                                 // Mock query parkingHistoryDao
@@ -209,7 +209,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -224,8 +224,8 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
-                                    erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
+                                    erRoomDao.put(RoomDao.ROOM_ID, List.of(1));
+                                    erRoomDao.put(RoomDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
                         )
@@ -246,7 +246,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -263,8 +263,8 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
-                                    erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
+                                    erRoomDao.put(RoomDao.ROOM_ID, List.of(1));
+                                    erRoomDao.put(RoomDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
                         )
@@ -285,7 +285,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -301,8 +301,8 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
-                                    erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
+                                    erRoomDao.put(RoomDao.ROOM_ID, List.of(1));
+                                    erRoomDao.put(RoomDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
                         )
@@ -323,7 +323,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -350,8 +350,8 @@ public class ParkingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erRoomDao = new EntityResultMapImpl();
                                     erRoomDao.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomDao.put(RoomDao.IDROOM, List.of(1));
-                                    erRoomDao.put(RoomDao.IDHOTEL, List.of(1));
+                                    erRoomDao.put(RoomDao.ROOM_ID, List.of(1));
+                                    erRoomDao.put(RoomDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), anyMap(), anyList())).thenReturn(erRoomDao);
                                 }
 
@@ -373,7 +373,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -443,7 +443,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     EntityResult erParking2 = new EntityResultMapImpl();
                                     erParking2.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking2.put(ParkingDao.PRICE, List.of(new BigDecimal(10)));
@@ -467,7 +467,7 @@ public class ParkingServiceTest {
                                     erParkingHistory.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParkingHistory.put(ParkingHistoryDao.ENTRY_DATE, List.of(new Date(LocalDate.now().minusDays(1).toEpochDay())));
                                     erParkingHistory.put(ParkingHistoryDao.EXIT_DATE, List.of(new Date(LocalDate.now().minusDays(1).toEpochDay())));
-                                    erParkingHistory.put(ParkingHistoryDao.ID, List.of(1));
+                                    erParkingHistory.put(ParkingHistoryDao.PARKING_HISTORY_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingHistoryDao.class), anyMap(), anyList())).thenReturn(erParkingHistory);
                                 },
                                 // Mock  insert parkingHistoryDao
@@ -552,7 +552,7 @@ public class ParkingServiceTest {
                                     erParking.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParking.put(ParkingDao.TOTAL_CAPACITY, List.of(10));
                                     erParking.put(ParkingDao.OCCUPIED_CAPACITY, List.of(5));
-                                    erParking.put(ParkingDao.ID_HOTEL, List.of(1));
+                                    erParking.put(ParkingDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingDao.class), anyMap(), anyList())).thenReturn(erParking);
                                 },
                                 // Mock bookingDao
@@ -573,7 +573,7 @@ public class ParkingServiceTest {
                                     erParkingHistory.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erParkingHistory.put(ParkingHistoryDao.ENTRY_DATE, List.of(new Date(LocalDate.now().minusDays(1).toEpochDay()),new Date(LocalDate.now().minusDays(1).toEpochDay())));
                                     erParkingHistory.put(ParkingHistoryDao.EXIT_DATE, List.of(new Date(LocalDate.now().plusDays(1).toEpochDay()),new Date(LocalDate.now().plusDays(1).toEpochDay())));
-                                    erParkingHistory.put(ParkingHistoryDao.ID, List.of(1,2));
+                                    erParkingHistory.put(ParkingHistoryDao.PARKING_HISTORY_ID, List.of(1,2));
                                     return Mockito.when(daoHelper.query(Mockito.any(ParkingHistoryDao.class), anyMap(), anyList())).thenReturn(erParkingHistory);
                                 }
 

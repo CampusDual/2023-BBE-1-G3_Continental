@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/ParkingDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class ParkingDao extends OntimizeJdbcDaoSupport {
-    public static final String ID_PARKING = "id_parking";
-    public static final String ID_HOTEL = "id_hotel";
+    public static final String PARKING_ID = "parking_id";
+    public static final String HOTEL_ID = "hotel_id";
     public static final String TOTAL_CAPACITY = "total_capacity";
     public static final String OCCUPIED_CAPACITY = "occupied_capacity";
     public static final String DESCRIPTION = "description";

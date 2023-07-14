@@ -45,9 +45,9 @@ public class RefrigeratorsService implements IRefrigeratorsService {
 
         //Compruebo si la habitación existe
         Map<String, Object> filter = new HashMap<>();
-        filter.put(RoomDao.IDROOM, attrMap.get(RefrigeratorsDao.ROOM_ID));
+        filter.put(RoomDao.ROOM_ID, attrMap.get(RefrigeratorsDao.ROOM_ID));
 
-        EntityResult rooms = this.daoHelper.query(this.roomDao, filter, List.of(RoomDao.IDROOM));
+        EntityResult rooms = this.daoHelper.query(this.roomDao, filter, List.of(RoomDao.ROOM_ID));
         if (rooms.calculateRecordNumber()==0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);

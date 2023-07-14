@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.api.core.service.IParkingService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 @Lazy
 @Service("ParkingService")
-public class ParkingService  {
+public class ParkingService implements IParkingService {
 
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
@@ -41,7 +42,7 @@ public class ParkingService  {
     private HotelDao hotelDao;
 
 
-    @Override
+    //@Override
     public EntityResult parkingEnter(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
@@ -127,7 +128,7 @@ public class ParkingService  {
         return erUpdate;
     }
 
-    @Override
+    //@Override
     public EntityResult parkingExit(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
@@ -235,10 +236,11 @@ public class ParkingService  {
         return erExtraExpenses;
     }
 
-    @Override
+    //@Override
     public EntityResult parkingInsert(Map<String, Object> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
+        //Probamos que se mande todos los datos neccesarios
         if (attrMap.get(ParkingDao.PRICE) == null || attrMap.get(ParkingDao.ID_HOTEL) == null || attrMap.get(ParkingDao.TOTAL_CAPACITY) == null || attrMap.get(ParkingDao.DESCRIPTION) == null) {
             er.setMessage(ErrorMessages.NECESSARY_DATA);
             return er;
@@ -250,6 +252,7 @@ public class ParkingService  {
             er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
             return er;
         }
+        //todos 
         try {
             if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) > 0){
                 er.setMessage(ErrorMessages.CAPACITY_NOT_POSITIVE);
@@ -260,5 +263,8 @@ public class ParkingService  {
             return er;
         }
 
+        return this.daoHelper.insert(this.parkingDao, attrMap);
     }
+
+
 }

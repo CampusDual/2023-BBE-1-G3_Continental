@@ -309,8 +309,8 @@ public class ClientServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
-                                    erQuery.put(RoleDao.ROLE_ID, List.of(1));
-                                    erQuery.put(RoleDao.ROLE_NAME, List.of("name"));
+                                    erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
+                                    erQuery.put(RoleDao.ROLENAME, List.of("name"));
                                     erQuery.put(ClientDao.CLIENT_DOWN_DATE, List.of(new Date()));
 
                                     return when(daoHelper.update(any(ClientDao.class), anyMap(), anyMap())).thenReturn(erQuery);

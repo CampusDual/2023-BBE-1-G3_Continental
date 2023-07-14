@@ -72,9 +72,9 @@ public class UserService implements IUserService {
         }
 
         Map<String, Object> filterRole = new HashMap<>();
-        filterRole.put(RoleDao.ROLE_ID, Integer.parseInt(idRole));
+        filterRole.put(RoleDao.ID_ROLENAME, Integer.parseInt(idRole));
 
-        EntityResult roles = this.daoHelper.query(this.roleDao, filterRole, Arrays.asList(RoleDao.ROLE_ID));
+        EntityResult roles = this.daoHelper.query(this.roleDao, filterRole, Arrays.asList(RoleDao.ID_ROLENAME));
 
         if (roles.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
@@ -93,12 +93,12 @@ public class UserService implements IUserService {
         EntityResult user = this.daoHelper.insert(this.userDao, attrMap);
 
         Map<String, Object> attrRole = new HashMap<>();
-        attrRole.put(UserRoleDao.ROLE_ID, idRole);
+        attrRole.put(UserRoleDao.ID_ROLENAME, idRole);
         attrRole.put(UserRoleDao.USER, idUser);
         //Insertamos el rol del usuario
         Map<String, Object> userRole = new HashMap<>();
         userRole.put(UserRoleDao.USER, attrMap.get(UserDao.USER));
-        userRole.put(UserRoleDao.ROLE_ID, idRole);
+        userRole.put(UserRoleDao.ID_ROLENAME, idRole);
         this.daoHelper.insert(this.userRoleDao, userRole);
 
         return user;

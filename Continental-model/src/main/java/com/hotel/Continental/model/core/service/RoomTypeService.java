@@ -25,7 +25,7 @@ public class RoomTypeService implements IRoomTypeService {
 
     @Override
     public EntityResult roomtypeInsert(Map<?, ?> attrMap) {
-        if(attrMap.get(RoomTypeDao.NAME) == null || attrMap.get(RoomTypeDao.PRICE) == null){
+        if(attrMap.get(RoomTypeDao.TYPE) == null || attrMap.get(RoomTypeDao.PRICE) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);

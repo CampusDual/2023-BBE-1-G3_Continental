@@ -186,7 +186,7 @@ CREATE TABLE public.rooms (
 	room_type_id int4 NULL,
 	CONSTRAINT habitaciones_pkey PRIMARY KEY (room_id),
 	CONSTRAINT habitaciones_idhotel_fkey FOREIGN KEY (hotel_id) REFERENCES public.hotels(hotel_id),
-	CONSTRAINT rooms_fk FOREIGN KEY (type_id) REFERENCES public.roomtype(type_id)
+	CONSTRAINT rooms_fk FOREIGN KEY (room_type_id) REFERENCES public.roomtype(type_id)
 );
 
 
@@ -204,7 +204,7 @@ CREATE TABLE public.seasons (
 	end_day int4 NOT NULL,
 	end_month int4 NOT NULL,
 	CONSTRAINT seasons_pkey PRIMARY KEY (season_id),
-	CONSTRAINT seasons_criteria_id_fkey FOREIGN KEY (criteria_id) REFERENCES public.criteria(id)
+	CONSTRAINT seasons_criteria_id_fkey FOREIGN KEY (criteria_id) REFERENCES public.criteria(criteria_id)
 );
 
 
@@ -306,7 +306,7 @@ CREATE TABLE public.refrigerators (
 	room_id int4 NULL,
 	capacity int4 NULL,
 	CONSTRAINT refrigerators_pkey PRIMARY KEY (fridge_id),
-	CONSTRAINT refrigerators_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.rooms(roomid)
+	CONSTRAINT refrigerators_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.rooms(room_id)
 );
 
 

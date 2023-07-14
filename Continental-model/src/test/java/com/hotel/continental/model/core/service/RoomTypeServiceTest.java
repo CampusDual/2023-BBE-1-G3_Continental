@@ -48,7 +48,7 @@ class RoomTypeServiceTest {
                 //region Test Case 1 - Update roomtype with correct data
                 Arguments.of(
                         "Update roomtype with correct data",
-                        Map.of(RoomTypeDao.NAME, "Suite"),
+                        Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(RoomTypeDao.TYPE_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
@@ -78,7 +78,7 @@ class RoomTypeServiceTest {
                 //region Test Case 3 - Update roomtype with null key
                 Arguments.of(
                         "Update roomtype with null key",
-                        Map.of(RoomTypeDao.NAME, "Suite"),
+                        Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
@@ -87,7 +87,7 @@ class RoomTypeServiceTest {
                 //region Test Case 4 - Update roomtype with no existing key
                 Arguments.of(
                         "Update roomtype with no existing key",
-                        Map.of(RoomTypeDao.NAME, "Suite"),
+                        Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(RoomTypeDao.TYPE_ID, 1),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOMTYPE_NOT_EXIST),
                         List.of(
@@ -117,7 +117,7 @@ class RoomTypeServiceTest {
                 //region Test Case 1 - Insert roomtype with correct data
                 Arguments.of(
                         "Insert roomtype with correct data",
-                        Map.of(RoomTypeDao.NAME, "Suite", RoomTypeDao.PRICE, 20.2),
+                        Map.of(RoomTypeDao.TYPE, "Suite", RoomTypeDao.PRICE, 20.2),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {

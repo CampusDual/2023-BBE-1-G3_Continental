@@ -6,10 +6,10 @@
         catalog="" schema="${mainschema}" table="clients"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>idclient</Column>
+        <Column>client_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>idclient</Column>
+        <Column>client_id</Column>
     </UpdateKeys>
-    <GeneratedKey>idclient</GeneratedKey>
+    <GeneratedKey>client_id</GeneratedKey>
 </JdbcEntitySetup>

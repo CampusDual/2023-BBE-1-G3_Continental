@@ -94,7 +94,7 @@ public class HotelService implements IHotelService {
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTEL_DOWN_DATE));
         EntityResult er;
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
@@ -123,19 +123,19 @@ public class HotelService implements IHotelService {
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTEL_DOWN_DATE));
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }
         //Comprobamos que el hotel esta en activo
-        if (hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null) {
+        if (hotel.getRecordValues(0).get(HotelDao.HOTEL_DOWN_DATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.HOTEL_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos
-        attrMap.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
+        attrMap.put(HotelDao.HOTEL_DOWN_DATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
         //Devolvemos un entityResult que representa el éxito de la operación
         er = this.daoHelper.update(this.hotelDao, attrMap, keyMap);//Actualizamos el hotel
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);

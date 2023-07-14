@@ -8,11 +8,6 @@ import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.DateUtils.DateCondition;
 import com.hotel.continental.model.core.tools.DateUtils.DateConditionModule;
-import com.hotel.continental.model.core.tools.Messages;
-import com.ontimize.jee.common.db.SQLStatementBuilder;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -120,6 +115,11 @@ public class BookingService implements IBookingService {
             roomAttrMap.put(RoomDao.ROOM_TYPE_ID, attrMap.get(RoomDao.ROOM_TYPE_ID));
 
         }
+        if(attrMap.get(RoomDao.HOTEL_ID)!=null){
+            roomAttrMap.put(RoomDao.HOTEL_ID, attrMap.get(RoomDao.HOTEL_ID));
+
+        }
+
         EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
         //Comprobar que no dio error
         if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {

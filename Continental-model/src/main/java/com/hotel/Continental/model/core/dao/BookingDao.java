@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/BookingDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class BookingDao extends OntimizeJdbcDaoSupport {
-    public static final String BOOKINGID = "bookingid";
-    public static final String ROOMID = "roomid";
-    public static final String STARTDATE = "initialdate";
-    public static final String ENDDATE = "enddate";
-    public static final String CLIENT = "clientid";
-    public static final String CHECKIN_DATETIME = "checkindatetime";
-    public static final String CHECKOUT_DATETIME = "checkoutdatetime";
+    public static final String BOOKINGID = "booking_id";
+    public static final String ROOMID = "room_id";
+    public static final String STARTDATE = "initial_date";
+    public static final String ENDDATE = "end_date";
+    public static final String CLIENT = "client_id";
+    public static final String CHECKIN_DATETIME = "checkin_datetime";
+    public static final String CHECKOUT_DATETIME = "checkout_datetime";
     public static final String PRICE = "price";
     public static final String QUERY_BOOKED_ROOMS = "current_bookings";
 }

@@ -1,0 +1,360 @@
+INSERT INTO public.tuser
+(user_, "password", "name", surname, email, nif, lastpasswordupdate, firstlogin, user_down_date)
+SELECT 'demo', 'demouser', 'demo', 'demo', NULL, NULL, NULL, NULL, NULL
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.tuser WHERE user_ = 'demo'
+);
+
+INSERT INTO public.trole
+(id_rolename, rolename, xmlclientpermission)
+SELECT 0, 'admin', '<?xml version="1.0" encoding="UTF-8"?><security></security>'
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.trole WHERE id_rolename = 0 AND rolename = 'admin'
+);
+
+
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/lostCard' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/lostCard');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentRecover' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentRecover');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IAccessCardService/accesscardQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IAccessCardService/accesscardQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingPrice' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingPrice');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingCheckin' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingCheckin');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingCheckout' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingCheckout');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IBookingService/bookingInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IClientService/clientQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IClientService/clientQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IClientService/clientDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IClientService/clientDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IClientService/clientInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IClientService/clientInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IClientService/clientUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IClientService/clientUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.ICriteriaService/criteriaUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.ICriteriaService/criteriaUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.ICriteriaService/criteriaQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.ICriteriaService/criteriaQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IEmployeeService/employeeQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IEmployeeService/employeeDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IEmployeeService/employeeUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IEmployeeService/employeeInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IExtraExpensesService/extraexpensesInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IExtraExpensesService/extraexpensesInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IHotelService/hotelDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IHotelService/hotelUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IHotelService/hotelQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IHotelService/hotelInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IParkingService/parkingEnter' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IParkingService/parkingEnter');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IParkingService/parkingExit' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IParkingService/parkingExit');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRefrigeratorsService/refrigeratorsInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorsService/refrigeratorsInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorDefaultUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorDefaultUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorstockQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorstockQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorStockUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorStockUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoleService/roleQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoleService/roleDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoleService/roleInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoleService/roleUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomService/roomInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomService/roomDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomDelete');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomService/freeRoomsQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomService/freeRoomsQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomService/roomUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomService/roomQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IUserService/userInsert' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IUserService/userInsert');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IUserService/userUpdate' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IUserService/userUpdate');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IUserService/userQuery' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IUserService/userQuery');
+INSERT INTO tserver_permission (permission_name) SELECT 'com.hotel.continental.api.core.service.IUserService/userDelete' WHERE NOT EXISTS (SELECT 1 FROM tserver_permission WHERE permission_name = 'com.hotel.continental.api.core.service.IUserService/userDelete');
+------------------------com.hotel.continental.api.core.service.IAccessCardAssignmentService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/lostCard' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentRecover' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IAccessCardAssignmentService/accesscardassignmentInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IAccessCardService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IAccessCardService/accesscardQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IBookingService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingPrice' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingCheckin' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingCheckout' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IBookingService/bookingInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IClientService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IClientService/clientQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IClientService/clientDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IClientService/clientInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IClientService/clientUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.ICriteriaService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.ICriteriaService/criteriaUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.ICriteriaService/criteriaQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IEmployeeService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IEmployeeService/employeeInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IExtraExpensesService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IExtraExpensesService/extraexpensesInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IHotelService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IHotelService/hotelInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IParkingService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IParkingService/parkingEnter' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IParkingService/parkingExit' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IRefrigeratorsService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorsService/refrigeratorsInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IRefrigeratorStockService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorDefaultUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorstockQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRefrigeratorStockService/refrigeratorStockUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IRoleService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoleService/roleUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IRoomService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomService/freeRoomsQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomService/roomQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IRoomTypeService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IRoomTypeService/roomtypeUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+------------------------com.hotel.continental.api.core.service.IUserService--------------------------
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IUserService/userInsert' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IUserService/userUpdate' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IUserService/userQuery' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+INSERT INTO trole_server_permission (id_rolename, id_server_permission)
+SELECT tr.id_rolename, ts.id_server_permission
+FROM trole tr
+CROSS JOIN tserver_permission ts
+WHERE tr.rolename = 'admin' AND ts.permission_name = 'com.hotel.continental.api.core.service.IUserService/userDelete' AND NOT EXISTS (SELECT 1 FROM trole_server_permission tsp WHERE tsp.id_rolename = tr.id_rolename AND tsp.id_server_permission = ts.id_server_permission);
+
+

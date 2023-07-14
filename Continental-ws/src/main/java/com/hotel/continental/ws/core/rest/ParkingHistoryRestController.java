@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/parkingHistory")
-public class ParkingHistoryRestController  {
+public class ParkingHistoryRestController {
+
 
 }

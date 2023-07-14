@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.ProductsDao;
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
 import com.hotel.continental.model.core.tools.ErrorMessages;
@@ -154,7 +155,6 @@ class RefrigeratorStockServiceTest {
         );
     }
 
-    @Disabled
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("refrigeratorStockUpdate")
     void testRefrigeratorStockUpdate(String testCaseName, Map<String, Object> keyMap, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {

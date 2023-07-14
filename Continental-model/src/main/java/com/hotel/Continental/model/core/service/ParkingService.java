@@ -1,6 +1,5 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IParkingService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.ErrorMessages;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 @Lazy
 @Service("ParkingService")
-public class ParkingService implements IParkingService {
+public class ParkingService  {
 
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
@@ -38,6 +37,8 @@ public class ParkingService implements IParkingService {
     private RoomDao roomDao;
     @Autowired
     private ExtraExpensesService extraExpensesService;
+    @Autowired
+    private HotelDao hotelDao;
 
 
     @Override
@@ -232,5 +233,32 @@ public class ParkingService implements IParkingService {
         attrMapExtraExpenses.put(ExtraExpensesDao.PRICE,totalPrice);
         EntityResult erExtraExpenses = extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
         return erExtraExpenses;
+    }
+
+    @Override
+    public EntityResult parkingInsert(Map<String, Object> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        if (attrMap.get(ParkingDao.PRICE) == null || attrMap.get(ParkingDao.ID_HOTEL) == null || attrMap.get(ParkingDao.TOTAL_CAPACITY) == null || attrMap.get(ParkingDao.DESCRIPTION) == null) {
+            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            return er;
+        }
+        Map<String, Object> hotelid = new HashMap<>();
+        hotelid.put(HotelDao.ID, attrMap.get(ParkingDao.ID_HOTEL));
+        EntityResult hotel = this.daoHelper.query(this.hotelDao, hotelid, List.of(HotelDao.ID));
+        if (hotel.calculateRecordNumber() == 0) {
+            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            return er;
+        }
+        try {
+            if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) > 0){
+                er.setMessage(ErrorMessages.CAPACITY_NOT_POSITIVE);
+                return er;
+            }
+        } catch (NumberFormatException e) {
+            er.setMessage(ErrorMessages.CAPACITY_NOT_NUMBER);
+            return er;
+        }
+
     }
 }

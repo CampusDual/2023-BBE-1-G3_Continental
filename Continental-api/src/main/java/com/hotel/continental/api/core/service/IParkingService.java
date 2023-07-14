@@ -7,4 +7,5 @@ import java.util.Map;
 public interface IParkingService {
     public EntityResult parkingEnter(Map<?,?> attrMap);
     public EntityResult parkingExit(Map<?,?> attrMap);
+    public EntityResult parkingInsert(Map<String,Object> attrMap);
 }

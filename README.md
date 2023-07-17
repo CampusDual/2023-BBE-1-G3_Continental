@@ -4,7 +4,6 @@
 - Artai Rodríguez García
 - Carla Gallardo Dacruz
 - Tomás Paz Pena
-- Javier Casas López
 
 # Ontimize Boot
 

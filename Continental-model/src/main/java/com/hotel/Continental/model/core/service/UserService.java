@@ -119,7 +119,7 @@ public class UserService implements IUserService {
             er.setMessage(ErrorMessages.NECESSARY_KEY);
             return er;
         }
-
+//
         EntityResult queryUser = this.daoHelper.query(this.userDao, keyMap, Arrays.asList(UserDao.USER_));
         if(queryUser.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();

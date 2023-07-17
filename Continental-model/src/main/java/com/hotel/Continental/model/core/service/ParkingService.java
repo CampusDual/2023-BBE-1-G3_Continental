@@ -128,7 +128,7 @@ public class ParkingService implements IParkingService {
         return erUpdate;
     }
 
-    //@Override
+    @Override
     public EntityResult parkingExit(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking

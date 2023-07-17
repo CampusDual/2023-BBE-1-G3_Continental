@@ -42,7 +42,7 @@ public class ParkingService implements IParkingService {
     private HotelDao hotelDao;
 
 
-    //@Override
+    @Override
     public EntityResult parkingEnter(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking

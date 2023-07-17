@@ -90,6 +90,7 @@ public class Messages {
 
     //Parking
     public static final String PARKING_ALREADY_EXIST = "M_PARKING_ALREADY_EXIST";
+    public static final String PARKING_ALREADY_INACTIVE = "M_PARKING_ALREADY_INACTIVE";
     public static final String PARKING_NOT_FOUND = "M_PARKING_NOT_FOUND";
     public static final String PARKING_FULL = "M_PARKING_FULL";
     public static final String BOOKING_NOT_SAME_HOTEL_AS_PARKING = "M_BOOKING_NOT_SAME_HOTEL_AS_PARKING";

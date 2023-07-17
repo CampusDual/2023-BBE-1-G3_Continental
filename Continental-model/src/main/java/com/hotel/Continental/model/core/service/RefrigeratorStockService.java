@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IRefrigeratorStockService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.Messages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -42,15 +43,9 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         }
 
         //Compruebo que el stock es un número y es positivo
-        try {
-            int stock = Integer.parseInt(attrMap.get(RefrigeratorStockDao.STOCK).toString());
-            if(stock <= 0) {
-                er.setMessage(Messages.STOCK_NOT_POSITIVE);
-                return er;
-            }
-        } catch (NumberFormatException e) {
-            er.setMessage(Messages.STOCK_NOT_NUMBER);
-            return er;
+        EntityResult checkNumber = Validation.checkNumber(String.valueOf(attrMap.get(RefrigeratorStockDao.STOCK)), Messages.STOCK_NOT_POSITIVE, Messages.STOCK_NOT_NUMBER);
+        if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
+            return checkNumber;
         }
 
         //Compruebo que el producto existe
@@ -91,7 +86,6 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         }
         return stock;
     }
-
 
     @Override
     public EntityResult refrigeratorStockUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {

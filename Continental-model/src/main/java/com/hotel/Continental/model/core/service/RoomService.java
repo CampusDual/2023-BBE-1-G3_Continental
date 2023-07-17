@@ -28,7 +28,6 @@ import java.util.*;
 @Lazy
 @Service("RoomService")
 public class RoomService implements IRoomService {
-
     @Autowired
     private HotelDao hotelDao;
     @Autowired

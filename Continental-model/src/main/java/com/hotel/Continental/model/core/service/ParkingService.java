@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.api.core.service.IParkingService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.Messages;
+import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
@@ -15,15 +16,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Lazy
 @Service("ParkingService")
 public class ParkingService implements IParkingService {
-
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
     @Autowired
@@ -45,59 +44,64 @@ public class ParkingService implements IParkingService {
     @Override
     public EntityResult parkingEnter(Map<?, ?> attrMap) {
         EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
         //Comprobar que me llega los datos necesarios para hacer la entrada id_booking id_parking
         if (attrMap.get(ParkingHistoryDao.BOOKING_ID) == null || attrMap.get(ParkingDao.PARKING_ID) == null) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
+
         //Comprobar que hay sitio en el parking indicado
         Map<String, Object> attrMapParking = Map.of(ParkingDao.PARKING_ID, attrMap.get(ParkingDao.PARKING_ID));
-        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY, ParkingDao.TOTAL_CAPACITY, ParkingDao.HOTEL_ID));
+        EntityResult erParking = this.daoHelper.query(parkingDao, attrMapParking, List.of(ParkingDao.OCCUPIED_CAPACITY, ParkingDao.TOTAL_CAPACITY, ParkingDao.HOTEL_ID, ParkingDao.PARKING_DOWN_DATE));
         if (erParking.calculateRecordNumber() == 0) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.PARKING_NOT_FOUND);
+            return er;
+        }
+
+        //Comprobamos que el parking no está dado de baja
+        if (erParking.get(ParkingDao.PARKING_DOWN_DATE) != null) {
+            er.setMessage(Messages.PARKING_ALREADY_INACTIVE);
             return er;
         }
 
         int occupiedCapacity = (int) erParking.getRecordValues(0).get(ParkingDao.OCCUPIED_CAPACITY);
         if (occupiedCapacity == (int) erParking.getRecordValues(0).get(ParkingDao.TOTAL_CAPACITY)) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.PARKING_FULL);
             return er;
         }
+
         //Comprobar que la reserva existe
         Map<String, Object> attrMapBooking = Map.of(BookingDao.BOOKINGID, attrMap.get(ParkingHistoryDao.BOOKING_ID));
         EntityResult erBooking = this.daoHelper.query(bookingDao, attrMapBooking, List.of(BookingDao.BOOKINGID, BookingDao.STARTDATE, BookingDao.ENDDATE, BookingDao.CHECKIN_DATETIME, BookingDao.CHECKOUT_DATETIME, BookingDao.ROOMID));
         if (erBooking.calculateRecordNumber() == 0) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
+
         //Pillo el id de la habitacion y el id del hotel del parking, para comprobar que la habitacion de la reserva esta en el mismo hotel del parking
         Map<String, Object> attrMapRoom = Map.of(RoomDao.ROOM_ID, erBooking.getRecordValues(0).get(BookingDao.ROOMID), RoomDao.HOTEL_ID, erParking.getRecordValues(0).get(ParkingDao.HOTEL_ID));
         EntityResult erRoom = this.daoHelper.query(roomDao, attrMapRoom, List.of(BookingDao.ROOMID, RoomDao.HOTEL_ID));
         if (erRoom.calculateRecordNumber() == 0) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_NOT_SAME_HOTEL_AS_PARKING);
             return er;
         }
+
         //Comprobar que la fecha actual es igual o superior a la fecha de inicio de la reserva
         Date startDate = (Date) erBooking.getRecordValues(0).get(BookingDao.STARTDATE);
         Date currentDate = new Date();
         if (startDate.compareTo(currentDate) >= 0) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_NOT_STARTED);
             return er;
         }
+
         //Comprobar que la reserva esta activa,que hizo checkin y que no ha hecho checkout
         if (erBooking.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_NOT_CHECKED_IN);
             return er;
         }
         if (erBooking.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_ALREADY_CHECKED_OUT);
             return er;
         }
@@ -110,19 +114,22 @@ public class ParkingService implements IParkingService {
         BasicExpression bexp = new BasicExpression(field, BasicOperator.NULL_OP, null);
         attrMapParkingHistory.put(ExtendedSQLConditionValuesProcessor.EXPRESSION_KEY, bexp);
         EntityResult erParkingHistory = this.daoHelper.query(parkingHistoryDao, attrMapParkingHistory, List.of(ParkingHistoryDao.BOOKING_ID, ParkingHistoryDao.ENTRY_DATE, ParkingHistoryDao.EXIT_DATE));
+
         //Comprobar que no hay ningun parking_history que tenga fecha de entrada pero no de salida
         if (erParkingHistory.calculateRecordNumber() > 0) {
-            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_ALREADY_IN_PARKING);
             return er;
         }
+
         //Insertar en la tabla parking_history
         Map<String, Object> attrMapParkingHistoryInsert = Map.of(ParkingHistoryDao.PARKING_ID, attrMap.get(ParkingHistoryDao.PARKING_ID), ParkingHistoryDao.BOOKING_ID, attrMap.get(ParkingHistoryDao.BOOKING_ID), ParkingHistoryDao.ENTRY_DATE, currentDate);
         parkingHistoryService.parkingHistoryEnter(attrMapParkingHistoryInsert);
+
         //Actualizar tabla parking para sumar 1 a los coches que hay en el parking
         occupiedCapacity++;
         Map<String, Object> keyMapParkingUpdate = Map.of(ParkingDao.PARKING_ID, attrMap.get(ParkingDao.PARKING_ID));
         Map<String, Object> attrMapParkingUpdate = Map.of(ParkingDao.OCCUPIED_CAPACITY, occupiedCapacity);
+
         return this.daoHelper.update(parkingDao, attrMapParkingUpdate, keyMapParkingUpdate);
     }
 
@@ -238,11 +245,15 @@ public class ParkingService implements IParkingService {
     public EntityResult parkingInsert(Map<String, Object> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
-        //Probamos que se mande todos los datos neccesarios
+        //Probamos que se mande todos los datos necesarios
         if (attrMap.get(ParkingDao.PRICE) == null || attrMap.get(ParkingDao.HOTEL_ID) == null || attrMap.get(ParkingDao.TOTAL_CAPACITY) == null || attrMap.get(ParkingDao.DESCRIPTION) == null) {
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
+
+        //Dejar el parking ocupado a 0
+        attrMap.put(ParkingDao.OCCUPIED_CAPACITY, 0);
+
         //Existe el hotel
         Map<String, Object> hotelid = new HashMap<>();
         hotelid.put(HotelDao.HOTEL_ID, attrMap.get(ParkingDao.HOTEL_ID));
@@ -251,16 +262,14 @@ public class ParkingService implements IParkingService {
             er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
-        //Se comprueba que se mande una capacidad que sea un numero positivo
-        try {
-            if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) <= 0) {
-                er.setMessage(Messages.CAPACITY_NOT_POSITIVE);
+        //Se comprueba que se mande una capacidad que sea un número positivo
+        if (attrMap.containsKey(ParkingDao.TOTAL_CAPACITY)) {
+            er = Validation.checkNumber((String) attrMap.get(ParkingDao.TOTAL_CAPACITY), Messages.CAPACITY_NOT_POSITIVE, Messages.CAPACITY_NOT_NUMBER);
+            if(er.getCode() == EntityResult.OPERATION_WRONG) {
                 return er;
             }
-        } catch (NumberFormatException e) {
-            er.setMessage(Messages.CAPACITY_NOT_NUMBER);
-            return er;
         }
+
         return this.daoHelper.insert(this.parkingDao, attrMap);
     }
 
@@ -272,24 +281,28 @@ public class ParkingService implements IParkingService {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
+
         //Comprobar si existe el parking
         EntityResult parking = this.daoHelper.query(this.parkingDao, keyMap, List.of(ParkingDao.HOTEL_ID));
         if (parking.calculateRecordNumber() == 0) {
             er.setMessage(Messages.PARKING_NOT_FOUND);
             return er;
         }
-        //Comprobar que la capacidad total es un numero positivo
+
+        //Comprobar que la capacidad total y ocupada es un número positivo
         if (keyMap.containsKey(ParkingDao.TOTAL_CAPACITY)) {
-            try {
-                if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) > 0) {
-                    er.setMessage(Messages.CAPACITY_NOT_POSITIVE);
-                    return er;
-                }
-            } catch (NumberFormatException e) {
-                er.setMessage(Messages.CAPACITY_NOT_NUMBER);
+            er = Validation.checkNumber((String) keyMap.get(ParkingDao.TOTAL_CAPACITY), Messages.CAPACITY_NOT_POSITIVE, Messages.CAPACITY_NOT_NUMBER);
+            if(er.getCode() == EntityResult.OPERATION_WRONG) {
                 return er;
             }
         }
+        if (keyMap.containsKey(ParkingDao.OCCUPIED_CAPACITY)) {
+            er = Validation.checkNumber((String) keyMap.get(ParkingDao.OCCUPIED_CAPACITY), Messages.CAPACITY_NOT_POSITIVE, Messages.CAPACITY_NOT_NUMBER);
+            if(er.getCode() == EntityResult.OPERATION_WRONG) {
+                return er;
+            }
+        }
+
         return this.daoHelper.update(this.parkingDao, attrMap, keyMap);
     }
 
@@ -297,19 +310,27 @@ public class ParkingService implements IParkingService {
     public EntityResult parkingDelete(Map<String, Object> keyMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
+
         //Comprobar que se manda la key
         if (keyMap.get(ParkingDao.PARKING_ID) == null) {
-            if (keyMap.get(ParkingDao.PARKING_ID) == null) {
-                er.setMessage(Messages.NECESSARY_KEY);
-                return er;
-            }
-            //Comprobar que existe el parking
-            EntityResult parking = this.daoHelper.query(this.parkingDao, keyMap, List.of(ParkingDao.HOTEL_ID));
-            if (parking.calculateRecordNumber() == 0) {
-                er.setMessage(Messages.PARKING_NOT_FOUND);
-                return er;
-            }
+            er.setMessage(Messages.NECESSARY_KEY);
+            return er;
         }
-        return this.daoHelper.delete(this.parkingDao, keyMap);
+        //Comprobar que existe el parking
+        EntityResult parking = this.daoHelper.query(this.parkingDao, keyMap, List.of(ParkingDao.HOTEL_ID));
+        if (parking.calculateRecordNumber() == 0) {
+            er.setMessage(Messages.PARKING_NOT_FOUND);
+            return er;
+        }
+        //Comprobamos que el parking esta en activo
+        if (parking.getRecordValues(0).get(HotelDao.HOTEL_DOWN_DATE) != null) {
+            er.setMessage(Messages.PARKING_ALREADY_INACTIVE);
+            return er;
+        }
+
+        Map<String, Object> parkingDelete = new HashMap<>();
+        parkingDelete.put(ParkingDao.PARKING_DOWN_DATE, new Timestamp(System.currentTimeMillis()));
+
+        return this.daoHelper.update(this.parkingDao, parkingDelete, keyMap);
     }
 }

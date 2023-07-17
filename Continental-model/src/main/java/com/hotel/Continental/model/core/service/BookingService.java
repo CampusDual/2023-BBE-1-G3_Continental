@@ -430,10 +430,6 @@ public class BookingService implements IBookingService {
 
         //Precio de la habitacion por dia
         double roomprice = (double) roomtype.getRecordValues(0).get(RoomTypeDao.PRICE);
-        //Obtener criterios de precio
-        Map<String, Object> attrMapCriteria = new HashMap<>();
-        EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.CRITERIA_ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
-
         //Obtener fechas de la reserva
         LocalDate start;
         LocalDate startIter;

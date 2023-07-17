@@ -71,7 +71,7 @@ class ParkingServiceTest {
                 //region Test case 1: Successful enter
                 Arguments.of(
                         "Successful enter",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
@@ -132,7 +132,7 @@ class ParkingServiceTest {
                 //region Test case 2: Parking not found
                 Arguments.of(
                         "Parking not found",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.PARKING_NOT_FOUND
@@ -150,7 +150,7 @@ class ParkingServiceTest {
                 //region Test case 3: Parking full
                 Arguments.of(
                         "Parking full",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.PARKING_FULL
@@ -170,7 +170,7 @@ class ParkingServiceTest {
                 //region Test case 4: Booking not found
                 Arguments.of(
                         "Booking not found",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_EXIST
@@ -197,7 +197,7 @@ class ParkingServiceTest {
                 //region Test case 5: Booking not checked in
                 Arguments.of(
                         "Booking not checked in",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_CHECKED_IN
@@ -234,7 +234,7 @@ class ParkingServiceTest {
                 //region Test case 6: Booking already checked out
                 Arguments.of(
                         "Booking already checked out",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_ALREADY_CHECKED_OUT
@@ -273,7 +273,7 @@ class ParkingServiceTest {
                 //region Test case 7: Booking not started
                 Arguments.of(
                         "Booking not started",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_STARTED
@@ -311,7 +311,7 @@ class ParkingServiceTest {
                 //region Test case 8: Already in parking
                 Arguments.of(
                         "Already in parking",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_ALREADY_IN_PARKING
@@ -361,7 +361,7 @@ class ParkingServiceTest {
                 //region Test case 9: Not same id hotel booking and parking
                 Arguments.of(
                         "Not same id hotel booking and parking",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_SAME_HOTEL_AS_PARKING
@@ -431,7 +431,7 @@ class ParkingServiceTest {
                 //region Test case 1: Successful enter
                 Arguments.of(
                         "Successful enter",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_SUCCESSFUL,
                                 ""
@@ -495,7 +495,7 @@ class ParkingServiceTest {
                 //region Test case 2: Parking not found
                 Arguments.of(
                         "Parking not found",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.PARKING_NOT_FOUND
@@ -513,7 +513,7 @@ class ParkingServiceTest {
                 //region Test case 4: Booking not found
                 Arguments.of(
                         "Booking not found",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_EXIST
@@ -540,7 +540,7 @@ class ParkingServiceTest {
                 //region Test case 8: Not in parking
                 Arguments.of(
                         "Not in parking",
-                        Map.of("id_booking", 1, "id_parking", 1),
+                        Map.of(BookingDao.BOOKINGID, 1, ParkingDao.PARKING_ID, 1),
                         Extras.createEntityResult(
                                 EntityResult.OPERATION_WRONG,
                                 Messages.BOOKING_NOT_IN_PARKING

@@ -236,7 +236,7 @@ public class ParkingService implements IParkingService {
         return extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
     }
 
-    //@Override
+    @Override
     public EntityResult parkingInsert(Map<String, Object> attrMap) {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);

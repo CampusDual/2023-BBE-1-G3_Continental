@@ -12,4 +12,22 @@
         <Column>client_id</Column>
     </UpdateKeys>
     <GeneratedKey>client_id</GeneratedKey>
+    <Queries>
+        <Query id="client_info">
+            <Sentence>
+                <![CDATA[
+                    SELECT
+                        #COLUMNS#
+                    FROM
+                        ${mainschema}.tuser
+                    INNER JOIN
+                        ${mainschema}.clients
+                    ON
+                        ${mainschema}.tuser.user_ = ${mainschema}.clients.tuser_name
+
+                    #WHERE#
+                ]]>
+            </Sentence>
+        </Query>
+    </Queries>
 </JdbcEntitySetup>

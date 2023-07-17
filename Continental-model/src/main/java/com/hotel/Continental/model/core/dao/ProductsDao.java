@@ -1,4 +1,4 @@
-package com.hotel.continental.model.core.service;
+package com.hotel.continental.model.core.dao;
 
 import com.ontimize.jee.server.dao.common.ConfigurationFile;
 import com.ontimize.jee.server.dao.jdbc.OntimizeJdbcDaoSupport;

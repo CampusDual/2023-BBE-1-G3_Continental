@@ -42,6 +42,8 @@ public class ParkingService implements IParkingService {
     private RoomDao roomDao;
     @Autowired
     private ExtraExpensesService extraExpensesService;
+    @Autowired
+    private HotelDao hotelDao;
 
 
     @Override
@@ -185,7 +187,7 @@ public class ParkingService implements IParkingService {
         calculateParkingTime(attrMap);
         return er;
     }
-    public EntityResult calculateParkingTime(Map<?,?> attr){
+    public EntityResult calculateParkingTime(Map<?,?> attr) {
         Map<String,Object> attrParkingHistory = new HashMap<>();
         BasicField fieldSalida = new BasicField(ParkingHistoryDao.EXIT_DATE);
         //Tengo que buscar que no haya salido del parking ese mismo dia,si salio ese dia ya se conto
@@ -234,4 +236,84 @@ public class ParkingService implements IParkingService {
         attrMapExtraExpenses.put(ExtraExpensesDao.PRICE,totalPrice);
         return extraExpensesService.extraexpensesInsert(attrMapExtraExpenses);
     }
+
+    @Override
+    public EntityResult parkingInsert(Map<String, Object> attrMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        //Probamos que se mande todos los datos neccesarios
+        if (attrMap.get(ParkingDao.PRICE) == null || attrMap.get(ParkingDao.HOTEL_ID) == null || attrMap.get(ParkingDao.TOTAL_CAPACITY) == null || attrMap.get(ParkingDao.DESCRIPTION) == null) {
+            er.setMessage(Messages.NECESSARY_DATA);
+            return er;
+        }
+        //Existe el hotel
+        Map<String, Object> hotelid = new HashMap<>();
+        hotelid.put(HotelDao.HOTEL_ID, attrMap.get(ParkingDao.HOTEL_ID));
+        EntityResult hotel = this.daoHelper.query(this.hotelDao, hotelid, List.of(HotelDao.HOTEL_ID));
+        if (hotel.calculateRecordNumber() == 0) {
+            er.setMessage(Messages.HOTEL_NOT_EXIST);
+            return er;
+        }
+        //Se comprueba que se mande una capacidad que sea un numero positivo
+        try {
+            if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) <= 0){
+                er.setMessage(Messages.CAPACITY_NOT_POSITIVE);
+                return er;
+            }
+        } catch (NumberFormatException e) {
+            er.setMessage(Messages.CAPACITY_NOT_NUMBER);
+            return er;
+        }
+        return this.daoHelper.insert(this.parkingDao, attrMap);
+    }
+
+    @Override
+    public EntityResult parkingUpdate(Map<String, Object> attrMap, Map<String, Object> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        if (keyMap.get(ParkingDao.PARKING_ID) == null) {
+            er.setMessage(Messages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobar si existe el parking
+        EntityResult parking = this.daoHelper.query(this.parkingDao, keyMap, List.of(ParkingDao.HOTEL_ID));
+        if (parking.calculateRecordNumber() == 0) {
+            er.setMessage(Messages.PARKING_NOT_FOUND);
+            return er;
+        }
+        //Comprobar que la capacidad total es un numero positivo
+        if (keyMap.containsKey(ParkingDao.TOTAL_CAPACITY)) {
+            try {
+                if (Integer.parseInt((String) attrMap.get(ParkingDao.TOTAL_CAPACITY)) > 0){
+                    er.setMessage(Messages.CAPACITY_NOT_POSITIVE);
+                    return er;
+                }
+            } catch (NumberFormatException e) {
+                er.setMessage(Messages.CAPACITY_NOT_NUMBER);
+                return er;
+            }
+        }
+        return this.daoHelper.update(this.parkingDao, attrMap, keyMap);
+    }
+
+    @Override
+    public EntityResult parkingDelete(Map<String, Object> keyMap) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(1);
+        //Comprobar que se manda la key
+        if (keyMap.get(ParkingDao.PARKING_ID) == null) {
+        if (keyMap.get(ParkingDao.PARKING_ID) == null) {
+            er.setMessage(Messages.NECESSARY_KEY);
+            return er;
+        }
+        //Comprobar que existe el parking
+        EntityResult parking = this.daoHelper.query(this.parkingDao, keyMap, List.of(ParkingDao.HOTEL_ID));
+        if (parking.calculateRecordNumber() == 0) {
+            er.setMessage(Messages.PARKING_NOT_FOUND);
+            return er;
+        }
+        return this.daoHelper.delete(this.parkingDao, keyMap);
+    }
+
+
 }

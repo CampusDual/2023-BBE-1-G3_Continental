@@ -2,7 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRefrigeratorStockService;
 import com.hotel.continental.model.core.dao.*;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.db.SQLStatementBuilder;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
@@ -36,8 +36,8 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         //attrMap = stock / keyMap = productid
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
-        if (keyMap.get(RefrigeratorStockDao.PRODUCTID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+        if (keyMap.get(RefrigeratorStockDao.PRODUCT_ID) == null || attrMap.get(RefrigeratorStockDao.STOCK) == null) {
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
 
@@ -45,33 +45,33 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         try {
             int stock = Integer.parseInt(attrMap.get(RefrigeratorStockDao.STOCK).toString());
             if(stock <= 0) {
-                er.setMessage(ErrorMessages.STOCK_NOT_POSITIVE);
+                er.setMessage(Messages.STOCK_NOT_POSITIVE);
                 return er;
             }
         } catch (NumberFormatException e) {
-            er.setMessage(ErrorMessages.STOCK_NOT_NUMBER);
+            er.setMessage(Messages.STOCK_NOT_NUMBER);
             return er;
         }
 
         //Compruebo que el producto existe
         Map<String, Object> filterProduct = new HashMap<>();
-        filterProduct.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
-        EntityResult product = this.daoHelper.query(this.productDao, filterProduct, List.of(RefrigeratorStockDao.PRODUCTID));
+        filterProduct.put(RefrigeratorStockDao.PRODUCT_ID, keyMap.get(RefrigeratorStockDao.PRODUCT_ID));
+        EntityResult product = this.daoHelper.query(this.productDao, filterProduct, List.of(RefrigeratorStockDao.PRODUCT_ID));
         if(product.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.PRODUCT_NOT_EXIST);
+            er.setMessage(Messages.PRODUCT_NOT_EXIST);
             return er;
         }
 
-        filterProduct.put(RefrigeratorStockDao.REFRIGERATORID, -1);
+        filterProduct.put(RefrigeratorStockDao.FRIDGE_ID, -1);
         //Obtenemos si ya existe ese producto en la nevera default, si no lo añadimos
-        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCKID));
+        EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, filterProduct, List.of(RefrigeratorStockDao.STOCK_ID));
         if (stock.calculateRecordNumber() == 0) {
             filterProduct.put(RefrigeratorStockDao.STOCK, attrMap.get(RefrigeratorStockDao.STOCK));
             return this.daoHelper.insert(this.refrigeratorStockDao, filterProduct);
         }
 
         Map<String, Object> mapStockid = new HashMap<>();
-        mapStockid.put(RefrigeratorStockDao.STOCKID, stock.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+        mapStockid.put(RefrigeratorStockDao.STOCK_ID, stock.getRecordValues(0).get(RefrigeratorStockDao.STOCK_ID));
 
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, mapStockid);
     }
@@ -81,12 +81,12 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         if (attrList.isEmpty()) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         EntityResult stock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, attrList);
         if (stock.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.NOT_REGISTERS_FOUND);
+            er.setMessage(Messages.NOT_REGISTERS_FOUND);
             return er;
         }
         return stock;
@@ -100,60 +100,60 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         EntityResult er = new EntityResultMapImpl();
         er.setCode(1);
         //Probamos que se mandan lo necesario
-        if (keyMap.get(RefrigeratorStockDao.REFRIGERATORID) == null || keyMap.get(RefrigeratorStockDao.PRODUCTID) == null) {
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+        if (keyMap.get(RefrigeratorStockDao.FRIDGE_ID) == null || keyMap.get(RefrigeratorStockDao.PRODUCT_ID) == null) {
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         if (attrMap.get(RefrigeratorStockDao.STOCK) == null) {
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Si mandamos la nevera default la bloquea
-        if ((Integer) keyMap.get(RefrigeratorStockDao.REFRIGERATORID) == -1) {
-            er.setMessage(ErrorMessages.REFRIGERATOR_BLOCKED);
+        if ((Integer) keyMap.get(RefrigeratorStockDao.FRIDGE_ID) == -1) {
+            er.setMessage(Messages.REFRIGERATOR_BLOCKED);
             return er;
         }
         //Si mandamos un codigo de una nevera o un producto que no existe falla
         Map<String, Object> fridgemap = new HashMap<>();
-        fridgemap.put(RefrigeratorsDao.FRIDGE_ID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
+        fridgemap.put(RefrigeratorsDao.FRIDGE_ID, keyMap.get(RefrigeratorStockDao.FRIDGE_ID));
         EntityResult existFridge = this.daoHelper.query(this.refrigeratorsDao, fridgemap, List.of(RefrigeratorsDao.FRIDGE_ID));
         if (existFridge.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.REFRIGERATOR_NOT_EXIST);
+            er.setMessage(Messages.REFRIGERATOR_NOT_EXIST);
             return er;
         }
         Map<String, Object> productmap = new HashMap<>();
-        productmap.put(ProductsDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
-        EntityResult existproduct = this.daoHelper.query(this.productDao, productmap, List.of(ProductsDao.PRODUCTID));
+        productmap.put(ProductsDao.PRODUCT_ID, keyMap.get(RefrigeratorStockDao.PRODUCT_ID));
+        EntityResult existproduct = this.daoHelper.query(this.productDao, productmap, List.of(ProductsDao.PRODUCT_ID));
         if (existproduct.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.PRODUCT_NOT_EXIST);
+            er.setMessage(Messages.PRODUCT_NOT_EXIST);
             return er;
         }
 
         //Si un producto no existe ni en la nevera fisica ni en la nevera default falla por que no es necesario
-        EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, keyMap, List.of(RefrigeratorStockDao.STOCKID));
+        EntityResult stockid = this.daoHelper.query(this.refrigeratorStockDao, keyMap, List.of(RefrigeratorStockDao.STOCK_ID));
         Map<String, Object> keyMapDefault = new HashMap<>();
         keyMapDefault.putAll(keyMap);
-        keyMapDefault.put(RefrigeratorStockDao.REFRIGERATORID, -1);
+        keyMapDefault.put(RefrigeratorStockDao.FRIDGE_ID, -1);
         EntityResult stockdefault = this.daoHelper.query(this.refrigeratorStockDao, keyMapDefault, List.of(RefrigeratorStockDao.STOCK));
         if (stockid.calculateRecordNumber() == 0 && stockdefault.calculateRecordNumber() == 0) {
-            er.setMessage(ErrorMessages.PRODUCT_NOT_NECESSARY);
+            er.setMessage(Messages.PRODUCT_NOT_NECESSARY);
             return er;
         }
         //Si mandamos el stock 0 como no cambia nada falla
         int update = (Integer) attrMap.get(RefrigeratorStockDao.STOCK);
         EntityResult updateStock = this.daoHelper.query(this.refrigeratorStockDao, keyMap, List.of(RefrigeratorStockDao.STOCK));
         if (update == 0) {
-            er.setMessage(ErrorMessages.UPDATE_STOCK_ZERO);
+            er.setMessage(Messages.UPDATE_STOCK_ZERO);
             return er;
         }
         //Si con esos criterios no existe ningun registro, y existe en la default, insertamos
         if (updateStock.calculateRecordNumber() == 0) {
             Map<String, Object> data = new HashMap<>();
             data.putAll(attrMap);
-            data.put(RefrigeratorStockDao.REFRIGERATORID, keyMap.get(RefrigeratorStockDao.REFRIGERATORID));
-            data.put(RefrigeratorStockDao.PRODUCTID, keyMap.get(RefrigeratorStockDao.PRODUCTID));
+            data.put(RefrigeratorStockDao.FRIDGE_ID, keyMap.get(RefrigeratorStockDao.FRIDGE_ID));
+            data.put(RefrigeratorStockDao.PRODUCT_ID, keyMap.get(RefrigeratorStockDao.PRODUCT_ID));
             if ((Integer) data.get(RefrigeratorStockDao.STOCK) < 0) {
-                er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
+                er.setMessage(Messages.NEW_STOCK_UNDER_ZERO);
                 return er;
             }
             return this.daoHelper.insert(this.refrigeratorStockDao, data);
@@ -164,11 +164,11 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         int newStock = stock + update;
         int defaultStock = (Integer) stockdefault.getRecordValues(0).get(RefrigeratorStockDao.STOCK);
         if (newStock > defaultStock) {
-            er.setMessage(ErrorMessages.NEW_STOCK_HIGHER_THAN_DEFAULT);
+            er.setMessage(Messages.NEW_STOCK_HIGHER_THAN_DEFAULT);
             return er;
         }
         if (newStock < 0) {
-            er.setMessage(ErrorMessages.NEW_STOCK_UNDER_ZERO);
+            er.setMessage(Messages.NEW_STOCK_UNDER_ZERO);
             return er;
         }
         //Lo añadimos a extra expense
@@ -185,14 +185,14 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         //Updateamos el stock
         attrMap.put(RefrigeratorStockDao.STOCK, newStock);
         Map<String, Object> filter = new HashMap<>();
-        filter.put(RefrigeratorStockDao.STOCKID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCKID));
+        filter.put(RefrigeratorStockDao.STOCK_ID, stockid.getRecordValues(0).get(RefrigeratorStockDao.STOCK_ID));
 
         return this.daoHelper.update(this.refrigeratorStockDao, attrMap, filter);
     }
 
     public EntityResult addExtraExpense(Map<String, Object> map) {
         Map<String, Object> productFilter = new HashMap<>();
-        productFilter.put(ProductsDao.PRODUCTID, map.get(RefrigeratorStockDao.PRODUCTID));
+        productFilter.put(ProductsDao.PRODUCT_ID, map.get(RefrigeratorStockDao.PRODUCT_ID));
         List<String> productColumns = new ArrayList<>();
         productColumns.add(ProductsDao.NAME);
         productColumns.add(ProductsDao.PRICE);
@@ -203,7 +203,7 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         Double price = (Double) product.getRecordValues(0).get(ProductsDao.PRICE);
 
         Map<String, Object> refrigeratorFilter = new HashMap<>();
-        refrigeratorFilter.put(RefrigeratorsDao.FRIDGE_ID, map.get(RefrigeratorStockDao.REFRIGERATORID));
+        refrigeratorFilter.put(RefrigeratorsDao.FRIDGE_ID, map.get(RefrigeratorStockDao.FRIDGE_ID));
         EntityResult room = this.daoHelper.query(this.refrigeratorsDao, refrigeratorFilter, List.of(RefrigeratorsDao.ROOM_ID));
         int roomid = (Integer) room.getRecordValues(0).get(RefrigeratorsDao.ROOM_ID);
         BasicField initialDate = new BasicField(BookingDao.STARTDATE);
@@ -219,14 +219,14 @@ public class RefrigeratorStockService implements IRefrigeratorStockService {
         if (booking.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
 
         int bookingid = (Integer) booking.getRecordValues(0).get(BookingDao.BOOKINGID);
 
         Map<String, Object> data = new HashMap<>();
-        data.put(ExtraExpensesDao.BOOKINGID, bookingid);
+        data.put(ExtraExpensesDao.BOOKING_ID, bookingid);
         data.put(ExtraExpensesDao.CONCEPT, concept);
         double finalprice = 0;
         for (int i = 0; i<Math.abs((Integer) map.get(RefrigeratorStockDao.STOCK));i++) {

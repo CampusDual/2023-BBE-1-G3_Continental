@@ -1,7 +1,8 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.AccessCardDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Extras;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -46,13 +47,13 @@ class AccessCardServiceTest {
                 Arguments.of(
                         "Successful query",//Nombre del test
                         Map.of(),//keyMap
-                        List.of(AccessCardDao.ACCESSCARDID),//attrList
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        List.of(AccessCardDao.ACCESS_CARD_ID),//attrList
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier)() ->{
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erQuery.put(AccessCardDao.ACCESSCARDID, List.of(1));
+                                    erQuery.put(AccessCardDao.ACCESS_CARD_ID, List.of(1));
                                     return when(daoHelper.query(any(AccessCardDao.class), anyMap(), anyList())).thenReturn(erQuery);
                                 })//Mocks
                 ),
@@ -61,15 +62,15 @@ class AccessCardServiceTest {
                         "No columns to query",//Nombre del test
                         Map.of(),//keyMap
                         List.of(),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()//Mocks
                 ),
                 // Test case 3: No access card found
                 Arguments.of(
                         "No access card found",//Nombre del test
-                        Map.of(AccessCardDao.ACCESSCARDID,1),//keyMap
-                        List.of(AccessCardDao.ACCESSCARDID),//attrList
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
+                        Map.of(AccessCardDao.ACCESS_CARD_ID,1),//keyMap
+                        List.of(AccessCardDao.ACCESS_CARD_ID),//attrList
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ACCESS_CARD_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier)() ->{
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -78,19 +79,5 @@ class AccessCardServiceTest {
                                 })//Mocks
                 )
         );
-    }
-
-    /**
-     * Creates an EntityResult with the given code and message
-     *
-     * @param code    EntityResult code
-     * @param message EntityResult message
-     * @return EntityResult
-     */
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

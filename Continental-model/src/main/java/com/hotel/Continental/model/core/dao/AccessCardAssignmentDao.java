@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/AccessCardAssignmentDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class AccessCardAssignmentDao extends OntimizeJdbcDaoSupport {
-    public static final String ACCESSCARDASIGNMENT = "accesscardasignment";
-    public static final String ACCESSCARDID = "accesscardid";
-    public static final String BOOKINGID = "bookingid";
+    public static final String ACCESS_CARD_ASSIGNMENT_ID = "access_card_assignment_id";
+    public static final String ACCESS_CARD_ID = "access_card_id";
+    public static final String BOOKING_ID = "booking_id";
 }

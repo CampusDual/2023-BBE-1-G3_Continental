@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/ProductsDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class ProductsDao extends OntimizeJdbcDaoSupport {
-    public static final String PRODUCTID = "productid";
+    public static final String PRODUCT_ID = "product_id";
     public static final String NAME = "name";
     public static final String PRICE = "price";
 }

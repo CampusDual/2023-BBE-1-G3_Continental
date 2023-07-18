@@ -6,12 +6,12 @@
         catalog="" schema="${mainschema}" table="bookings"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>bookingid</Column>
+        <Column>booking_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>bookingid</Column>
+        <Column>booking_id</Column>
     </UpdateKeys>
-    <GeneratedKey>bookingid</GeneratedKey>
+    <GeneratedKey>booking_id</GeneratedKey>
     <Queries>
         <Query id="current_bookings">
             <Sentence>

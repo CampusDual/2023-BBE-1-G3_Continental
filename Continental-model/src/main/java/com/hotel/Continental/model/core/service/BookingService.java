@@ -1,27 +1,26 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.*;
+import com.hotel.continental.model.core.tools.Messages;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.continental.api.core.service.IBookingService;
 import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.DateUtils.DateCondition;
 import com.hotel.continental.model.core.tools.DateUtils.DateConditionModule;
-import com.hotel.continental.model.core.tools.ErrorMessages;
-import com.ontimize.jee.common.db.SQLStatementBuilder;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
-import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,7 +73,7 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         return result;
@@ -97,25 +96,32 @@ public class BookingService implements IBookingService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
         //Si esta libre se inserta
         //Si no esta libre se devuelve un error
         List<String> roomKeyMap = new ArrayList<>();
-        roomKeyMap.add(RoomDao.IDHABITACION);
+        roomKeyMap.add(RoomDao.ROOM_ID);
         Map<String, Object> roomAttrMap = new HashMap<>();
         roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
         roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
         //Si se nos envia el id de la habitacion se busca esa habitacion
 
         if (attrMap.get(BookingDao.ROOMID) != null) {
-            roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
+            roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.ROOM_ID));
         }
-        if (attrMap.get(RoomDao.ROOMTYPEID) != null) {
-            roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+
+        if(attrMap.get(RoomDao.ROOM_TYPE_ID)!=null){
+            roomAttrMap.put(RoomDao.ROOM_TYPE_ID, attrMap.get(RoomDao.ROOM_TYPE_ID));
+
         }
+        if(attrMap.get(RoomDao.HOTEL_ID)!=null){
+            roomAttrMap.put(RoomDao.HOTEL_ID, attrMap.get(RoomDao.HOTEL_ID));
+
+        }
+
         EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
         //Comprobar que no dio error
         if (habitacionesLibres.getCode() == EntityResult.OPERATION_WRONG) {
@@ -127,7 +133,7 @@ public class BookingService implements IBookingService {
         if (habitacionesLibres.calculateRecordNumber() > 0) {
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
-            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
+            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.ROOM_ID));
             //Calculamos el precio de la reserva
             EntityResult price = bookingPrice(attrMap);
             attrMap.put(BookingDao.PRICE, price.get(BookingDao.PRICE));
@@ -137,7 +143,7 @@ public class BookingService implements IBookingService {
         }
         EntityResult er = new EntityResultMapImpl();
         er.setCode(EntityResult.OPERATION_WRONG);
-        er.setMessage(ErrorMessages.ROOM_NOT_FREE);
+        er.setMessage(Messages.ROOM_NOT_FREE);
         return er;
 
     }
@@ -155,7 +161,7 @@ public class BookingService implements IBookingService {
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -163,7 +169,7 @@ public class BookingService implements IBookingService {
         if (book == null || book.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         return this.daoHelper.delete(this.bookingDao, keyMap);
@@ -183,7 +189,7 @@ public class BookingService implements IBookingService {
         if (keyMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -191,7 +197,7 @@ public class BookingService implements IBookingService {
         if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Si se envia alguna fecha comprobamos que se envian ambas
@@ -199,23 +205,24 @@ public class BookingService implements IBookingService {
             if (attrMap.get(BookingDao.STARTDATE) == null || attrMap.get(BookingDao.ENDDATE) == null) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.NECESSARY_DATA);
+                er.setMessage(Messages.NECESSARY_DATA);
                 return er;
             }
             //Comprobamos si la habitacion esta libre usando la fecha de inicio y fin de la reserva el id de habitacion
             //Si esta libre se actualiza
             //Si no esta libre se devuelve un error
             List<String> roomKeyMap = new ArrayList<>();
-            roomKeyMap.add(RoomDao.IDHABITACION);
+            roomKeyMap.add(RoomDao.ROOM_ID);
             Map<String, Object> roomAttrMap = new HashMap<>();
             roomAttrMap.put(INITIALDATE, attrMap.get(BookingDao.STARTDATE));
             roomAttrMap.put(FINALDATE, attrMap.get(BookingDao.ENDDATE));
             //Si se nos envia el id de la habitacion se busca esa habitacion
             if (attrMap.get(BookingDao.ROOMID) != null) {
-                roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.IDHABITACION));
+                roomAttrMap.put(BookingDao.ROOMID, attrMap.get(RoomDao.ROOM_ID));
             }
-            if (attrMap.get(RoomDao.ROOMTYPEID) != null) {
-                roomAttrMap.put(RoomDao.ROOMTYPEID, attrMap.get(RoomDao.ROOMTYPEID));
+
+            if(attrMap.get(RoomDao.ROOM_TYPE_ID)!=null){
+                roomAttrMap.put(RoomDao.ROOM_TYPE_ID, attrMap.get(RoomDao.ROOM_TYPE_ID));
             }
             EntityResult habitacionesLibres = roomService.freeRoomsQuery(roomAttrMap, roomKeyMap);//Todas las habitaciones libres entre esas dos fechas
             //Comprobar que no dio error
@@ -228,12 +235,12 @@ public class BookingService implements IBookingService {
             if (habitacionesLibres.calculateRecordNumber() == 0) {
                 EntityResult er = new EntityResultMapImpl();
                 er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(ErrorMessages.ROOM_NOT_FREE);
+                er.setMessage(Messages.ROOM_NOT_FREE);
                 return er;
             }
             //Buscamos si la habitacion esta libre en esas fechas
             Map<String, Object> room = habitacionesLibres.getRecordValues(0);
-            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.IDHABITACION));
+            attrMap.put(BookingDao.ROOMID, room.get(RoomDao.ROOM_ID));
             attrMap.remove(BookingDao.STARTDATE);
             attrMap.remove(BookingDao.ENDDATE);
             attrMap.put(BookingDao.STARTDATE, roomAttrMap.get(INITIALDATE));
@@ -258,13 +265,13 @@ public class BookingService implements IBookingService {
             //Comprobamos que se ha introducido el id de cliente
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (attrMap.get(AccessCardAssignmentDao.ACCESSCARDID) == null) {
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -274,7 +281,7 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).isEmpty() || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
         //Comprobamos que la reserva pertenece al cliente
@@ -285,14 +292,14 @@ public class BookingService implements IBookingService {
         if (bookclient.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
+            er.setMessage(Messages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
         //Comprobamos que no se ha hecho el checkin
         if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) != null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_IN);
+            er.setMessage(Messages.BOOKING_ALREADY_CHECKED_IN);
             return er;
         }
         EntityResult card = accessCardAssignmentService.accesscardassignmentInsert(attrMap);
@@ -306,7 +313,7 @@ public class BookingService implements IBookingService {
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKIN_DATETIME, LocalDateTime.now());
         EntityResult er = this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        er.setMessage(ErrorMessages.BOOKING_CHECK_IN_SUCCESS);
+        er.setMessage(Messages.BOOKING_CHECK_IN_SUCCESS);
         return er;
     }
 
@@ -324,7 +331,7 @@ public class BookingService implements IBookingService {
         if (attrMap.get(BookingDao.BOOKINGID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos si la reserva existe
@@ -334,7 +341,7 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).isEmpty() || book.getCode() == EntityResult.OPERATION_WRONG) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_EXIST);
+            er.setMessage(Messages.BOOKING_NOT_EXIST);
             return er;
         }
 
@@ -342,14 +349,14 @@ public class BookingService implements IBookingService {
         if (book.getRecordValues(0).get(BookingDao.CHECKIN_DATETIME) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_NOT_CHECKED_IN);
+            er.setMessage(Messages.BOOKING_NOT_CHECKED_IN);
             return er;
         }
         //Comprobamos que no se ha hecho el checkout
         if (book.getRecordValues(0).get(BookingDao.CHECKOUT_DATETIME) != null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.BOOKING_ALREADY_CHECKED_OUT);
+            er.setMessage(Messages.BOOKING_ALREADY_CHECKED_OUT);
             return er;
         }
 
@@ -361,12 +368,12 @@ public class BookingService implements IBookingService {
         if (bookclient.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
-            er.setMessage(ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT);
+            er.setMessage(Messages.BOOKING_DOESNT_BELONG_CLIENT);
             return er;
         }
         //Update de la tarjeta
         Map<String, Object> keyMapCard = new HashMap<>();
-        keyMapCard.put(AccessCardDao.ACCESSCARDID, attrMap.get(AccessCardDao.ACCESSCARDID));
+        keyMapCard.put(AccessCardDao.ACCESS_CARD_ID, attrMap.get(AccessCardDao.ACCESS_CARD_ID));
         keyMapCard.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         EntityResult erTarjeta = accessCardAssignmentService.accesscardassignmentRecover(keyMapCard);
         if (erTarjeta.getCode() == EntityResult.OPERATION_WRONG) {
@@ -378,8 +385,9 @@ public class BookingService implements IBookingService {
         keyMap.put(BookingDao.BOOKINGID, attrMap.get(BookingDao.BOOKINGID));
         Map<String, Object> attrMapUpdate = new HashMap<>();
         attrMapUpdate.put(BookingDao.CHECKOUT_DATETIME, LocalDateTime.now());
+
         this.daoHelper.update(this.bookingDao, attrMapUpdate, keyMap);
-        finalPrice.setMessage(ErrorMessages.BOOKING_CHECK_OUT_SUCCESS);
+        finalPrice.setMessage(Messages.BOOKING_CHECK_OUT_SUCCESS);
         return finalPrice;
     }
 
@@ -397,46 +405,33 @@ public class BookingService implements IBookingService {
         if (attrMap.get(BookingDao.ROOMID) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que se ha introducido la fecha de inicio
         if (attrMap.get(BookingDao.STARTDATE) == null && attrMap.get(BookingDao.ENDDATE) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Obtener tipo de habitacion
         Map<String, Object> attrMapRoom = new HashMap<>();
-        attrMapRoom.put(RoomDao.IDHABITACION, attrMap.get(BookingDao.ROOMID));
-        EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.IDHABITACION, RoomDao.ROOMTYPEID, RoomDao.ROOMDOWNDATE));
+        attrMapRoom.put(RoomDao.ROOM_ID, attrMap.get(BookingDao.ROOMID));
+        EntityResult room = this.daoHelper.query(this.roomDao, attrMapRoom, List.of(RoomDao.ROOM_ID, RoomDao.ROOM_TYPE_ID, RoomDao.ROOM_DOWN_DATE));
         //Comprobamos que la habitacion existe
         if (room.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROOM_NOT_EXIST);
+            er.setMessage(Messages.ROOM_NOT_EXIST);
             return er;
         }
         Map<String, Object> attrMapRoomType = new HashMap<>();
-        attrMapRoomType.put(RoomTypeDao.TYPEID, room.getRecordValues(0).get(RoomDao.ROOMTYPEID));
-        EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPEID, RoomTypeDao.PRICE));
+        attrMapRoomType.put(RoomTypeDao.TYPE_ID, room.getRecordValues(0).get(RoomDao.ROOM_TYPE_ID));
+        EntityResult roomtype = this.daoHelper.query(this.roomTypeDao, attrMapRoomType, List.of(RoomTypeDao.TYPE_ID, RoomTypeDao.PRICE));
 
         //Precio de la habitacion por dia
         double roomprice = (double) roomtype.getRecordValues(0).get(RoomTypeDao.PRICE);
-        //Obtener criterios de precio
-        Map<String, Object> attrMapCriteria = new HashMap<>();
-        EntityResult criteria = this.daoHelper.query(this.criteriaDao, attrMapCriteria, List.of(CriteriaDao.ID, CriteriaDao.NAME, CriteriaDao.MULTIPLIER));
-
-        //Hacer que obtenga los multiplicadores por nombre
-        BigDecimal multiplierWeekend = (BigDecimal) criteria.getRecordValues(0).get(CriteriaDao.MULTIPLIER);
-        BigDecimal earlyBooking = (BigDecimal) criteria.getRecordValues(1).get(CriteriaDao.MULTIPLIER);
-        Map<Integer, BigDecimal> multiplierSeason = new HashMap<>();
-        multiplierSeason.put(0, BigDecimal.ONE);
-        multiplierSeason.put((int) criteria.getRecordValues(2).get(CriteriaDao.ID), (BigDecimal) criteria.getRecordValues(2).get(CriteriaDao.MULTIPLIER));
-        multiplierSeason.put((int) criteria.getRecordValues(3).get(CriteriaDao.ID), (BigDecimal) criteria.getRecordValues(3).get(CriteriaDao.MULTIPLIER));
-        BigDecimal multiplierLongStay = (BigDecimal) criteria.getRecordValues(4).get(CriteriaDao.MULTIPLIER);
-
         //Obtener fechas de la reserva
         LocalDate start;
         LocalDate startIter;
@@ -448,7 +443,7 @@ public class BookingService implements IBookingService {
         } catch (Exception e) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.DATE_FORMAT_ERROR);
+            er.setMessage(Messages.DATE_FORMAT_ERROR);
             return er;
         }
         //Primero necesito cargar todos las DateCondition
@@ -471,10 +466,10 @@ public class BookingService implements IBookingService {
 
         //Creo los dateCondition y cargo los multiplicadores
         for (int i = 0; i < erDateCondition.calculateRecordNumber(); i++) {
-            multiplierDateCondition.put((int) erDateCondition.getRecordValues(i).get(CriteriaDao.ID), (BigDecimal) erDateCondition.getRecordValues(i).get(CriteriaDao.MULTIPLIER));
+            multiplierDateCondition.put((int) erDateCondition.getRecordValues(i).get(CriteriaDao.CRITERIA_ID), (BigDecimal) erDateCondition.getRecordValues(i).get(CriteriaDao.MULTIPLIER));
             if (erDateCondition.getRecordValues(i).get(CriteriaDao.TYPE) != null && erDateCondition.getRecordValues(i).get(CriteriaDao.DATE_CONDITION) != null) {
                 String json = erDateCondition.getRecordValues(i).get(CriteriaDao.DATE_CONDITION).toString();
-                int id = (int) erDateCondition.getRecordValues(i).get(CriteriaDao.ID);
+                int id = (int) erDateCondition.getRecordValues(i).get(CriteriaDao.CRITERIA_ID);
                 DateCondition dc = jsonToDateCondition(json);
                 if (erDateCondition.getRecordValues(i).get(CriteriaDao.TYPE).equals("unique")){
                     dateConditionUnique.put(id,dc);

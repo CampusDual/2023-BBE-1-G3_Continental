@@ -2,7 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IAccessCardService;
 import com.hotel.continental.model.core.dao.AccessCardDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -29,7 +29,7 @@ public class AccessCardService implements IAccessCardService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         EntityResult result = this.daoHelper.query(this.accessCardDao, keyMap, attrList);
@@ -37,7 +37,7 @@ public class AccessCardService implements IAccessCardService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ACCESS_CARD_NOT_EXIST);
+            er.setMessage(Messages.ACCESS_CARD_NOT_EXIST);
             return er;
         }
         return result;

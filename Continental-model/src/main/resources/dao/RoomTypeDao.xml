@@ -6,10 +6,10 @@
         catalog="" schema="${mainschema}" table="roomtype"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>typeid</Column>
+        <Column>type_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>typeid</Column>
+        <Column>type_id</Column>
     </UpdateKeys>
-    <GeneratedKey>typeid</GeneratedKey>
+    <GeneratedKey>type_id</GeneratedKey>
 </JdbcEntitySetup>

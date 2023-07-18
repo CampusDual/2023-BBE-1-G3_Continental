@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/ExtraExpensesDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class ExtraExpensesDao extends OntimizeJdbcDaoSupport {
-    public static final String IDEXPENSE = "idexpense";
-    public static final String BOOKINGID = "bookingid";
+    public static final String EXTRA_EXPENSE_ID = "extra_expense_id";
+    public static final String BOOKING_ID = "booking_id";
     public static final String CONCEPT = "concept";
     public static final String PRICE = "price";
 }

@@ -2,7 +2,8 @@ package com.hotel.continental.model.core.service;
 
 
 import com.hotel.continental.model.core.dao.*;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Extras;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -54,6 +55,9 @@ class BookingServiceTest {
     RoomTypeDao roomTypeDao;
     @Mock
     ExtraExpensesDao extraExpensesDao;
+    @Mock
+    static
+    CriteriaService criteriaService;
 
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingInsertTestData")
@@ -79,40 +83,33 @@ class BookingServiceTest {
                             put(BookingDao.ENDDATE, "2023-10-09T10:31:10.000+0000");
                             put(BookingDao.CLIENT, 0);
                         }},//Atributos-Columnas-Keymap
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.IDHOTEL, List.of(0));
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(2));
-                                    erRoom.put(RoomDao.ROOMNUMBER, List.of(10));
+                                    erRoom.put(RoomDao.HOTEL_ID, List.of(0));
+                                    erRoom.put(RoomDao.ROOM_ID, List.of(2));
+                                    erRoom.put(RoomDao.ROOM_NUMBER, List.of(10));
                                     return Mockito.when(roomService.freeRoomsQuery(Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return Mockito.when(daoHelper.insert(Mockito.any(BookingDao.class), Mockito.anyMap())).thenReturn(erReserva);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.ROOMTYPEID, List.of(1));
+                                    erRoom.put(RoomDao.ROOM_TYPE_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoomType = new EntityResultMapImpl();
                                     erRoomType.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoomType.put(RoomDao.ROOMTYPEID, List.of(1));
+                                    erRoomType.put(RoomDao.ROOM_TYPE_ID, List.of(1));
                                     erRoomType.put(RoomTypeDao.PRICE, List.of(100.0));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoomType);
-                                },
-                                (Supplier) () -> {
-                                    EntityResult erCriteria = new EntityResultMapImpl();
-                                    erCriteria.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCriteria.put(CriteriaDao.MULTIPLIER, List.of(new BigDecimal(1.0), new BigDecimal(1.0), new BigDecimal(1.0), new BigDecimal(1.0), new BigDecimal(1.0)));
-                                    erCriteria.put(CriteriaDao.ID, List.of(1, 2, 3, 4, 5));
-                                    return Mockito.when(daoHelper.query(Mockito.any(CriteriaDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erCriteria);
                                 }
 
                         )//Mocks
@@ -125,7 +122,7 @@ class BookingServiceTest {
                             put(BookingDao.ENDDATE, "2023-10-09T10:31:10.000+0000");
                             put(BookingDao.CLIENT, 0);
                         }},
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ROOM_NOT_FREE),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_FREE),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
@@ -138,7 +135,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Insert empty data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 )
 
@@ -162,12 +159,12 @@ class BookingServiceTest {
 
     private static Stream<Arguments> bookingQueryTestData() {
         return Stream.of(
-                // Test case 1: Successful delete
+                // Test case 1: Successful query
                 Arguments.of(
                         "Test case 1: Successful query",
                         Map.of(BookingDao.BOOKINGID, 0),
                         List.of(BookingDao.BOOKINGID),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -182,7 +179,7 @@ class BookingServiceTest {
                         "Test case 2: Booking empty data",
                         Map.of(),
                         List.of(BookingDao.BOOKINGID),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of()
                 ),
                 // Test case 3: Booking not found
@@ -190,7 +187,7 @@ class BookingServiceTest {
                         "Test case 3: Booking not found",
                         Map.of(BookingDao.BOOKINGID, 0),
                         List.of(BookingDao.BOOKINGID),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -225,9 +222,9 @@ class BookingServiceTest {
                         "Test case 1: Successful update",
                         Map.of(BookingDao.BOOKINGID, 0),
                         Map.of(BookingDao.CLIENT, 0),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
@@ -245,7 +242,7 @@ class BookingServiceTest {
                         "Test case 2: Booking not found",
                         Map.of(BookingDao.BOOKINGID, 0),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -259,7 +256,7 @@ class BookingServiceTest {
                         "Test case 3: Booking empty data",
                         Map.of(),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
 
@@ -287,9 +284,9 @@ class BookingServiceTest {
                 Arguments.of(
                         "Test case 1: Successful delete",
                         Map.of(BookingDao.BOOKINGID, 0),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
@@ -306,7 +303,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Test case 2: Booking not found",
                         Map.of(BookingDao.BOOKINGID, 0),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -319,7 +316,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Test case 3: Booking empty data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
 
@@ -346,10 +343,10 @@ class BookingServiceTest {
                 // Test case 1: Successful check-in
                 Arguments.of(
                         "Successful check-in",
-                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESSCARDID, 1),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.BOOKING_CHECK_IN_SUCCESS),
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESS_CARD_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, Messages.BOOKING_CHECK_IN_SUCCESS),
                         List.of(
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
@@ -358,7 +355,7 @@ class BookingServiceTest {
                                     erReservaCliente.put(BookingDao.CLIENT, List.of(0));
                                     return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente);
                                 },
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erInsertarTarjeta = new EntityResultMapImpl();
                                     erInsertarTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return Mockito.when(accessCardAssignmentService.accesscardassignmentInsert(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
@@ -374,8 +371,8 @@ class BookingServiceTest {
                 // Test case 2: Check-in with invalid booking id
                 Arguments.of(
                         "Check-in with invalid booking id",
-                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESSCARDID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESS_CARD_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -387,8 +384,8 @@ class BookingServiceTest {
                 // Test case 3: Check-in with invalid bookingid-clientid combination
                 Arguments.of(
                         "Check-in with invalid bookingid-clientid combination",
-                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESSCARDID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT),
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESS_CARD_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_DOESNT_BELONG_CLIENT),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -403,8 +400,8 @@ class BookingServiceTest {
                 // Test case 4: Already checked-in
                 Arguments.of(
                         "Already checked-in",
-                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESSCARDID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_IN),
+                        Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2, AccessCardDao.ACCESS_CARD_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_ALREADY_CHECKED_IN),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -422,7 +419,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Missing booking ID",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
 
@@ -449,9 +446,9 @@ class BookingServiceTest {
                 Arguments.of(
                         "Successful check-out",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ErrorMessages.BOOKING_CHECK_OUT_SUCCESS),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, Messages.BOOKING_CHECK_OUT_SUCCESS),
                         List.of(
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
@@ -463,12 +460,12 @@ class BookingServiceTest {
                                     erBookingCost.put(BookingDao.PRICE, List.of(new BigDecimal(100)));
                                     return Mockito.when(daoHelper.query(Mockito.any(BookingDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erReserva, erReservaCliente, erBookingCost);
                                 },
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erInsertarTarjeta = new EntityResultMapImpl();
                                     erInsertarTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
                                 },
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erExtraEspenses = new EntityResultMapImpl();
                                     erExtraEspenses.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return Mockito.when(daoHelper.query(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erExtraEspenses);
@@ -485,7 +482,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Check-out with invalid booking id",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -498,7 +495,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Check-out with invalid bookingid-clientid combination",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_DOESNT_BELONG_CLIENT),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_DOESNT_BELONG_CLIENT),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -515,9 +512,9 @@ class BookingServiceTest {
                 Arguments.of(
                         "Check-out with invalid card-booking combination",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.CARD_DOESNT_BELONG_BOOKING),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CARD_DOESNT_BELONG_BOOKING),
                         List.of(
-                                (Supplier) () -> {
+                                () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
                                     erReserva.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erReserva.put(BookingDao.BOOKINGID, List.of(0));
@@ -532,7 +529,7 @@ class BookingServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erInsertarTarjeta = new EntityResultMapImpl();
                                     erInsertarTarjeta.setCode(EntityResult.OPERATION_WRONG);
-                                    erInsertarTarjeta.setMessage(ErrorMessages.CARD_DOESNT_BELONG_BOOKING);
+                                    erInsertarTarjeta.setMessage(Messages.CARD_DOESNT_BELONG_BOOKING);
                                     return Mockito.when(accessCardAssignmentService.accesscardassignmentRecover(Mockito.anyMap())).thenReturn(erInsertarTarjeta);
                                 }
                         )
@@ -541,7 +538,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Already checked-out",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_OUT),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_ALREADY_CHECKED_OUT),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -560,7 +557,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Already checked-out",
                         Map.of(BookingDao.BOOKINGID, 1, BookingDao.CLIENT, 2),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_ALREADY_CHECKED_OUT),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_ALREADY_CHECKED_OUT),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erReserva = new EntityResultMapImpl();
@@ -579,7 +576,7 @@ class BookingServiceTest {
                 Arguments.of(
                         "Missing booking ID",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 )
         );
@@ -606,30 +603,30 @@ class BookingServiceTest {
                 //region Test case 1: Successful price
                 Arguments.of(
                         "Successful price",
-                        Map.of(RoomDao.IDHABITACION, 1, BookingDao.STARTDATE, LocalDate.now().plusDays(20).format(formatter), BookingDao.ENDDATE, LocalDate.now().plusDays(30).format(formatter)),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Map.of(RoomDao.ROOM_ID, 1, BookingDao.STARTDATE, LocalDate.now().plusDays(20).format(formatter), BookingDao.ENDDATE, LocalDate.now().plusDays(30).format(formatter)),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(0));
-                                    erRoom.put(RoomDao.ROOMTYPEID, List.of(1));
-                                    erRoom.put(RoomDao.ROOMDOWNDATE, List.of(LocalDate.now().plusDays(10)));
+                                    erRoom.put(RoomDao.ROOM_ID, List.of(0));
+                                    erRoom.put(RoomDao.ROOM_TYPE_ID, List.of(1));
+                                    erRoom.put(RoomDao.ROOM_DOWN_DATE, List.of(LocalDate.now().plusDays(10)));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoomType = new EntityResultMapImpl();
                                     erRoomType.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erRoomType.put(RoomTypeDao.PRICE, List.of(100.0));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoomType);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erCriteria = new EntityResultMapImpl();
                                     erCriteria.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCriteria.put(CriteriaDao.ID, criteriaID);
+                                    erCriteria.put(CriteriaDao.CRITERIA_ID, criteriaID);
                                     erCriteria.put(CriteriaDao.NAME, List.of("Test", "Test", "Test", "Test", "Test"));
                                     erCriteria.put(CriteriaDao.MULTIPLIER, List.of(new BigDecimal(1), new BigDecimal(1), new BigDecimal(1), new BigDecimal(1), new BigDecimal(1)));
-                                    return Mockito.when(daoHelper.query(Mockito.any(CriteriaDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erCriteria);
+                                    return Mockito.when(criteriaService.criteriaQuery(Mockito.anyMap(), Mockito.anyList())).thenReturn(erCriteria);
                                 }
                         )
                 ),
@@ -638,15 +635,15 @@ class BookingServiceTest {
                 Arguments.of(
                         "Missing room ID",
                         Map.of(BookingDao.STARTDATE, LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), BookingDao.ENDDATE, LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 ),
                 //endregion
                 //region Test case 3: Missing start date/ end date
                 Arguments.of(
                         "Missing start date/ end date",
-                        Map.of(RoomDao.IDHABITACION, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        Map.of(RoomDao.ROOM_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -654,7 +651,7 @@ class BookingServiceTest {
                 Arguments.of(
                         " Wrong room ID",
                         Map.of(BookingDao.ROOMID, 1, BookingDao.STARTDATE, LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), BookingDao.ENDDATE, LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ROOM_NOT_EXIST),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOM_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
@@ -666,50 +663,28 @@ class BookingServiceTest {
                 //endregion
                 //region Test case 5: Wrong start date/ end date
                 Arguments.of(
-                        "Successful price",
-                        Map.of(RoomDao.IDHABITACION, 1, BookingDao.STARTDATE, LocalDate.now(), BookingDao.ENDDATE, LocalDate.now()),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.DATE_FORMAT_ERROR),
+                        "Wrong start date/ end date",
+                        Map.of(RoomDao.ROOM_ID, 1, BookingDao.STARTDATE, LocalDate.now(), BookingDao.ENDDATE, LocalDate.now()),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.DATE_FORMAT_ERROR),
                         List.of(
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoom = new EntityResultMapImpl();
                                     erRoom.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erRoom.put(RoomDao.IDHABITACION, List.of(0));
-                                    erRoom.put(RoomDao.ROOMTYPEID, List.of(1));
-                                    erRoom.put(RoomDao.ROOMDOWNDATE, List.of(LocalDate.now().plusDays(10)));
+                                    erRoom.put(RoomDao.ROOM_ID, List.of(0));
+                                    erRoom.put(RoomDao.ROOM_TYPE_ID, List.of(1));
+                                    erRoom.put(RoomDao.ROOM_DOWN_DATE, List.of(LocalDate.now().plusDays(10)));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoom);
                                 },
-                                (Supplier) () -> {
+                                (Supplier)() -> {
                                     EntityResult erRoomType = new EntityResultMapImpl();
                                     erRoomType.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     erRoomType.put(RoomTypeDao.PRICE, List.of(100.0));
                                     return Mockito.when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erRoomType);
-                                },
-                                (Supplier) () -> {
-                                    EntityResult erCriteria = new EntityResultMapImpl();
-                                    erCriteria.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCriteria.put(CriteriaDao.ID, criteriaID);
-                                    erCriteria.put(CriteriaDao.NAME, List.of("Test", "Test", "Test", "Test", "Test"));
-                                    erCriteria.put(CriteriaDao.MULTIPLIER, List.of(new BigDecimal(1), new BigDecimal(1), new BigDecimal(1), new BigDecimal(1), new BigDecimal(1)));
-                                    return Mockito.when(daoHelper.query(Mockito.any(CriteriaDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erCriteria);
                                 }
                         )
                 )
                 //endregion
 
         );
-    }
-
-    /**
-     * Creates an EntityResult with the given code and message
-     *
-     * @param code    EntityResult code
-     * @param message EntityResult message
-     * @return EntityResult
-     */
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/CriteriaDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class CriteriaDao extends OntimizeJdbcDaoSupport {
-    public static final String ID="id";
+    public static final String CRITERIA_ID ="criteria_id";
 
     public static final String NAME="name";
     public static final String DESCRIPTION="description";

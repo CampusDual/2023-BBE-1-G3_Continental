@@ -1,5 +1,5 @@
 package com.hotel.continental.model.core.tools;
-public class ErrorMessages {
+public class Messages {
     //Generales
     public static final String NECESSARY_KEY = "M_NECESSARY_KEY";
     public static final String NECESSARY_DATA = "M_NECESSARY_DATA";
@@ -9,6 +9,7 @@ public class ErrorMessages {
     public static final  String COUNTRY_CODE_FORMAT_ERROR = "M_COUNTRY_CODE_FORMAT_ERROR";
     //Document
     public static final String DOCUMENT_NOT_VALID = "M_DOCUMENT_NOT_VALID";
+    public static final String DOCUMENT_ALREADY_EXIST = "M_DOCUMENT_ALREADY_EXIST";
     //Reservas
     public static final String BOOKING_NOT_EXIST = "M_BOOKING_NOT_EXIST";
     public static final String ROOM_NOT_FREE = "M_ROOM_NOT_FREE";
@@ -82,6 +83,8 @@ public class ErrorMessages {
     public static final String STOCK_NOT_POSITIVE = "M_STOCK_NOT_POSITIVE";
     //RoomType
     public static final String ROOMTYPE_NOT_EXIST = "M_ROOMTYPE_NOT_EXIST";
+    public static final String PRICE_NOT_POSITIVE = "M_PRICE_NOT_POSITIVE";
+    public static final String PRICE_NOT_NUMBER = "M_PRICE_NOT_NUMBER";
     //Extra Expenses
     public static final String EXTRA_EXPENSE_ALREADY_EXIST = "M_EXTRA_EXPENSE_ALREADY_EXIST";
 
@@ -92,7 +95,8 @@ public class ErrorMessages {
     public static final String PARKING_FULL = "M_PARKING_FULL";
     public static final String BOOKING_NOT_SAME_HOTEL_AS_PARKING = "M_BOOKING_NOT_SAME_HOTEL_AS_PARKING";
     public static final String BOOKING_NOT_IN_PARKING = "M_BOOKING_NOT_IN_PARKING";
-    private ErrorMessages() {
+
+    private Messages() {
         throw new IllegalStateException("Utility class");
     }
 }

@@ -1,10 +1,9 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
-import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.ExtraExpensesDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Extras;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -51,9 +50,9 @@ class ExtraExpensesServiceTest {
                 //region Test case 1: Successful insert
                 Arguments.of(
                         "Successful extra expenses",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 2,
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 2,
                                 ExtraExpensesDao.CONCEPT, "concepto", ExtraExpensesDao.PRICE, 12),//keyMap
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erBooking = new EntityResultMapImpl();
@@ -62,7 +61,7 @@ class ExtraExpensesServiceTest {
                                 },
                                 (Supplier) () -> {
                                     EntityResult erExpense = new EntityResultMapImpl();
-                                    erExpense.put(ExtraExpensesDao.IDEXPENSE, List.of(1));
+                                    erExpense.put(ExtraExpensesDao.EXTRA_EXPENSE_ID, List.of(1));
 
                                     return Mockito.when(daoHelper.insert(Mockito.any(ExtraExpensesDao.class), Mockito.anyMap())).thenReturn(erExpense);
                                 },
@@ -77,25 +76,25 @@ class ExtraExpensesServiceTest {
                 //region Test case 2: Null data
                 Arguments.of(
                         "null data",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 1),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 1),//keyMap
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
                 //region Test case 3: Empty Data
                 Arguments.of(
                         "empty data",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),//Resultado esperado
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 1, ExtraExpensesDao.CONCEPT, "", ExtraExpensesDao.PRICE, ""),//keyMap
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),//Resultado esperado
                         List.of()
                 ),
                 //endregion
                 //region Test case 4: Booking doesn´t exist
                 Arguments.of(
                         "Booking doesn´t exist",//Nombre del test
-                        Map.of(ExtraExpensesDao.BOOKINGID, 3,
+                        Map.of(ExtraExpensesDao.BOOKING_ID, 3,
                                 ExtraExpensesDao.CONCEPT, "concepto", ExtraExpensesDao.PRICE, 12),//keyMap
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.BOOKING_NOT_EXIST),//Resultado esperado
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.BOOKING_NOT_EXIST),//Resultado esperado
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erBooking = new EntityResultMapImpl();
@@ -106,20 +105,5 @@ class ExtraExpensesServiceTest {
                 )
                 //endregion
         );
-    }
-
-
-    /**
-     * Creates an EntityResult with the given code and message
-     *
-     * @param code    EntityResult code
-     * @param message EntityResult message
-     * @return EntityResult
-     */
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

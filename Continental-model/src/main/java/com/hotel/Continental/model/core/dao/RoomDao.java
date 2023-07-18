@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/RoomDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class RoomDao extends OntimizeJdbcDaoSupport {
-    public static final String IDHABITACION = "roomid";
-    public static final String IDHOTEL = "hotelid";
-    public static final String ROOMNUMBER = "roomnumber";
-    public static final String ROOMDOWNDATE = "roomdowndate";
-    public static final String ROOMTYPEID = "typeroomid";
+    public static final String ROOM_ID = "room_id";
+    public static final String HOTEL_ID = "hotel_id";
+    public static final String ROOM_NUMBER = "room_number";
+    public static final String ROOM_DOWN_DATE = "room_down_date";
+    public static final String ROOM_TYPE_ID = "room_type_id";
 
 }
 

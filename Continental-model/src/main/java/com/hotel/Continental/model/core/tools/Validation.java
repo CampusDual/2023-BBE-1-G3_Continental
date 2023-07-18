@@ -1,6 +1,13 @@
 package com.hotel.continental.model.core.tools;
 
-public class CheckDocument {
+import com.hotel.continental.model.core.dao.CriteriaDao;
+import com.ontimize.jee.common.dto.EntityResult;
+import com.ontimize.jee.common.dto.EntityResultMapImpl;
+
+public class Validation {
+    private Validation() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Metodo que comprueba si el documento es valido
@@ -36,5 +43,26 @@ public class CheckDocument {
             return document.matches(cifRegex);
         }
         return true;
+    }
+
+    public static EntityResult checkNumber(String param, String messageNotPositive, String messageNotNumber) {
+        EntityResult er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        try {
+            double multiplier = Double.parseDouble(param);
+            if(multiplier <= 0) {
+                er.setMessage(messageNotPositive);
+                return er;
+            }
+        } catch (NumberFormatException e) {
+            EntityResult erError = new EntityResultMapImpl();
+            erError.setCode(EntityResult.OPERATION_WRONG);
+            erError.setMessage(messageNotNumber);
+            return erError;
+        }
+
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        return er;
     }
 }

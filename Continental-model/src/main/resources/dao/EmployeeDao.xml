@@ -6,13 +6,28 @@
         catalog="" schema="${mainschema}" table="employees"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>employeeid</Column>
+        <Column>employee_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>employeeid</Column>
+        <Column>employee_id</Column>
     </UpdateKeys>
-    <GeneratedKey>employeeid</GeneratedKey>
+    <GeneratedKey>employee_id</GeneratedKey>
     <Queries>
+        <Query id="employee_info">
+            <Sentence>
+                <![CDATA[
+                    SELECT
+                        #COLUMNS#
+                    FROM
+                        ${mainschema}.tuser
+                    INNER JOIN
+                        ${mainschema}.employees
+                    ON
+                        ${mainschema}.tuser.user_ = ${mainschema}.employees.tuser_name
 
+                    #WHERE#
+                ]]>
+            </Sentence>
+        </Query>
     </Queries>
 </JdbcEntitySetup>

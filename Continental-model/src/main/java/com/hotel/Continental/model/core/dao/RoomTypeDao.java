@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
         configurationFile = "dao/RoomTypeDao.xml",
         configurationFilePlaceholder = "dao/placeholders.properties")
 public class RoomTypeDao extends OntimizeJdbcDaoSupport {
-    public static final String TYPEID = "typeid";
+    public static final String TYPE_ID = "type_id";
     public static final String TYPE = "type";
     public static final String PRICE = "price";
 }

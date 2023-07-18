@@ -2,7 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IRoleService;
 import com.hotel.continental.model.core.dao.RoleDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
@@ -25,12 +25,18 @@ public class RoleService implements IRoleService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleQuery(Map<?, ?> keyMap, List<?> attrList) {
+        EntityResult er;
+        er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
+            return er;
+        }
+
         EntityResult role = this.daoHelper.query(this.roleDao, keyMap, attrList);
         if(role == null || role.calculateRecordNumber() == 0){
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROLE_DOESNT_EXIST);
+            er.setMessage(Messages.ROLE_DOESNT_EXIST);
             return er;
         }
         return role;
@@ -39,20 +45,12 @@ public class RoleService implements IRoleService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult roleInsert(Map<String, Object> attrMap) {
-        //Comnprobamos que nos mandan los atributos necesarios(rolename)
-        if(!attrMap.containsKey(RoleDao.ROLENAME)){
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
-            return er;
-        }
         //Comprobamos que no esta vacio y que no es nulo
         if(attrMap.get(RoleDao.ROLENAME) == null || attrMap.get(RoleDao.ROLENAME).toString().isEmpty()){
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         attrMap.put(RoleDao.ROLENAME, attrMap.remove(RoleDao.ROLENAME).toString().toLowerCase());
@@ -63,7 +61,7 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROLE_ALREADY_EXISTS);
+            er.setMessage(Messages.ROLE_ALREADY_EXISTS);
             return er;
         }
         //Insertamos el rol
@@ -77,22 +75,23 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         if ((int) keyMap.get(RoleDao.ID_ROLENAME) == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ADMIN_ROLE_NOT_EDITABLE);
+            er.setMessage(Messages.ADMIN_ROLE_NOT_EDITABLE);
             return er;
         }
         //si el rol no existe lanzar un error
         EntityResult role = roleQuery(keyMap, Arrays.asList(RoleDao.ID_ROLENAME));
         if (role.getCode() == EntityResult.OPERATION_WRONG) {
+            role.setMessage(Messages.ROLE_DOESNT_EXIST);
             return role;
         }
         EntityResult er = this.daoHelper.delete(this.roleDao, keyMap);
-        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted succesfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " deleted successfully");
         return er;
     }
 
@@ -104,7 +103,7 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que nos mandan el rolename
@@ -112,7 +111,7 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Ponemos el rolename en minusculas
@@ -123,7 +122,7 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROLE_DOESNT_EXIST);
+            er.setMessage(Messages.ROLE_DOESNT_EXIST);
             return er;
         }
         //Comprobamos que no hay otro rol con ese rolename
@@ -132,12 +131,12 @@ public class RoleService implements IRoleService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.ROLE_ALREADY_EXISTS);
+            er.setMessage(Messages.ROLE_ALREADY_EXISTS);
             return er;
         }
         //Actualizamos el rol
         EntityResult er = this.daoHelper.update(this.roleDao, attrMap, keyMap);
-        er.setMessage("Role updated succesfully");
+        er.setMessage("Role " + keyMap.get(RoleDao.ID_ROLENAME) + " updated successfully");
         return er;
     }
 }

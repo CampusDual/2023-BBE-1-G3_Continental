@@ -1,6 +1,6 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.api.core.service.IHotelService;
 import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -37,20 +37,19 @@ public class HotelService implements IHotelService {
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelQuery(Map<?, ?> keyMap, List<?> attrList) {
-        //Comprobar null key
-        if(!keyMap.containsKey(HotelDao.ID)){
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+        EntityResult er;
+        er = new EntityResultMapImpl();
+        er.setCode(EntityResult.OPERATION_WRONG);
+
+        //Comprobar que los parámetros no esten vacios
+        if(attrList.isEmpty()) {
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobar hotel que el hotel existe
         EntityResult hotel = this.daoHelper.query(this.hotelDao, keyMap, attrList);
         if (hotel == null || hotel.calculateRecordNumber() == 0) {
-            EntityResult er;
-            er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_NOT_EXIST);
+            er.setMessage(Messages.HOTEL_NOT_EXIST);
             return er;
         }
         return hotel;
@@ -71,7 +70,7 @@ public class HotelService implements IHotelService {
             EntityResult er;
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_DATA);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         return this.daoHelper.insert(hotelDao, attrMap);
@@ -87,15 +86,15 @@ public class HotelService implements IHotelService {
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult hotelUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         //Comprobamos mull key
-        if(keyMap.get(HotelDao.ID) == null){
+        if(keyMap.get(HotelDao.HOTEL_ID) == null){
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTEL_DOWN_DATE));
         EntityResult er;
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
@@ -116,33 +115,32 @@ public class HotelService implements IHotelService {
     public EntityResult hotelDelete(Map<?, ?> keyMap) {
         EntityResult er;
         //Comprobamos que nos envia un id
-        if (!keyMap.containsKey(HotelDao.ID)) {
+        if (!keyMap.containsKey(HotelDao.HOTEL_ID)) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.NECESSARY_KEY);
+            er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
         //Comprobamos que el hotel existe
         //Si no existe, devolvemos un entityResult que representa un error
-        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.ID, HotelDao.HOTELDOWNDATE));
+        EntityResult hotel = hotelQuery(keyMap, Arrays.asList(HotelDao.HOTEL_ID, HotelDao.HOTEL_DOWN_DATE));
         if (hotel.getCode() == EntityResult.OPERATION_WRONG) {
             return hotel;
         }
         //Comprobamos que el hotel esta en activo
-        if (hotel.getRecordValues(0).get(HotelDao.HOTELDOWNDATE) != null) {
+        if (hotel.getRecordValues(0).get(HotelDao.HOTEL_DOWN_DATE) != null) {
             er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(ErrorMessages.HOTEL_ALREADY_INACTIVE);
+            er.setMessage(Messages.HOTEL_ALREADY_INACTIVE);
             return er;
         }
         Map<Object, Object> attrMap = new HashMap<>();//Mapa de atributos
-        attrMap.put(HotelDao.HOTELDOWNDATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
+        attrMap.put(HotelDao.HOTEL_DOWN_DATE, new Timestamp(System.currentTimeMillis()));//Añadimos la fecha de baja
         //Devolvemos un entityResult que representa el éxito de la operación
         er = this.daoHelper.update(this.hotelDao, attrMap, keyMap);//Actualizamos el hotel
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.setMessage("Hotel dado de baja correctamente con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;
     }
-
 }
 

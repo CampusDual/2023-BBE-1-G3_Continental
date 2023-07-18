@@ -1,7 +1,8 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.RoomTypeDao;
-import com.hotel.continental.model.core.tools.ErrorMessages;
+import com.hotel.continental.model.core.tools.Extras;
+import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
@@ -48,13 +49,13 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Update roomtype with correct data",
                         Map.of(RoomTypeDao.TYPE, "Suite"),
-                        Map.of(RoomTypeDao.TYPEID, 1),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erQuery.put(RoomTypeDao.TYPEID, List.of(1));
+                                    erQuery.put(RoomTypeDao.TYPE_ID, List.of(1));
                                     return when(daoHelper.query(Mockito.any(RoomTypeDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erQuery);
                                 },
                                 (Supplier) () -> {
@@ -69,8 +70,8 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Update roomtype with null data",
                         Map.of(),
-                        Map.of(RoomTypeDao.TYPEID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
                 //endregion
@@ -79,7 +80,7 @@ class RoomTypeServiceTest {
                         "Update roomtype with null key",
                         Map.of(RoomTypeDao.TYPE, "Suite"),
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_KEY),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_KEY),
                         List.of()
                 ),
                 //endregion
@@ -87,8 +88,8 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Update roomtype with no existing key",
                         Map.of(RoomTypeDao.TYPE, "Suite"),
-                        Map.of(RoomTypeDao.TYPEID, 1),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.ROOMTYPE_NOT_EXIST),
+                        Map.of(RoomTypeDao.TYPE_ID, 1),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.ROOMTYPE_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
@@ -102,10 +103,10 @@ class RoomTypeServiceTest {
     }
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("roomTypeInsert")
-    void testRoomTypeInsert(String testCaseName, Map<String, Object> attrList, EntityResult expectedResult, List<Supplier> mock) {
+    void testRoomTypeInsert(String testCaseName, Map<String, Object> attrMap, EntityResult expectedResult, List<Supplier> mock) {
         //For each test case, execute the mock,to make sure the mock is called
         mock.forEach(Supplier::get);
-        EntityResult result = roomTypeService.roomtypeInsert(attrList);
+        EntityResult result = roomTypeService.roomtypeInsert(attrMap);
         // Assert
         assertEquals(expectedResult.getMessage(), result.getMessage());
         assertEquals(expectedResult.getCode(), result.getCode());
@@ -113,15 +114,15 @@ class RoomTypeServiceTest {
 
     private static Stream<Arguments> roomTypeInsert() {
         return Stream.of(
-                //region Test Case 1 - Update roomtype with correct data
+                //region Test Case 1 - Insert roomtype with correct data
                 Arguments.of(
                         "Insert roomtype with correct data",
                         Map.of(RoomTypeDao.TYPE, "Suite", RoomTypeDao.PRICE, 20.2),
-                        createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
+                        Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erInsert = new EntityResultMapImpl();
-                                    erInsert.put(RoomTypeDao.TYPEID, 1);
+                                    erInsert.put(RoomTypeDao.TYPE_ID, 1);
                                     erInsert.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     return when(daoHelper.insert(Mockito.any(RoomTypeDao.class), Mockito.anyMap())).thenReturn(erInsert);
                                 }
@@ -132,17 +133,10 @@ class RoomTypeServiceTest {
                 Arguments.of(
                         "Insert roomtype with null data",
                         Map.of(),
-                        createEntityResult(EntityResult.OPERATION_WRONG, ErrorMessages.NECESSARY_DATA),
+                        Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 )
                 //endregion
         );
-    }
-
-    private static EntityResult createEntityResult(int code, String message) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(code);
-        er.setMessage(message);
-        return er;
     }
 }

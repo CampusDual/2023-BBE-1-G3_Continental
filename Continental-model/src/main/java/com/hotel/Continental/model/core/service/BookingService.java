@@ -270,7 +270,7 @@ public class BookingService implements IBookingService {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null) {
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null && attrMap.get(BookingDao.CLIENT) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -334,6 +334,12 @@ public class BookingService implements IBookingService {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_KEY);
+            return er;
+        }
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null && attrMap.get(BookingDao.CLIENT) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobamos si la reserva existe

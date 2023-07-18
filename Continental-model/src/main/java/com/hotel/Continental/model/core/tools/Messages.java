@@ -9,6 +9,7 @@ public class Messages {
     public static final  String COUNTRY_CODE_FORMAT_ERROR = "M_COUNTRY_CODE_FORMAT_ERROR";
     //Document
     public static final String DOCUMENT_NOT_VALID = "M_DOCUMENT_NOT_VALID";
+    public static final String DOCUMENT_ALREADY_EXIST = "M_DOCUMENT_ALREADY_EXIST";
     //Reservas
     public static final String BOOKING_NOT_EXIST = "M_BOOKING_NOT_EXIST";
     public static final String ROOM_NOT_FREE = "M_ROOM_NOT_FREE";

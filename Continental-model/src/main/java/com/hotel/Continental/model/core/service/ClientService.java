@@ -2,6 +2,8 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.api.core.service.IClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
+import com.hotel.continental.model.core.dao.EmployeeDao;
+import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -10,6 +12,7 @@ import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.jdbc.SQLWarningException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,8 @@ public class ClientService implements IClientService {
     private ClientDao clientDao;
     @Autowired
     private DefaultOntimizeDaoHelper daoHelper;
+    @Autowired
+    private UserService userService;
 
     /**
      * Metodo que actualiza un cliente de la base de datos
@@ -34,58 +39,70 @@ public class ClientService implements IClientService {
      * @return EntityResult con el id de los clientes o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult clientUpdate(Map<String, Object> attrMap, Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_WRONG);
-
-        //Primero compruebo que el clientid existe dado que es necesario para la actualización
+        //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
         if (keyMap.get(ClientDao.CLIENT_ID) == null) {
+            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        //Comprobamos que el attrMap no este vacio
-        if(attrMap.isEmpty()){
-            er.setMessage(Messages.NECESSARY_DATA);
-            return er;
-        }
-        //Si el id del cliente no existe en la base de datos esta mal
-        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENT_ID, keyMap.get(ClientDao.CLIENT_ID)))) {
+        // Comprobar que el cliente exista
+        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, Arrays.asList(ClientDao.CLIENT_ID, EmployeeDao.TUSER_NAME), ClientDao.CLIENT_INFO);
+        if (client.calculateRecordNumber() == 0) {
+            er.setCode(1);
             er.setMessage(Messages.CLIENT_NOT_EXIST);
             return er;
         }
-        //El check update hace las comprobaciones de los datos a insertar
-        EntityResult checkDatos = checkUpdate(attrMap);
-        if (checkDatos.getCode() == EntityResult.OPERATION_WRONG) {
-            return checkDatos;
+        //Updateamos el usuario
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(UserDao.USER, client.getRecordValues(0).get(EmployeeDao.TUSER_NAME));
+        EntityResult check = userService.userUpdate(attrMap, filter);
+        if (check.getCode() == EntityResult.OPERATION_WRONG) {
+            return check;
         }
-
-        er = this.daoHelper.update(this.clientDao, attrMap, keyMap);
-        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        check.setMessage("Client updated succesfully");
         return er;
     }
 
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult clientDelete(Map<?, ?> keyMap) {
         EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_WRONG);
-        //Comprobar que se envia el id del cliente
+        //Primero compruebo que el clientid existe dado que es necesario para la actualizacion
         if (keyMap.get(ClientDao.CLIENT_ID) == null) {
+            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (!existsKeymap(Collections.singletonMap(ClientDao.CLIENT_ID, keyMap.get(ClientDao.CLIENT_ID)))) {
-            er.setMessage(Messages.CLIENT_NOT_EXIST);
-        } else if (isCanceled(keyMap)) {
-            er.setMessage(Messages.CLIENT_ALREADY_DELETED);
-        } else {
-            Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put(ClientDao.CLIENT_DOWN_DATE, new Timestamp(System.currentTimeMillis()));
-            er = this.daoHelper.update(clientDao, attrMap, keyMap);
-            er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-            er.setMessage("Este cliente se ha dado de baja con fecha " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        //Si el id del cliente no existe en la base de datos esta mal
+        Map<String, Object> filter = new HashMap<>();
+        filter.put(ClientDao.CLIENT_ID, keyMap.get(ClientDao.CLIENT_ID));
+        EntityResult client = this.daoHelper.query(this.clientDao, filter, Arrays.asList(ClientDao.CLIENT_ID, ClientDao.TUSER_NAME));
+        if (client.calculateRecordNumber() == 0) {
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(Messages.EMPLOYEE_NOT_EXIST);
+            return er;
         }
+        //Comprobamos que no esta dado de baja
+        //Comprobamos que empleado(el usuario) no esté ya dado de baja
+        Map<String, Object> filterUser = new HashMap<>();
+        filterUser.put(UserDao.USER, client.getRecordValues(0).get(ClientDao.TUSER_NAME));
+        EntityResult erUser = this.daoHelper.query(this.clientDao, filterUser, Arrays.asList(UserDao.USERBLOCKED), ClientDao.CLIENT_INFO);
+        if (erUser.getRecordValues(0).get(UserDao.USER) != null && Timestamp.valueOf(erUser.getRecordValues(0).get(UserDao.USERBLOCKED).toString()).before(new Timestamp(System.currentTimeMillis()))) {
+            er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
+            er.setMessage(Messages.CLIENT_ALREADY_DELETED);
+            return er;
+        }
+        Map<Object, Object> keyMapUserDelete = new HashMap<>();//Mapa de atributos
+        keyMapUserDelete.put(UserDao.USER, client.getRecordValues(0).get(EmployeeDao.TUSER_NAME));//Añadimos el nombre de usuario
+        //Devolvemos un entityResult que representa el éxito de la operación
+        er = userService.userDelete(keyMapUserDelete);//Actualizamos el cliente
+        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
+        er.setMessage("Client terminated: " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return er;
     }
 
@@ -97,129 +114,43 @@ public class ClientService implements IClientService {
      * @return EntityResult con los clientes o un mensaje de error
      */
     @Override
-    @Secured({ PermissionsProviderSecured.SECURED })
+    @Secured({PermissionsProviderSecured.SECURED})
     public EntityResult clientInsert(Map<String, Object> attrMap) {
-        //Si alguno de los campos necesarios esta nulo esta mal
-        if (attrMap.get(ClientDao.COUNTRY_CODE) == null || attrMap.get(ClientDao.NAME) == null || attrMap.get(ClientDao.DOCUMENT) == null) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(Messages.NECESSARY_DATA);
-            return er;
-        }
-        //Si alguno de los campos necesarios esta vacio esta mal
-        if (((String) attrMap.get(ClientDao.COUNTRY_CODE)).isEmpty() || ((String) attrMap.get(ClientDao.NAME)).isEmpty() || ((String) attrMap.get(ClientDao.DOCUMENT)).isEmpty()) {
-            EntityResult er = new EntityResultMapImpl();
-            er.setCode(EntityResult.OPERATION_WRONG);
-            er.setMessage(Messages.NECESSARY_DATA);
-            return er;
-        }
-        //El check comprueba que los datos a insertar/Actualizar son correctos
-        EntityResult check = checkUpdate(attrMap);
+        //Crear l mapa de atributos para usuario en un try catch?
+        //Falta añadir rol cliente
+        //El check comprueba que se inserto el tuser correctamente
+        EntityResult check = userService.userInsert(attrMap);
         if (check.getCode() == EntityResult.OPERATION_WRONG) {
             return check;
         }
-        EntityResult er = this.daoHelper.insert(this.clientDao, attrMap);
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put(ClientDao.TUSER_NAME, attrMap.get(UserDao.USER));
+        EntityResult er = this.daoHelper.insert(this.clientDao, userMap);
         er.setCode(EntityResult.OPERATION_SUCCESSFUL);
         er.setMessage("Cliente insertado correctamente");
         return er;
     }
-
-
-    /**
-     * Metodo que hace las comprobacioes previas a un insert/update
-     *
-     * @param attrMap Mapa con los campos de la clave
-     * @return EntityResult con OPERATION_SUCCESSFUL o un mensaje de error
-     */
-    private EntityResult checkUpdate(Map<String, Object> attrMap) {
-        //Hago esto para asegurarme de que el codigo de pais esta en mayusculas y que no sea nulo
-        if (attrMap.get(ClientDao.COUNTRY_CODE) != null) {
-            attrMap.put(ClientDao.COUNTRY_CODE, ((String) attrMap.remove(ClientDao.COUNTRY_CODE)).toUpperCase());
-            //Si el country code no mide 2 Caracteres esta mal
-            if (((String) attrMap.get(ClientDao.COUNTRY_CODE)).length() != 2) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(Messages.COUNTRY_CODE_FORMAT_ERROR);
-                return er;
-            }
-            //Si el country code no es un codigo de pais valido esta mal
-            if (!checkCountryCode(((String) attrMap.get(ClientDao.COUNTRY_CODE)))) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(Messages.COUNTRY_CODE_NOT_VALID);
-                return er;
-            }
-        }
-        if (attrMap.get(ClientDao.DOCUMENT) != null) {
-            //Si el documento no es valido esta mal
-            if (!Validation.checkDocument((String) attrMap.get(ClientDao.DOCUMENT), (String) attrMap.get(ClientDao.COUNTRY_CODE))) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(Messages.DOCUMENT_NOT_VALID);
-                return er;
-            }
-            //Si el documento ya exite en la base de datos esta mal
-            if (existsKeymap(Collections.singletonMap(ClientDao.DOCUMENT, attrMap.get(ClientDao.DOCUMENT)))) {
-                EntityResult er = new EntityResultMapImpl();
-                er.setCode(EntityResult.OPERATION_WRONG);
-                er.setMessage(Messages.CLIENT_ALREADY_EXIST);
-                return er;
-            }
-        }
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_SUCCESSFUL);
-        return er;
-    }
-
-    /**
-     * Metodo que comprueba si el codigo de pais es valido
-     *
-     * @param countryCode Codigo de pais
-     * @return true si es valido, false si no lo es
-     */
-    private boolean checkCountryCode(String countryCode) {
-        String[] isoCountryCodes = Locale.getISOCountries();
-        return Arrays.stream(isoCountryCodes).anyMatch(countryCode::equals);
-    }
-
-    /**
-     * Metodo que comprueba si el keyMap ya existe en la base de datos
-     *
-     * @param keyMap Mapa con los campos de la clave
-     * @return true si existe, false si no existe
-     */
-
-    private boolean existsKeymap(Map<String, Object> keyMap) {
-        List<Object> attrList = new ArrayList<>();
-        attrList.add(ClientDao.CLIENT_ID);
-        EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0;
-    }
-
-    private boolean isCanceled(Map<?, ?> keyMap) {
-        List<Object> attrList = new ArrayList<>();
-        attrList.add(ClientDao.CLIENT_DOWN_DATE);
-        EntityResult er = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        return er.getCode() == EntityResult.OPERATION_SUCCESSFUL && er.calculateRecordNumber() > 0 && er.getRecordValues(0).get(ClientDao.CLIENT_DOWN_DATE) != null;
-    }
     @Override
     @Secured({ PermissionsProviderSecured.SECURED })
     public EntityResult clientQuery(Map<String, Object> keyMap, List<?> attrList) {
-        EntityResult er = new EntityResultMapImpl();
-        er.setCode(EntityResult.OPERATION_WRONG);
-
-        //Comprobamos que el attrMap no está vacio
-        if(attrList.isEmpty()) {
+        if (attrList == null || attrList.isEmpty()) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
+
         //comprobamos que envio en el filtro un id,si lo envio y no existe el cliente devolvemos error
-        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList);
-        if(client == null || client.calculateRecordNumber() == 0) {
+        EntityResult client = this.daoHelper.query(this.clientDao, keyMap, attrList, ClientDao.CLIENT_INFO);
+        if (client == null || client.calculateRecordNumber() == 0) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.CLIENT_NOT_EXIST);
             return er;
         }
-
+        //Quitamos la contraseña
+        client.remove(UserDao.PASSWORD);
+        client.put(UserDao.PASSWORD, Collections.nCopies(client.calculateRecordNumber(), "Protected"));
         return client;
     }
 }

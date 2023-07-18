@@ -2,6 +2,7 @@ package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.RoleDao;
+import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;
@@ -52,7 +53,7 @@ class ClientServiceTest {
                 //region Test Case 1 - Insert client with correct data
                 Arguments.of(
                         "Insert client with correct data",
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, "Cliente insertado correctamente"),
                         List.of(
@@ -65,7 +66,7 @@ class ClientServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(ClientDao.CLIENT_ID, List.of(1));
-                                    erQuery.put(ClientDao.NAME, List.of("name"));
+                                    erQuery.put(UserDao.NAME, List.of("name"));
 
                                     return when(daoHelper.insert(any(ClientDao.class), anyMap())).thenReturn(erQuery);
                                 }
@@ -83,7 +84,7 @@ class ClientServiceTest {
                 //region Test Case 3 - Insert client with empty data
                 Arguments.of(
                         "Insert client with empty data",
-                        Map.of(ClientDao.NAME, ""),
+                        Map.of(UserDao.NAME, ""),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.NECESSARY_DATA),
                         List.of()
                 ),
@@ -91,7 +92,7 @@ class ClientServiceTest {
                 //region Test Case 4 - Insert client document not valid
                 Arguments.of(
                         "Insert client document not valid",
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014F")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.DOCUMENT_NOT_VALID),
                         List.of()
@@ -100,7 +101,7 @@ class ClientServiceTest {
                 //region Test Case 5 - Insert client countryCode format error
                 Arguments.of(
                         "Insert client CountryCode format error",
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ESPAÑA", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.COUNTRY_CODE_FORMAT_ERROR),
                         List.of()
@@ -109,7 +110,7 @@ class ClientServiceTest {
                 //region Test Case 6 - Insert client countryCode not exist
                 Arguments.of(
                         "Insert client CountryCode not valid",
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "AA", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.COUNTRY_CODE_NOT_VALID),
                         List.of()
@@ -118,7 +119,7 @@ class ClientServiceTest {
                 //region Test Case 7 - Insert client client already exist
                 Arguments.of(
                         "Insert client client already exist",
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CLIENT_ALREADY_EXIST),
                         List.of(
@@ -153,7 +154,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client with correct data",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
@@ -168,7 +169,7 @@ class ClientServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(ClientDao.CLIENT_ID, List.of(1));
-                                    erQuery.put(ClientDao.NAME, List.of("name"));
+                                    erQuery.put(UserDao.NAME, List.of("name"));
 
                                     return when(daoHelper.update(any(ClientDao.class), anyMap(), anyMap())).thenReturn(erQuery);
                                 }
@@ -197,7 +198,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client document not valid",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014F")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.DOCUMENT_NOT_VALID),
                         List.of(
@@ -214,7 +215,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client CountryCode format error",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ESPAÑA", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.COUNTRY_CODE_FORMAT_ERROR),
                         List.of(
@@ -230,7 +231,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client CountryCode not valid",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "AA", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.COUNTRY_CODE_NOT_VALID),
                         List.of(
@@ -246,7 +247,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client client already exist",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CLIENT_ALREADY_EXIST),
                         List.of(
@@ -264,7 +265,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Update client client not exist",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        constructMap(List.of(ClientDao.NAME, ClientDao.COUNTRY_CODE, ClientDao.DOCUMENT),
+                        constructMap(List.of(UserDao.NAME, UserDao.COUNTRY_CODE, UserDao.NIF),
                                 List.of("name", "ES", "52033014E")),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CLIENT_NOT_EXIST),
                         List.of(
@@ -311,7 +312,7 @@ class ClientServiceTest {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(RoleDao.ID_ROLENAME, List.of(1));
                                     erQuery.put(RoleDao.ROLENAME, List.of("name"));
-                                    erQuery.put(ClientDao.CLIENT_DOWN_DATE, List.of(new Date()));
+                                    erQuery.put(UserDao.USERBLOCKED, List.of(new Date()));
 
                                     return when(daoHelper.update(any(ClientDao.class), anyMap(), anyMap())).thenReturn(erQuery);
                                 }
@@ -349,7 +350,7 @@ class ClientServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(ClientDao.CLIENT_ID, List.of(1));
-                                    erQuery.put(ClientDao.CLIENT_DOWN_DATE, List.of(new Date()));
+                                    erQuery.put(UserDao.USERBLOCKED, List.of(new Date()));
 
                                     return when(daoHelper.query(any(ClientDao.class), anyMap(), anyList())).thenReturn(erQuery);
                                 })
@@ -376,14 +377,14 @@ class ClientServiceTest {
                 Arguments.of(
                         "query client with filter",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        List.of(ClientDao.CLIENT_ID, ClientDao.NAME, ClientDao.COUNTRY_CODE),
+                        List.of(ClientDao.CLIENT_ID, UserDao.NAME, UserDao.COUNTRY_CODE),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(ClientDao.CLIENT_ID, List.of(1));
-                                    erQuery.put(ClientDao.NAME, List.of("name"));
-                                    erQuery.put(ClientDao.COUNTRY_CODE, List.of("ES"));
+                                    erQuery.put(UserDao.NAME, List.of("name"));
+                                    erQuery.put(UserDao.COUNTRY_CODE, List.of("ES"));
 
                                     EntityResult erQueryNotExist = new EntityResultMapImpl();
 
@@ -395,14 +396,14 @@ class ClientServiceTest {
                 Arguments.of(
                         "Delete client without filter",
                         Map.of(),
-                        List.of(ClientDao.CLIENT_ID, ClientDao.NAME, ClientDao.COUNTRY_CODE),
+                        List.of(ClientDao.CLIENT_ID, UserDao.NAME, UserDao.COUNTRY_CODE),
                         Extras.createEntityResult(EntityResult.OPERATION_SUCCESSFUL, ""),
                         List.of(
                                 (Supplier) () -> {
                                     EntityResult erQuery = new EntityResultMapImpl();
                                     erQuery.put(ClientDao.CLIENT_ID, List.of(1));
-                                    erQuery.put(ClientDao.NAME, List.of("name"));
-                                    erQuery.put(ClientDao.COUNTRY_CODE, List.of("ES"));
+                                    erQuery.put(UserDao.NAME, List.of("name"));
+                                    erQuery.put(UserDao.COUNTRY_CODE, List.of("ES"));
 
                                     EntityResult erQueryNotExist = new EntityResultMapImpl();
 
@@ -424,7 +425,7 @@ class ClientServiceTest {
                 Arguments.of(
                         "Delete client not exist",
                         Map.of(ClientDao.CLIENT_ID, 1),
-                        List.of(ClientDao.CLIENT_ID, ClientDao.NAME, ClientDao.COUNTRY_CODE),
+                        List.of(ClientDao.CLIENT_ID, UserDao.NAME, UserDao.COUNTRY_CODE),
                         Extras.createEntityResult(EntityResult.OPERATION_WRONG, Messages.CLIENT_NOT_EXIST),
                         List.of(
                                 (Supplier) () -> {

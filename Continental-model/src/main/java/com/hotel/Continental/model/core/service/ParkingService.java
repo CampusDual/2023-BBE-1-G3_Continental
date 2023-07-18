@@ -61,7 +61,7 @@ public class ParkingService implements IParkingService {
         }
 
         //Comprobamos que el parking no está dado de baja
-        if (erParking.get(ParkingDao.PARKING_DOWN_DATE) != null) {
+        if (erParking.getRecordValues(0).get(ParkingDao.PARKING_DOWN_DATE) != null) {
             er.setMessage(Messages.PARKING_ALREADY_INACTIVE);
             return er;
         }

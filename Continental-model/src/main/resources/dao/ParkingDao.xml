@@ -6,10 +6,10 @@
         catalog="" schema="${mainschema}" table="parkings"
         datasource="mainDataSource" sqlhandler="dbSQLStatementHandler">
     <DeleteKeys>
-        <Column>id_parking</Column>
+        <Column>parking_id</Column>
     </DeleteKeys>
     <UpdateKeys>
-        <Column>id_parking</Column>
+        <Column>parking_id</Column>
     </UpdateKeys>
-    <GeneratedKey>id_parking</GeneratedKey>
+    <GeneratedKey>parking_id</GeneratedKey>
 </JdbcEntitySetup>

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -194,7 +196,7 @@ public class BookingService implements IBookingService {
         }
         //Comprobamos si la reserva existe
         EntityResult book = this.daoHelper.query(this.bookingDao, keyMap, List.of(BookingDao.BOOKINGID));
-        if (book == null || book.getCode() == EntityResult.OPERATION_WRONG) {
+        if (book == null || book.getCode() == EntityResult.OPERATION_WRONG || book.calculateRecordNumber() == 0) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(EntityResult.OPERATION_WRONG);
             er.setMessage(Messages.BOOKING_NOT_EXIST);
@@ -268,7 +270,7 @@ public class BookingService implements IBookingService {
             er.setMessage(Messages.NECESSARY_KEY);
             return er;
         }
-        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null) {
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null && attrMap.get(BookingDao.CLIENT) == null) {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_DATA);
@@ -332,6 +334,12 @@ public class BookingService implements IBookingService {
             EntityResult er = new EntityResultMapImpl();
             er.setCode(1);
             er.setMessage(Messages.NECESSARY_KEY);
+            return er;
+        }
+        if (attrMap.get(AccessCardAssignmentDao.ACCESS_CARD_ID) == null && attrMap.get(BookingDao.CLIENT) == null) {
+            EntityResult er = new EntityResultMapImpl();
+            er.setCode(1);
+            er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
         //Comprobamos si la reserva existe

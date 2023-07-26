@@ -64,7 +64,9 @@ public class CriteriaService implements ICriteriaService {
             return er;
         }
         //Compruebo que el attrMap no este vacio
-        if(attrMap.isEmpty()) {
+        if(attrMap.containsKey(CriteriaDao.CRITERIA_ID) || attrMap.containsKey(CriteriaDao.NAME) ||
+                attrMap.containsKey(CriteriaDao.DATE_CONDITION) ||
+                attrMap.containsKey(CriteriaDao.TYPE) || attrMap.containsKey(CriteriaDao.DESCRIPTION)) {
             er.setMessage(Messages.NECESSARY_DATA);
             return er;
         }
@@ -76,11 +78,9 @@ public class CriteriaService implements ICriteriaService {
         }
 
         //Comprobar formato correcto en multiplicador
-        if(attrMap.get(CriteriaDao.MULTIPLIER) != null) {
-            EntityResult checkNumber = Validation.checkNumber(attrMap.get(CriteriaDao.MULTIPLIER).toString(), Messages.MULTIPLIER_NOT_POSITIVE, Messages.MULTIPLIER_NOT_NUMBER);
-            if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
-                return checkNumber;
-            }
+        EntityResult checkNumber = Validation.checkNumber(attrMap.get(CriteriaDao.MULTIPLIER).toString(), Messages.MULTIPLIER_NOT_POSITIVE, Messages.MULTIPLIER_NOT_NUMBER);
+        if(checkNumber.getCode() == EntityResult.OPERATION_WRONG) {
+            return checkNumber;
         }
 
         return this.daoHelper.update(this.criteriaDao, attrMap, keyMap);

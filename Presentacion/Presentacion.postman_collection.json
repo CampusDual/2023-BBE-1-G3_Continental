@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "a5615566-7744-4262-be34-cef75cad480f",
+		"name": "Presentacion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28568227",
+		"_collection_link": "https://grey-firefly-671044.postman.co/workspace/Continental~f0f17fe5-12c3-475d-958d-99ee39a7a444/collection/28568227-a5615566-7744-4262-be34-cef75cad480f?action=share&creator=28568227&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Insertar Cliente",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Obtener el countryCode generado aleatoriamente\r",
+							"const generatedCountryCode = pm.variables.replaceIn('{{$randomCountryCode}}');\r",
+							"const generatedFirstName = pm.variables.replaceIn('{{$randomFirstName}}') ;\r",
+							"pm.environment.set(\"generatedFirstName\",generatedFirstName)\r",
+							"pm.environment.set(\"generatedCountryCode\",generatedCountryCode)\r",
+							"// Verificar si el countryCode generado es ES\r",
+							"if (generatedCountryCode === \"ES\") {\r",
+							"  // Generar número de identificación fiscal (NIF) para España\r",
+							"\r",
+							"  // Generar un número aleatorio de 8 dígitos\r",
+							"  const numero = Math.floor(Math.random() * 100000000);\r",
+							"\r",
+							"  // Calcular la letra del NIF\r",
+							"  const letras = \"TRWAGMYFPDXBNJZSQVHLCKE\";\r",
+							"  const letra = letras.charAt(numero % 23);\r",
+							"\r",
+							"  // Formatear el número y la letra juntos\r",
+							"  const dni = numero.toString().padStart(8, \"0\") + letra;\r",
+							"\r",
+							"  pm.environment.set(\"generatedDNI\", dni);\r",
+							"} else {\r",
+							"  pm.environment.set(\"generatedDNI\", pm.variables.replaceIn('{{$guid}}'));\r",
+							"}\r",
+							"\r",
+							"console.log(\"DNI generado:\", pm.environment.get(\"generatedDNI\")+\" \"+generatedCountryCode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"name\": \"Virtudes\",\r\n        \"nif\": \"83364635P\",\r\n        \"country_code\": \"ES\",\r\n        \"user_\":\"virtudes\",\r\n        \"password\":\"Abc123..\",\r\n        \"surname\":\"Gomez\"\r\n    }\r\n    //Errores \r\n    // M_NECESSARY_DATA -> Si Country Code, Name ,Document Estan vacios\r\n    // M_COUNTRY_CODE_FORMAT_ERROR -> Error del formato del contry code\r\n    // M_COUNTRY_CODE_NOT_VALID -> Que el country code no tiene el formato correcto\r\n    // M_DOCUMENT_NOT_VALID Si dado el country code y el nif , este no tiene el formato correcto\r\n    // M_DOCUMENT_ALREADY_EXIST Si el documento ya existe\r\n    // M_USER_ALREADY_EXIST Si el usuario ya existe\r\n    // M_INCORRECT_PASSWORD Si la contraseña no cumple el formato correcto\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/client/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"client",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insertar Empleado",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Obtener el countryCode generado aleatoriamente\r",
+							"const generatedCountryCode = pm.variables.replaceIn('{{$randomCountryCode}}');\r",
+							"const generatedFirstName = pm.variables.replaceIn('{{$randomFirstName}}') ;\r",
+							"pm.environment.set(\"generatedFirstName\",generatedFirstName)\r",
+							"pm.environment.set(\"generatedCountryCode\",generatedCountryCode)\r",
+							"// Verificar si el countryCode generado es ES\r",
+							"if (generatedCountryCode === \"ES\") {\r",
+							"  // Generar número de identificación fiscal (NIF) para España\r",
+							"\r",
+							"  // Generar un número aleatorio de 8 dígitos\r",
+							"  const numero = Math.floor(Math.random() * 100000000);\r",
+							"\r",
+							"  // Calcular la letra del NIF\r",
+							"  const letras = \"TRWAGMYFPDXBNJZSQVHLCKE\";\r",
+							"  const letra = letras.charAt(numero % 23);\r",
+							"\r",
+							"  // Formatear el número y la letra juntos\r",
+							"  const dni = numero.toString().padStart(8, \"0\") + letra;\r",
+							"\r",
+							"  pm.environment.set(\"generatedDNI\", dni);\r",
+							"} else {\r",
+							"  pm.environment.set(\"generatedDNI\", pm.variables.replaceIn('{{$guid}}'));\r",
+							"}\r",
+							"\r",
+							"console.log(\"DNI generado:\", pm.environment.get(\"generatedDNI\")+\" \"+generatedCountryCode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"name\": \"Gerardo\",\r\n        \"nif\": \"09983922J\",\r\n        \"country_code\": \"ES\",\r\n        \"user_\":\"gerardo\",\r\n        \"password\":\"Abc123..\",\r\n        \"surname\":\"Rivas\",\r\n        \"hotel_id\":2,\r\n        \"id_rolename\":0\r\n    }\r\n    //Errores \r\n    // M_NECESSARY_DATA -> Si Country Code, Name ,Document Estan vacios\r\n    // M_COUNTRY_CODE_FORMAT_ERROR -> Error del formato del contry code\r\n    // M_COUNTRY_CODE_NOT_VALID -> Que el country code no tiene el formato correcto\r\n    // M_DOCUMENT_NOT_VALID Si dado el country code y el nif , este no tiene el formato correcto\r\n    // M_DOCUMENT_ALREADY_EXIST Si el documento ya existe\r\n    // M_USER_ALREADY_EXIST Si el usuario ya existe\r\n    // M_INCORRECT_PASSWORD Si la contraseña no cumple el formato correcto\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/employee/employee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"employee",
+						"employee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insertar Reserva",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "demouser",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "demo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"initial_date\": \"2023-07-26\",\r\n        \"end_date\":\"2023-07-27\",\r\n        \"client_id\":31,\r\n        \"hotel_id\":2\r\n    }\r\n\r\n    //Errores\r\n    //M_NECESSARY_DATA -> Faltan datos necesarios \"initial_date\" , \"end_date\"\r\n    //M_ROOM_NOT_FREE -> No hay ninguna fecha en este hotel y en esas fechas\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/book/booking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"book",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPrice",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    //Calcula el precio que valdría una reserva\r\n    \"data\": {\r\n        \"initial_date\": \"2024-06-01\",\r\n        \"end_date\":\"2030-06-30\",\r\n        \"room_id\":1\r\n    }\r\n\r\n    //Errores\r\n    //M_NECESSARY_KEY Falta room_id\r\n    //M_NECESSARY_DATA falta initial_date o end_date\r\n    //M_ROOM_NOT_EXIST no existe la habitacion\r\n    //M_DATE_FORMAT_ERROR el formato de las fechas no es correcto o no existe (ej 31 de febrero)\r\n\r\n    //Criterios actuales\r\n    //Que sea finde\r\n    //Peak Season (06-01/08-31)\r\n    //Off-peak season (09-01/11-30)\r\n    //Long Stay (5 dias)\r\n    //Early booking (10)\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/book/price",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"book",
+						"price"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkin",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "demouser",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "demo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\":{\r\n        \"booking_id\":43,\r\n        \"client_id\":32,\r\n        \"access_card_id\":8\r\n    }\r\n\r\n    //Errores\r\n    //M_NECESSARY_KEY -> Si el booking id es nulo\r\n    //M_NECESSARY_DATA -> Si el client_id o booking_id es nulo\r\n    //M_BOOKING_NOT_EXIST -> No existe el booking \r\n    //M_BOOKING_DOESNT_BELONG_CLIENT -> Esa reserva no pertenece a ese cliente\r\n    //M_BOOKING_ALREADY_CHECKED_IN -> Esa reserva ya hizo checkin\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/book/checkin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"book",
+						"checkin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateStock",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "demouser",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "demo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"stock\": -2\r\n    },\r\n    \"filter\": {\r\n        \"product_id\": 3,\r\n        \"fridge_id\": 4\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/refrigeratorstock/refrigeratorStock",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"refrigeratorstock",
+						"refrigeratorStock"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ParkingEnter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\":{\r\n        \"booking_id\":39,\r\n        \"parking_id\":2\r\n    }\r\n    //Errores \r\n    //M_NECESSARY_DATA -> Falta booking_id y parking_id\r\n    //M_PARKING_NOT_FOUND -> No existe ese parking\r\n    //M_PARKING_FULL -> El parking esta lleno\r\n    //M_BOOKING_NOT_EXIST -> No existe la reserva\r\n    //M_BOOKING_NOT_SAME_HOTEL_AS_PARKING -> El hotel no de la reserva no es el mismo que el del parking\r\n    //M_BOOKING_NOT_STARTED -> La reserva no a comenzado\r\n    //M_BOOKING_NOT_CHECKED_IN -> La reserva no a hecho checkin\r\n    //M_BOOKING_ALREADY_CHECKED_OUT -> Ya hizo check out\r\n    //M_BOOKING_ALREADY_IN_PARKING -> Ya esta dentro del parking\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/parking/parkingEnter",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"parking",
+						"parkingEnter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ParkingExit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\":{\r\n        \"booking_id\":39,\r\n        \"parking_id\":2\r\n    }\r\n\r\n    //Errores \r\n    //M_NECESSARY_DATA -> Falta booking_id y parking_id\r\n    //M_PARKING_NOT_FOUND -> No existe ese parking\r\n    //M_BOOKING_NOT_EXIST -> No existe la reserva\r\n    //M_BOOKING_NOT_IN_PARKING -> No esta dentro del parking\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/parking/parkingExit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"parking",
+						"parkingExit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkout",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "demouser",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "demo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\":{\r\n        \"booking_id\":39,\r\n        \"client_id\":31,\r\n        \"access_card_id\":8\r\n    }\r\n\r\n     //Errores\r\n    //M_NECESSARY_KEY -> Si el booking id es nulo\r\n    //M_BOOKING_NOT_EXIST -> No existe el booking \r\n    //M_BOOKING_NOT_CHECKED_IN -> Esa reserva no pertenece a ese cliente\r\n    //M_BOOKING_ALREADY_CHECKED_OUT -> Esa reserva ya hizo checkin\r\n    //M_BOOKING_DOESNT_BELONG_CLIENT -> La reserva no pertenece al cliente\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30030/book/checkout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30030",
+					"path": [
+						"book",
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "demouser",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "demo",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -54,7 +54,7 @@ ontimize:
          role-login-column: user_
          role-name-column: rolename
 server:
-   port: 30030
+   port: 33333
    tomcat:
       uri-encoding: UTF-8
    compression:
@@ -63,7 +63,7 @@ server:
 spring:
    datasource:
       driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://45.84.210.174:65432/2023-BBE-1-G3
+      jdbc-url: jdbc:postgresql://db:5432/2023-BBE-1-G3
       username: Backend_2023_G3
       password: 1qaz2wsx
       initial-size: 10

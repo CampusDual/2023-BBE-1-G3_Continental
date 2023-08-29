@@ -1,6 +1,7 @@
 package com.hotel.continental.model.core.service;
 
 import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
+import com.hotel.continental.model.core.service.AccessCardAssignmentService;
 import com.hotel.continental.model.core.dao.AccessCardDao;
 import com.hotel.continental.model.core.dao.BookingDao;
 import com.hotel.continental.model.core.dao.RoomDao;
@@ -62,9 +63,9 @@ class AccessCardAssignmentServiceTest {
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(true));
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.ACCESS_CARD_ID, List.of(1));
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.HOTEL_ID, List.of(1));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
+                                    erTarjeta.put(AccessCardDao.ACCESS_CARD_ID, List.of(1));
+                                    erTarjeta.put(AccessCardDao.HOTEL_ID, List.of(1));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta);
                                 },
                                 () -> {
@@ -131,10 +132,10 @@ class AccessCardAssignmentServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(false));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(false));
                                     EntityResult erCardAvailable = new EntityResultMapImpl();
                                     erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erCardAvailable.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(true));
+                                    erCardAvailable.put(AccessCardDao.AVAILABLE, List.of(true));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta, erCardAvailable);
                                 }
                         )
@@ -149,7 +150,7 @@ class AccessCardAssignmentServiceTest {
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(true));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
                                     EntityResult erCardAvailable = new EntityResultMapImpl();
                                     erCardAvailable.setCode(EntityResult.OPERATION_SUCCESSFUL);
                                     EntityResult erCardHotel = new EntityResultMapImpl();
@@ -200,7 +201,7 @@ class AccessCardAssignmentServiceTest {
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(false));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(false));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta);
                                 },
                                 () -> {
@@ -249,7 +250,7 @@ class AccessCardAssignmentServiceTest {
                                 (Supplier) () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(true));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(true));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta);
                                 }
                         )
@@ -264,7 +265,7 @@ class AccessCardAssignmentServiceTest {
                                 () -> {
                                     EntityResult erTarjeta = new EntityResultMapImpl();
                                     erTarjeta.setCode(EntityResult.OPERATION_SUCCESSFUL);
-                                    erTarjeta.put(com.hotel.continental.model.core.dao.AccessCardDao.AVAILABLE, List.of(false));
+                                    erTarjeta.put(AccessCardDao.AVAILABLE, List.of(false));
                                     return Mockito.when(daoHelper.query(Mockito.any(AccessCardDao.class), Mockito.anyMap(), Mockito.anyList())).thenReturn(erTarjeta);
                                 },
                                 (Supplier) () -> {

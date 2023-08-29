@@ -1,18 +1,17 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IClientService;
+import com.hotel.continental.api.core.service.IUserService;
 import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.EmployeeDao;
 import com.hotel.continental.model.core.dao.UserDao;
 import com.hotel.continental.model.core.tools.Messages;
-import com.hotel.continental.model.core.tools.Validation;
+import com.hotel.continental.api.core.service.IClientService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.jdbc.SQLWarningException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +25,9 @@ public class ClientService implements IClientService {
     @Autowired
     private ClientDao clientDao;
     @Autowired
-    private DefaultOntimizeDaoHelper daoHelper;
-    @Autowired
     private UserService userService;
+    @Autowired
+    private DefaultOntimizeDaoHelper daoHelper;
 
     /**
      * Metodo que actualiza un cliente de la base de datos

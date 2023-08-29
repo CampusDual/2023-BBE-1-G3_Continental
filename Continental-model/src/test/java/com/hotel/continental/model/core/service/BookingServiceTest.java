@@ -1,19 +1,31 @@
 package com.hotel.continental.model.core.service;
 
 
-import com.hotel.continental.model.core.dao.*;
-import com.hotel.continental.model.core.tools.Extras;
-import com.hotel.continental.model.core.tools.Messages;
+import com.hotel.continental.model.core.service.BookingService;
+import com.hotel.continental.model.core.service.RoomService;
+import com.hotel.continental.model.core.service.AccessCardAssignmentService;
+import com.hotel.continental.model.core.dao.AccessCardDao;
+import com.hotel.continental.model.core.dao.BookingDao;
 import com.ontimize.jee.common.dto.EntityResult;
-import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Map;
+import com.hotel.continental.model.core.dao.AccessCardAssignmentDao;
+import com.hotel.continental.model.core.dao.RoomDao;
+import com.hotel.continental.model.core.dao.CriteriaDao;
+import com.hotel.continental.model.core.dao.RoomTypeDao;
+import com.hotel.continental.model.core.dao.ExtraExpensesDao;
+import com.hotel.continental.model.core.service.CriteriaService;
+import com.hotel.continental.model.core.tools.Extras;
+import com.hotel.continental.model.core.tools.Messages;
+import com.ontimize.jee.common.dto.EntityResultMapImpl;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.provider.Arguments;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,7 +35,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -56,8 +67,7 @@ class BookingServiceTest {
     @Mock
     ExtraExpensesDao extraExpensesDao;
     @Mock
-    static
-    CriteriaService criteriaService;
+    static CriteriaService criteriaService;
 
     @ParameterizedTest(name = "Test case {index} : {0}")
     @MethodSource("bookingInsertTestData")

@@ -1,8 +1,8 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.dao.HotelDao;
 import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.api.core.service.IHotelService;
-import com.hotel.continental.model.core.dao.HotelDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;

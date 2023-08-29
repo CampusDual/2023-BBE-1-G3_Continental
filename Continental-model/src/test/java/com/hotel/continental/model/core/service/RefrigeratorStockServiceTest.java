@@ -3,6 +3,7 @@ package com.hotel.continental.model.core.service;
 import com.hotel.continental.model.core.dao.ProductsDao;
 import com.hotel.continental.model.core.dao.RefrigeratorStockDao;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
+import com.hotel.continental.model.core.service.RefrigeratorStockService;
 import com.hotel.continental.model.core.tools.Extras;
 import com.hotel.continental.model.core.tools.Messages;
 import com.ontimize.jee.common.dto.EntityResult;

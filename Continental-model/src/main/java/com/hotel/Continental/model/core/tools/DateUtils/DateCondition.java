@@ -1,9 +1,8 @@
 package com.hotel.continental.model.core.tools.DateUtils;
 
-import org.apache.poi.ss.formula.functions.Days;
+import com.hotel.continental.model.core.tools.DateUtils.DateField;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;

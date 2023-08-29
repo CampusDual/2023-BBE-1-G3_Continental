@@ -1,10 +1,10 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IRefrigeratorsService;
 import com.hotel.continental.model.core.dao.RefrigeratorsDao;
 import com.hotel.continental.model.core.dao.RoomDao;
 import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
+import com.hotel.continental.api.core.service.IRefrigeratorsService;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;

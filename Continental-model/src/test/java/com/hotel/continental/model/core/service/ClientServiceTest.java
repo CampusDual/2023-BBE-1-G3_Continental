@@ -1,5 +1,6 @@
 package com.hotel.continental.model.core.service;
 
+import com.hotel.continental.model.core.service.ClientService;
 import com.hotel.continental.model.core.dao.ClientDao;
 import com.hotel.continental.model.core.dao.RoleDao;
 import com.hotel.continental.model.core.dao.UserDao;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +35,7 @@ class ClientServiceTest {
     @InjectMocks
     ClientService clientService;
 
-    @Mock
+    @Spy
     ClientDao clientDao;
 
     @ParameterizedTest(name = "Test case {index} : {0}")

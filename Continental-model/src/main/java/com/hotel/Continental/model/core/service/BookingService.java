@@ -1,33 +1,26 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.model.core.dao.*;
-import com.hotel.continental.model.core.tools.Messages;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hotel.continental.api.core.service.IBookingService;
-import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.DateUtils.DateCondition;
 import com.hotel.continental.model.core.tools.DateUtils.DateConditionModule;
+import com.hotel.continental.model.core.tools.Messages;
+import com.hotel.continental.api.core.service.IBookingService;
+import com.hotel.continental.model.core.dao.*;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 import com.ontimize.jee.common.security.PermissionsProviderSecured;
 import com.ontimize.jee.server.dao.DefaultOntimizeDaoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -469,7 +462,7 @@ public class BookingService implements IBookingService {
         //Multiplicadores
         Map<Integer, BigDecimal> multiplierDateCondition = new HashMap<>();//Guarda los multiplicadores de las DateCondition
         //Separar por tipo de aplicacion
-        Map<Integer,DateCondition> dateConditionDaily = new HashMap<>();//Guarda las condiciones que se aplican diariamente
+        Map<Integer, DateCondition> dateConditionDaily = new HashMap<>();//Guarda las condiciones que se aplican diariamente
         Map<Integer,DateCondition> dateConditionUnique = new HashMap<>();//Guarda las condiciones que se aplican una vez
 
         //Creo los dateCondition y cargo los multiplicadores

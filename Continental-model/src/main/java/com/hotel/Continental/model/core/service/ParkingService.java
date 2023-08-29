@@ -1,9 +1,9 @@
 package com.hotel.continental.model.core.service;
 
-import com.hotel.continental.api.core.service.IParkingService;
-import com.hotel.continental.model.core.dao.*;
 import com.hotel.continental.model.core.tools.Messages;
 import com.hotel.continental.model.core.tools.Validation;
+import com.hotel.continental.api.core.service.IParkingService;
+import com.hotel.continental.model.core.dao.*;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicExpression;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicField;
 import com.ontimize.jee.common.db.SQLStatementBuilder.BasicOperator;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Lazy

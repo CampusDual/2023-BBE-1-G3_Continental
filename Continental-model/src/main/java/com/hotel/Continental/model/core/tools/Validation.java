@@ -1,6 +1,5 @@
 package com.hotel.continental.model.core.tools;
 
-import com.hotel.continental.model.core.dao.CriteriaDao;
 import com.ontimize.jee.common.dto.EntityResult;
 import com.ontimize.jee.common.dto.EntityResultMapImpl;
 

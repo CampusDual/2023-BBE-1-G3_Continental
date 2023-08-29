@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.hotel.continental.model.core.tools.DateUtils.DateField;
+import com.hotel.continental.model.core.tools.DateUtils.DateOperator;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,16 +20,16 @@ import java.util.List;
 public class DateConditionModule {
     public static SimpleModule getModule() {
         SimpleModule module = new SimpleModule();
-        module.addSerializer(DateCondition.class, new DateConditionSerializer());
-        module.addDeserializer(DateCondition.class, new DateConditionDeserializer());
+        module.addSerializer(com.hotel.continental.model.core.tools.DateUtils.DateCondition.class, new DateConditionSerializer());
+        module.addDeserializer(com.hotel.continental.model.core.tools.DateUtils.DateCondition.class, new DateConditionDeserializer());
         module.addSerializer(DateField.class, new DateFieldSerializer());
         module.addDeserializer(DateField.class, new DateFieldDeserializer());
         return module;
     }
 
-    public static class DateConditionSerializer extends JsonSerializer<DateCondition> {
+    public static class DateConditionSerializer extends JsonSerializer<com.hotel.continental.model.core.tools.DateUtils.DateCondition> {
         @Override
-        public void serialize(DateCondition dateCondition, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        public void serialize(com.hotel.continental.model.core.tools.DateUtils.DateCondition dateCondition, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeObjectField("dateFieldLeft", dateCondition.getDateFieldLeft());
             jsonGenerator.writeObjectField("dateFieldRight", dateCondition.getDateFieldRight());
@@ -37,9 +39,9 @@ public class DateConditionModule {
         }
     }
 
-    public static class DateConditionDeserializer extends JsonDeserializer<DateCondition> {
+    public static class DateConditionDeserializer extends JsonDeserializer<com.hotel.continental.model.core.tools.DateUtils.DateCondition> {
         @Override
-        public DateCondition deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        public com.hotel.continental.model.core.tools.DateUtils.DateCondition deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             DateField dateFieldLeft = null;
             DateField dateFieldRight = null;
             DateOperator operator = null;
@@ -62,7 +64,7 @@ public class DateConditionModule {
                 }
             }
 
-            return new DateCondition(dateFieldLeft, operator, dateFieldRight, daysField);
+            return new com.hotel.continental.model.core.tools.DateUtils.DateCondition(dateFieldLeft, operator, dateFieldRight, daysField);
         }
     }
 
